@@ -1,0 +1,10 @@
+question,document_id,expected_answer,expected_source,expected_source_text,expected_status
+"What causes E04 and how should I fix it?",vellora-duo-espresso-machine.txt,"Remove the tank, clean the valve at the bottom under running water, and replace the seal if it is cracked.","E04 entry in the manual","E04 - Water tank seal leaking",answered
+"What should I do if E51 persists after restarting the machine?",vellora-duo-espresso-machine.txt,"Switch the machine off and on again. If the code persists, contact customer service.","E51 entry in the manual","E51 - Display communication fault",answered
+"What should I check when error E52 appears?",vellora-duo-espresso-machine.txt,"Check that nothing is pressing on the control panel and clean the buttons with a dry cloth.","E52 entry in the manual","E52 - Button stuck",answered
+"What does error E53 indicate?",vellora-duo-espresso-machine.txt,"The internal clock was reset after a power cut.","E53 entry in the manual","E53 - Clock reset",answered
+"What should I do if the machine settings have reset?",vellora-duo-espresso-machine.txt,"Set the water hardness, coffee strength, and time again in the menu.","E56 entry in the manual","E56 - Settings reset",answered
+"What should I do if error E57 persists?",vellora-duo-espresso-machine.txt,"Unplug the machine for one minute, then plug it in again. If the code persists, contact customer service.","E57 entry in the manual","E57 - Main board fault",answered
+"What should I do when the machine reports E61?",vellora-duo-espresso-machine.txt,"Run the descaling programme as soon as possible.","E61 entry in the manual","E61 - Descaling needed",answered
+"The descaling programme was interrupted. What should I do, and what should I avoid?",vellora-duo-espresso-machine.txt,"Start the descaling programme again from the beginning. Do not switch off the machine during the programme.","E62 entry in the manual","E62 - Descaling interrupted",answered
+"What should I do if E99 appears?",vellora-duo-espresso-machine.txt,"Switch the machine off and on again. If the code comes back, contact customer service.","E99 entry in the manual","E99 - Unknown error",answered
