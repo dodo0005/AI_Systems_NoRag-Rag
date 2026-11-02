@@ -21,11 +21,24 @@ import re
 
 # Resolve paths relative to the project, not the terminal's current directory.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DOCS_DIR = PROJECT_ROOT / "docs"
 CHROMA_DIR = PROJECT_ROOT / "chroma_db"
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-COLLECTION_NAME = "norag_documents"
+
+# Each corpus has its own source directory and vector collection.
+CORPORA = {
+    "vellora": {
+        "docs_dir": PROJECT_ROOT / "docs",
+        # Keep the original collection name to preserve the V1 index.
+        "collection_name": "norag_documents",
+    },
+    "kestrel": {
+        "docs_dir": PROJECT_ROOT / "corpora" / "kestrel" / "docs",
+        "collection_name": "norag_kestrel_documents",
+    },
+}
+
+DEFAULT_CORPUS = "vellora"
 
 DEFAULT_CHUNK_SIZE = 800
 DEFAULT_OVERLAP_PERCENT = 10
@@ -40,21 +53,49 @@ embedding_function = SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_M
 
 chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
 
-collection = chroma_client.get_or_create_collection(
-    name=COLLECTION_NAME,
-    embedding_function=embedding_function,
-    metadata={"hnsw:space": "cosine"},
-)
+
+def get_corpus_config(corpus: str) -> dict:
+    """Return the configuration for a supported corpus."""
+    if corpus not in CORPORA:
+        raise ValueError(f"Unknown corpus '{corpus}'. Choose 'vellora' or 'kestrel'.")
+
+    return CORPORA[corpus]
 
 
-def validate_document_id(document_id: str) -> Path:
-    """Accept a filename from docs/, never an arbitrary filesystem path."""
+def get_docs_dir(corpus: str = DEFAULT_CORPUS) -> Path:
+    """Return the source directory for a corpus."""
+    return get_corpus_config(corpus)["docs_dir"]
+
+
+def get_collection(corpus: str = DEFAULT_CORPUS):
+    """Return the Chroma collection for a corpus."""
+    config = get_corpus_config(corpus)
+
+    return chroma_client.get_or_create_collection(
+        name=config["collection_name"],
+        embedding_function=embedding_function,
+        metadata={"hnsw:space": "cosine"},
+    )
+
+
+# Backwards-compatible aliases for Vellora's existing collection and folder.
+DOCS_DIR = get_docs_dir(DEFAULT_CORPUS)
+collection = get_collection(DEFAULT_CORPUS)
+
+
+def validate_document_id(
+    document_id: str,
+    corpus: str = DEFAULT_CORPUS,
+) -> Path:
+    """Accept a filename from the selected corpus, not an arbitrary path."""
+    docs_dir = get_docs_dir(corpus)
+
     if not document_id or Path(document_id).name != document_id:
         raise ValueError("Invalid document ID.")
 
-    path = (DOCS_DIR / document_id).resolve()
+    path = (docs_dir / document_id).resolve()
 
-    if path.parent != DOCS_DIR.resolve():
+    if path.parent != docs_dir.resolve():
         raise ValueError("Invalid document path.")
 
     if path.suffix.lower() not in SUPPORTED_EXTENSIONS:
@@ -66,17 +107,20 @@ def validate_document_id(document_id: str) -> Path:
     return path
 
 
-def list_documents() -> list[dict]:
-    """List supported documents currently present in docs/."""
-    DOCS_DIR.mkdir(parents=True, exist_ok=True)
+def list_documents(corpus: str = DEFAULT_CORPUS) -> list[dict]:
+    """List supported documents in the selected corpus."""
+    docs_dir = get_docs_dir(corpus)
+    corpus_collection = get_collection(corpus)
+
+    docs_dir.mkdir(parents=True, exist_ok=True)
     documents = []
 
-    for path in sorted(DOCS_DIR.iterdir()):
+    for path in sorted(docs_dir.iterdir()):
         if not path.is_file() or path.suffix.lower() not in SUPPORTED_EXTENSIONS:
             continue
 
         document_id = path.name
-        indexed_chunks = collection.get(
+        indexed_chunks = corpus_collection.get(
             where={"document_id": document_id},
             include=["metadatas"],
         )
@@ -94,9 +138,12 @@ def list_documents() -> list[dict]:
     return documents
 
 
-def load_document(document_id: str) -> str:
-    """Load a supported document using UTF-8."""
-    path = validate_document_id(document_id)
+def load_document(
+    document_id: str,
+    corpus: str = DEFAULT_CORPUS,
+) -> str:
+    """Load a supported document from the selected corpus using UTF-8."""
+    path = validate_document_id(document_id, corpus=corpus)
 
     try:
         text = path.read_text(encoding="utf-8-sig")
@@ -165,13 +212,16 @@ def index_document(
     document_id: str,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     overlap_percent: int = DEFAULT_OVERLAP_PERCENT,
+    corpus: str = DEFAULT_CORPUS,
 ) -> int:
-    """Index one document, replacing its existing chunks."""
-    text = load_document(document_id)
+    """Index one document in the selected corpus."""
+    corpus_collection = get_collection(corpus)
+
+    text = load_document(document_id, corpus=corpus)
     chunks = chunk_document(text, chunk_size, overlap_percent)
 
-    # Remove stale chunks before adding the new version.
-    collection.delete(where={"document_id": document_id})
+    # Remove existing chunks for this document in this corpus only.
+    corpus_collection.delete(where={"document_id": document_id})
 
     for batch_start in range(0, len(chunks), BATCH_SIZE):
         batch = chunks[batch_start : batch_start + BATCH_SIZE]
@@ -181,7 +231,9 @@ def index_document(
         metadatas = []
 
         for index, chunk in enumerate(batch, start=batch_start):
-            stable_input = f"{document_id}:{chunk_size}:" f"{overlap_percent}:{index}"
+            stable_input = (
+                f"{corpus}:{document_id}:{chunk_size}:" f"{overlap_percent}:{index}"
+            )
             chunk_id = hashlib.sha256(stable_input.encode("utf-8")).hexdigest()[:24]
 
             ids.append(chunk_id)
@@ -198,7 +250,7 @@ def index_document(
                 }
             )
 
-        collection.add(
+        corpus_collection.add(
             ids=ids,
             documents=documents,
             metadatas=metadatas,
@@ -210,19 +262,24 @@ def index_document(
 def rebuild_index(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     overlap_percent: int = DEFAULT_OVERLAP_PERCENT,
+    corpus: str = DEFAULT_CORPUS,
 ) -> dict:
-    """Rebuild the complete index using all supported files in docs/."""
-    DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    """Rebuild the complete index for the selected corpus."""
+    docs_dir = get_docs_dir(corpus)
+    corpus_collection = get_collection(corpus)
 
-    # Clear existing indexed records.
-    existing = collection.get()
+    docs_dir.mkdir(parents=True, exist_ok=True)
+
+    # Clear only the selected corpus's indexed records.
+    existing = corpus_collection.get()
+
     if existing["ids"]:
-        collection.delete(ids=existing["ids"])
+        corpus_collection.delete(ids=existing["ids"])
 
     results = {}
     failures = {}
 
-    for document in sorted(DOCS_DIR.iterdir()):
+    for document in sorted(docs_dir.iterdir()):
         if (
             not document.is_file()
             or document.suffix.lower() not in SUPPORTED_EXTENSIONS
@@ -234,8 +291,10 @@ def rebuild_index(
                 document.name,
                 chunk_size=chunk_size,
                 overlap_percent=overlap_percent,
+                corpus=corpus,
             )
             results[document.name] = count
+
         except (ValueError, FileNotFoundError, OSError) as exc:
             failures[document.name] = str(exc)
 
@@ -247,14 +306,16 @@ def rebuild_index(
     }
 
 
-def delete_document(document_id: str) -> None:
-    """Delete a document and all its indexed chunks."""
-    path = validate_document_id(document_id)
+def delete_document(
+    document_id: str,
+    corpus: str = DEFAULT_CORPUS,
+) -> None:
+    """Delete a document and its indexed chunks from the selected corpus."""
+    path = validate_document_id(document_id, corpus=corpus)
+    corpus_collection = get_collection(corpus)
 
-    # Remove the indexed chunks associated with this document.
-    collection.delete(where={"document_id": document_id})
+    corpus_collection.delete(where={"document_id": document_id})
 
-    # Remove the original file.
     path.unlink()
 
 
@@ -264,15 +325,21 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 
-def retrieve_chunks(question: str, document_ids: list[str], top_k: int = 5):
+def retrieve_chunks(
+    question: str,
+    document_ids: list[str],
+    top_k: int = 5,
+    corpus: str = DEFAULT_CORPUS,
+):
+    corpus_collection = get_collection(corpus)
     if not document_ids:
         raise ValueError("Select at least one document.")
 
     for document_id in document_ids:
-        validate_document_id(document_id)
+        validate_document_id(document_id, corpus)
 
     # Load chunks from the selected documents.
-    selected = collection.get(
+    selected = corpus_collection.get(
         where={"document_id": {"$in": document_ids}},
         include=["documents", "metadatas"],
     )
@@ -307,7 +374,7 @@ def retrieve_chunks(question: str, document_ids: list[str], top_k: int = 5):
                 exact_matches.append(chunk)
 
     # Run semantic search for broader context.
-    result = collection.query(
+    result = corpus_collection.query(
         query_texts=[question],
         n_results=min(top_k, len(selected["ids"])),
         where={"document_id": {"$in": document_ids}},
@@ -481,12 +548,14 @@ def answer_question(
     question: str,
     document_ids: list[str],
     top_k: int = 5,
+    corpus: str = DEFAULT_CORPUS,
 ) -> AskResponse:
     """Run retrieval and grounded answer generation."""
     chunks = retrieve_chunks(
         question=question,
         document_ids=document_ids,
         top_k=top_k,
+        corpus=corpus,
     )
 
     return generate_grounded_answer(
