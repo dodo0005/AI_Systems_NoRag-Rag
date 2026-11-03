@@ -5,6 +5,7 @@ import "./App.css";
 const API = "/api";
 
 export default function App() {
+  const [corpus, setCorpus] = useState("vellora");
   const [documents, setDocuments] = useState([]);
   const [selected, setSelected] = useState([]);
   const [question, setQuestion] = useState("");
@@ -25,12 +26,29 @@ export default function App() {
     if (!response.ok) {
       throw new Error(data.detail || `Request failed (${response.status})`);
     }
+
     return data;
+  }
+
+  function corpusQuery(extra = {}) {
+    const params = new URLSearchParams({
+      corpus,
+      ...extra,
+    });
+
+    return params.toString();
+  }
+
+  function documentId(doc) {
+    return doc.document_id || doc.filename || doc.name;
   }
 
   async function loadDocuments() {
     try {
-      const data = await request("/documents");
+      const data = await request(
+        `/documents?${corpusQuery()}`
+      );
+
       const docs = Array.isArray(data)
         ? data
         : data.documents || data.items || [];
@@ -38,9 +56,10 @@ export default function App() {
       setDocuments(docs);
       setSelected((previous) =>
         previous.filter((id) =>
-          docs.some((doc) => (doc.document_id || doc.filename || doc.name) === id)
+          docs.some((doc) => documentId(doc) === id)
         )
       );
+
       setApiOnline(true);
       setError("");
     } catch (err) {
@@ -50,12 +69,15 @@ export default function App() {
   }
 
   useEffect(() => {
-    loadDocuments();
-  }, []);
+    setSelected([]);
+    setResult(null);
+    setDocuments([]);
+    setError("");
+    setNotice("");
+    setFile(null);
 
-  function documentId(doc) {
-    return doc.document_id || doc.filename || doc.name;
-  }
+    loadDocuments();
+  }, [corpus]);
 
   function toggleDocument(id) {
     setSelected((previous) =>
@@ -78,11 +100,14 @@ export default function App() {
       form.append("file", file);
 
       await request(
-        `/documents?chunk_size=${chunkSize}&overlap_percent=${overlap}`,
+        `/documents?${corpusQuery({
+          chunk_size: chunkSize,
+          overlap_percent: overlap,
+        })}`,
         { method: "POST", body: form }
       );
 
-      setNotice(`Uploaded and indexed ${file.name}.`);
+      setNotice(`Uploaded and indexed ${file.name} in ${corpus}.`);
       setFile(null);
       event.target.reset();
       await loadDocuments();
@@ -100,10 +125,14 @@ export default function App() {
 
     try {
       await request(
-        `/documents/${encodeURIComponent(id)}/index?chunk_size=${chunkSize}&overlap_percent=${overlap}`,
+        `/documents/${encodeURIComponent(id)}/index?${corpusQuery({
+          chunk_size: chunkSize,
+          overlap_percent: overlap,
+        })}`,
         { method: "POST" }
       );
-      setNotice(`Indexed ${id}.`);
+
+      setNotice(`Indexed ${id} in ${corpus}.`);
       await loadDocuments();
     } catch (err) {
       setError(err.message);
@@ -119,10 +148,18 @@ export default function App() {
 
     try {
       const data = await request(
-        `/index/rebuild?chunk_size=${chunkSize}&overlap_percent=${overlap}`,
+        `/index/rebuild?${corpusQuery({
+          chunk_size: chunkSize,
+          overlap_percent: overlap,
+        })}`,
         { method: "POST" }
       );
-      setNotice(data.message || "Index rebuild completed.");
+
+      setNotice(
+        `${corpus} index rebuilt: ${data.indexed_documents} documents, ` +
+        `${data.indexed_chunks} chunks, ${Object.keys(data.failures || {}).length} failures.`
+      );
+
       await loadDocuments();
     } catch (err) {
       setError(err.message);
@@ -132,18 +169,22 @@ export default function App() {
   }
 
   async function deleteDocument(id) {
-    if (!window.confirm(`Delete "${id}" and its indexed chunks?`)) return;
+    if (!window.confirm(`Delete "${id}" from ${corpus} and remove its indexed chunks?`)) {
+      return;
+    }
 
     setLoading(true);
     setError("");
     setNotice("");
 
     try {
-      await request(`/documents/${encodeURIComponent(id)}`, {
-        method: "DELETE",
-      });
+      await request(
+        `/documents/${encodeURIComponent(id)}?${corpusQuery()}`,
+        { method: "DELETE" }
+      );
+
       setSelected((previous) => previous.filter((item) => item !== id));
-      setNotice(`Deleted ${id}.`);
+      setNotice(`Deleted ${id} from ${corpus}.`);
       await loadDocuments();
     } catch (err) {
       setError(err.message);
@@ -162,6 +203,7 @@ export default function App() {
       setError("Enter a question first.");
       return;
     }
+
     if (selected.length === 0) {
       setError("Select at least one document.");
       return;
@@ -177,8 +219,10 @@ export default function App() {
           question: question.trim(),
           document_ids: selected,
           top_k: Number(topK),
+          corpus,
         }),
       });
+
       setResult(data);
     } catch (err) {
       setError(err.message);
@@ -197,6 +241,7 @@ export default function App() {
             Ask questions. Get answers grounded in your documents.
           </p>
         </div>
+
         <div className={`connection ${apiOnline ? "online" : "offline"}`}>
           <span className="status-dot" />
           {apiOnline ? "API connected" : "API unavailable"}
@@ -213,22 +258,52 @@ export default function App() {
               <p className="eyebrow">YOUR KNOWLEDGE BASE</p>
               <h2>Documents</h2>
             </div>
-            <button className="button secondary" onClick={loadDocuments}>
+
+            <button
+              className="button secondary"
+              onClick={loadDocuments}
+              disabled={loading}
+            >
               Refresh
             </button>
           </div>
 
+          <div className="corpus-selector">
+            <label className="field-label" htmlFor="corpus">
+              Active knowledge base
+            </label>
+
+            <select
+              id="corpus"
+              value={corpus}
+              onChange={(event) => setCorpus(event.target.value)}
+              disabled={loading}
+            >
+              <option value="vellora">Vellora — Coffee machine support</option>
+              <option value="kestrel">Kestrel — Billing and support</option>
+            </select>
+
+            <p className="helper-text">
+              All document operations and questions use this knowledge base.
+            </p>
+          </div>
+
           <form className="upload-form" onSubmit={uploadDocument}>
             <label className="field-label" htmlFor="file">
-              Add a document
+              Add a document to {corpus}
             </label>
+
             <input
               id="file"
               type="file"
               accept=".txt,.md,text/plain,text/markdown"
               onChange={(event) => setFile(event.target.files?.[0] || null)}
             />
-            <button className="button primary full" disabled={loading || !file}>
+
+            <button
+              className="button primary full"
+              disabled={loading || !file}
+            >
               Upload and index
             </button>
           </form>
@@ -251,14 +326,18 @@ export default function App() {
                       checked={selected.includes(id)}
                       onChange={() => toggleDocument(id)}
                     />
+
                     <span className="file-icon">TXT</span>
+
                     <span className="document-name">
                       <strong>{id}</strong>
                       <small>
                         {doc.chunk_count ?? doc.chunks ?? 0} chunks
+                        {doc.indexed ? " · Indexed" : " · Not indexed"}
                       </small>
                     </span>
                   </label>
+
                   <div className="document-actions">
                     <button
                       className="text-button"
@@ -268,6 +347,7 @@ export default function App() {
                     >
                       Index
                     </button>
+
                     <button
                       className="text-button danger-text"
                       disabled={loading}
@@ -283,7 +363,7 @@ export default function App() {
 
             {documents.length === 0 && (
               <p className="empty-state">
-                No documents found. Upload a .txt or .md file to get started.
+                No documents found in {corpus}. Upload a .txt or .md file to get started.
               </p>
             )}
           </div>
@@ -295,10 +375,10 @@ export default function App() {
               <span>Chunk size</span>
               <input
                 type="number"
-                min="1"
+                min="100"
                 max="10000"
                 value={chunkSize}
-                onChange={(e) => setChunkSize(e.target.value)}
+                onChange={(event) => setChunkSize(event.target.value)}
               />
             </label>
 
@@ -309,7 +389,7 @@ export default function App() {
                 min="0"
                 max="80"
                 value={overlap}
-                onChange={(e) => setOverlap(e.target.value)}
+                onChange={(event) => setOverlap(event.target.value)}
               />
             </label>
 
@@ -318,10 +398,11 @@ export default function App() {
               onClick={rebuildIndex}
               disabled={loading}
             >
-              Rebuild all indexes
+              Rebuild {corpus} index
             </button>
+
             <p className="helper-text">
-              Rebuilding clears and recreates the current index.
+              Rebuilding clears and recreates only the selected knowledge base index.
             </p>
           </div>
         </aside>
@@ -330,10 +411,15 @@ export default function App() {
           <section className="panel ask-panel">
             <p className="eyebrow">RETRIEVAL AUGMENTED GENERATION</p>
             <h2>Ask your documents</h2>
+
             <p className="muted">
               Answers are generated from the selected documents, with source
               passages you can inspect.
             </p>
+
+            <div className="active-corpus">
+              Active knowledge base: <strong>{corpus}</strong>
+            </div>
 
             <div className="selection-summary">
               {selected.length} document{selected.length === 1 ? "" : "s"} selected
@@ -343,6 +429,7 @@ export default function App() {
               <label className="field-label" htmlFor="question">
                 Your question
               </label>
+
               <textarea
                 id="question"
                 rows="4"
@@ -359,7 +446,7 @@ export default function App() {
                     min="1"
                     max="20"
                     value={topK}
-                    onChange={(e) => setTopK(e.target.value)}
+                    onChange={(event) => setTopK(event.target.value)}
                   />
                 </label>
 
@@ -377,9 +464,10 @@ export default function App() {
             <section className="panel answer-panel">
               <div className="panel-heading">
                 <div>
-                  <p className="eyebrow">RESPONSE</p>
+                  <p className="eyebrow">RESPONSE · {corpus.toUpperCase()}</p>
                   <h2>Your answer</h2>
                 </div>
+
                 <span
                   className={`answer-status ${
                     result.status === "answered" ? "answered" : "insufficient"
@@ -406,8 +494,10 @@ export default function App() {
                             Lines {ref.start_line}–{ref.end_line}
                           </small>
                         </span>
+
                         <span className="open-label">View passage +</span>
                       </summary>
+
                       <pre>{ref.text}</pre>
                     </details>
                   ))

@@ -509,3 +509,45 @@ textarea {
     flex-direction: column;
   }
 }
+
+
+.corpus-selector {
+  padding: 15px;
+  background: #f7f8f4;
+  border: 1px solid #e6e9e1;
+  border-radius: 11px;
+}
+
+.corpus-selector select {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #dfe3d9;
+  border-radius: 9px;
+  background: #fff;
+  color: #20251f;
+  font: inherit;
+  font-size: 0.86rem;
+}
+
+.corpus-selector select:focus {
+  outline: 2px solid #b8c9ad;
+  outline-offset: 1px;
+}
+
+.corpus-selector .helper-text {
+  margin-bottom: 0;
+}
+
+.active-corpus {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #edf2e8;
+  color: #52614a;
+  font-size: 0.82rem;
+}
+
+.active-corpus strong {
+  text-transform: capitalize;
+}
