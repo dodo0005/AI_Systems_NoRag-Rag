@@ -2,9 +2,21 @@ import argparse
 import csv
 import json
 import re
+import sys
 from pathlib import Path
 
-from backend.rag import list_documents, retrieve_chunks
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+import time
+from openai import RateLimitError
+
+from backend.rag import (
+    generate_grounded_answer,
+    get_collection,
+    list_documents,
+    retrieve_chunks,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 EVALUATION_DIR = ROOT / "evaluation"
@@ -125,6 +137,8 @@ def evaluate_question(item, document_ids, corpus, config, use_exact_match):
             {
                 "chunk_id": chunk.get("chunk_id", ""),
                 "document_id": chunk_source(chunk),
+                "start_line": chunk.get("start_line", 1),
+                "end_line": chunk.get("end_line", 1),
                 "text": chunk.get("text", ""),
             }
             for chunk in chunks
@@ -169,6 +183,119 @@ def summarize(results, corpus, config):
     return rows
 
 
+def generate_answers_from_saved_results(corpus):
+    """Generate answers from saved retrieval results, supporting resume."""
+    input_path = EVALUATION_DIR / f"results_v2_{corpus}_hybrid.jsonl"
+    output_path = EVALUATION_DIR / f"answers_v2_{corpus}_hybrid.jsonl"
+
+    if not input_path.exists():
+        raise FileNotFoundError(
+            f"Retrieval results not found: {input_path}. "
+            "Run retrieval evaluation first."
+        )
+
+    with input_path.open("r", encoding="utf-8") as file:
+        results = [json.loads(line) for line in file if line.strip()]
+
+    # Recover original line metadata from Chroma.
+    chunk_ids = list(
+        {
+            chunk["chunk_id"]
+            for result in results
+            for chunk in result["retrieved_chunks"]
+        }
+    )
+
+    collection = get_collection(corpus)
+    stored_chunks = collection.get(
+        ids=chunk_ids,
+        include=["metadatas"],
+    )
+
+    metadata_by_id = {
+        chunk_id: metadata
+        for chunk_id, metadata in zip(
+            stored_chunks["ids"],
+            stored_chunks["metadatas"],
+        )
+    }
+
+    for result in results:
+        for chunk in result["retrieved_chunks"]:
+            metadata = metadata_by_id.get(chunk["chunk_id"])
+
+            if metadata is None:
+                raise RuntimeError(
+                    f"Missing Chroma metadata for chunk {chunk['chunk_id']}"
+                )
+
+            chunk["start_line"] = metadata.get("start_line", 1)
+            chunk["end_line"] = metadata.get("end_line", 1)
+            chunk["document_id"] = metadata["document_id"]
+
+    # Resume from existing generated answers.
+    completed_ids = set()
+
+    if output_path.exists():
+        with output_path.open("r", encoding="utf-8") as file:
+            existing = [json.loads(line) for line in file if line.strip()]
+
+        completed_ids = {
+            item["id"] for item in existing if item.get("generation") is not None
+        }
+
+    remaining = [result for result in results if result["id"] not in completed_ids]
+
+    print(
+        f"\n{corpus.upper()}: {len(completed_ids)} already completed; "
+        f"{len(remaining)} remaining"
+    )
+
+    with output_path.open("a", encoding="utf-8") as output:
+        for index, result in enumerate(remaining, start=1):
+            print(
+                f"[{index}/{len(remaining)}] " f"Generating answer for {result['id']}"
+            )
+
+            generated = None
+
+            for attempt in range(4):
+                try:
+                    generated = generate_grounded_answer(
+                        question=result["question"],
+                        retrieved_chunks=result["retrieved_chunks"],
+                    )
+                    break
+
+                except RateLimitError:
+                    if attempt == 3:
+                        raise
+
+                    delay = 15 * (2**attempt)
+                    print(
+                        f"Gemini rate limit. Waiting {delay}s "
+                        f"before retry {attempt + 2}/4..."
+                    )
+                    time.sleep(delay)
+
+            generation = json.loads(generated.model_dump_json())
+
+            answer_result = {
+                **result,
+                "generation": generation,
+            }
+
+            output.write(json.dumps(answer_result, ensure_ascii=False) + "\n")
+            output.flush()
+
+            completed_ids.add(result["id"])
+
+            print(f"Saved {result['id']} " f"({len(completed_ids)}/{len(results)})")
+
+    print(f"Saved generated answers: {output_path.name}")
+    return output_path
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Evaluate retrieval across Vellora and Kestrel."
@@ -183,7 +310,23 @@ def main():
         choices=["both", "hybrid", "semantic"],
         default="both",
     )
+    parser.add_argument(
+        "--generate-answers",
+        action="store_true",
+        help="Generate answers from saved hybrid retrieval results.",
+    )
     args = parser.parse_args()
+    if args.generate_answers:
+        corpora = (
+            ["vellora", "kestrel"]
+            if args.corpus == "all"
+            else [args.corpus]
+        )
+
+        for corpus in corpora:
+            generate_answers_from_saved_results(corpus)
+
+        return
 
     corpora = ["vellora", "kestrel"] if args.corpus == "all" else [args.corpus]
 

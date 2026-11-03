@@ -1,0 +1,226 @@
+﻿corpus,id,type,answerable,question,expected_answer,generated_answer,retrieved_evidence,grade,notes
+vellora,V01,exact_identifier,TRUE,"What does error code E47 indicate, and what tool should be used to release the jammed upper burr?","E47 means the grinder is blocked by a foreign object. Unplug the machine, empty the bean hopper with a vacuum cleaner, and use the supplied hexagonal key to turn the upper burr anticlockwise.","Error code E47 indicates that the grinder is blocked by a foreign object (such as a small stone found among the coffee beans) jammed between the burrs. To release the upper burr, you should use the hexagonal key supplied with the machine.","or overheated after many coffees in a row. What to do: Switch off the machine and let it cool down for 30 minutes.
+
+E46 - Grinder speed sensor fault. Cause: The sensor that measures the speed of the grinder motor does not send any signal. What to do: Switch the machine off and on again. If the code persists, contact customer service.
+
+E47 - Grinder blocked by a foreign object. Cause: A foreign object, often a small stone found among the coffee beans, is jammed between the burrs and stops the gri
+---
+found among the coffee beans, is jammed between the burrs and stops the grinder. What to do: Unplug the machine, empty the bean hopper with a vacuum cleaner, and use the hexagonal key supplied with the machine to turn the upper burr anticlockwise until the object falls out. Never use a knife or a screwdriver.
+
+E48 - Portion not ground. Cause: The grinder stopped before the end of the portion. What to do: Make sure the bean hopper lid is closed properly, then try again.
+
+E49 - Grind quantity too",correct,"Both parts answered: foreign object jammed between the burrs, and the supplied hexagonal key. Omits the unplug/vacuum steps, but the question only asks for the tool. All claims are in the retrieved chunks."
+vellora,V02,split_answer,TRUE,"How much water does the Vellora Duo tank hold, and what is the recommended minimum capacity of the container used beneath the outlets during descaling?",The water tank holds 1.8 litres. The container beneath the coffee outlets during descaling must hold at least 1.5 litres.,"The Vellora Duo water tank holds 1.8 litres, and the recommended minimum capacity of the container used under the coffee outlets during descaling is 1.5 litres.",". Pour the content of one bottle of descaling liquid into the empty water tank and fill it with water up to the descaling mark. Place a large container (at least 1.5 litres) under the coffee outlets and another one under the steam wand. Start the descaling programme from the maintenance menu and follow the instructions on the display. The programme takes about 30 minutes and has two phases: the descaling phase, then a rinsing phase for which you must fill the tank with fresh water. Never use vin
+---
+socket adapter. Children must not play with the machine, and cleaning must not be done by children without supervision.
+
+
+2. PARTS OF THE MACHINE
+
+The Vellora Duo is made of the following main parts: the bean hopper with its aroma-preserving lid, the grind adjuster, the pre-ground coffee chute, the water tank (1.8 litres) with its filter holder, the brewing unit behind the side door, the drip tray with its float indicator, the coffee grounds container, the height-adjustable coffee outlets, the",correct,"Both values correct (1.8 L tank, at least 1.5 L container). Each value comes from a different retrieved chunk, so both halves of the split answer were retrieved."
+vellora,V03,vocabulary,TRUE,What does the manual call the process of filling the water circuit before the machine can operate normally?,"The process is called filling the circuit, or priming the water circuit; the display message is ""Fill circuit"".","The manual calls the process of filling the water circuit ""Fill circuit"".","han two weeks, the circuit must be filled with water. The display shows ""Fill circuit"": place a container under the steam wand and press the hot water button. When water flows steadily, the machine heats up and performs an automatic rinse through the coffee outlets. The first two or three coffees may taste weak: this is normal, the grinder needs a few cycles to adjust.
+
+
+4. MAKING COFFEE
+
+Place a cup under the coffee outlets and lower the outlets as close to the cup as possible to keep the crema",correct,"Gives the display message 'Fill circuit', which the expected answer accepts. Supported by the retrieved chunk."
+vellora,V04,split_answer,TRUE,"What are the two phases of the descaling programme, and what must the user do between them?",The programme has a descaling phase followed by a rinsing phase. The user must refill the tank with fresh water for the rinsing phase.,"The two phases of the descaling programme are the descaling phase followed by a rinsing phase. Between these phases, the user must fill the water tank with fresh water.",". Pour the content of one bottle of descaling liquid into the empty water tank and fill it with water up to the descaling mark. Place a large container (at least 1.5 litres) under the coffee outlets and another one under the steam wand. Start the descaling programme from the maintenance menu and follow the instructions on the display. The programme takes about 30 minutes and has two phases: the descaling phase, then a rinsing phase for which you must fill the tank with fresh water. Never use vin",correct,Both phases named in the right order and the fresh-water refill identified. Supported by the retrieved chunk.
+vellora,V05,exact_identifier,TRUE,How long must the coffee grounds container remain removed for its counter to reset?,At least five seconds.,The coffee grounds container must remain removed for at least five seconds for its counter to reset.,"the grounds and resets its counter only when it detects that the container has been removed for at least five seconds. Empty the water tank, rinse it and fill it with fresh water. Wipe the coffee outlets and the frothing head with a damp cloth.
+
+Every week, remove the brewing unit and rinse it under lukewarm running water. Switch off the machine, open the side door, press the red button on the brewing unit and pull it out by its handle. Do not use washing-up liquid or the dishwasher: it would re",correct,Exact match (at least five seconds). Supported by the retrieved chunk.
+vellora,V06,vocabulary,TRUE,What is the maximum recommended room temperature range for operating the Vellora Duo?,The permitted room-temperature range is 10 to 32 degrees Celsius.,The maximum recommended room temperature for operating the Vellora Duo is 32 degrees Celsius.,"not used for a long period. Do not touch the steam wand or the coffee outlets during or just after use: they get very hot. Only use the machine indoors, at a room temperature between 10 and 32 degrees Celsius.
+
+The machine must be connected to a properly earthed socket. If the power cord is damaged, it must be replaced by an authorised service centre in order to avoid any hazard. Do not use an extension cord or a multiple socket adapter. Children must not play with the machine, and cleaning must",partial,Gives only the 32 C upper limit; the expected answer is the full range (10 to 32 C). Cause: generation failure - the retrieved chunk contains the full range. The question wording ('maximum ... range') is ambiguous and likely pushed the model toward the upper bound only.
+vellora,V07,split_answer,TRUE,"A user sees E22. What is the likely cause, and by how many steps should the grind adjuster be changed?","E22 indicates pump overload, usually because the grind is too fine or the circuit is partly blocked. Set the grind adjuster two steps coarser; if the code persists, run descaling.","The likely cause of E22 is pump overload, which occurs because the pump works against too much pressure caused by a grind that is too fine or a partly blocked circuit. The grind adjuster should be set two steps coarser.","mp not priming. Cause: The pump runs but does not draw water, usually because of an air bubble in the circuit. What to do: Refill the water tank, place a cup under the steam wand and press hot water until water flows steadily.
+
+E22 - Pump overload. Cause: The pump works against too much pressure, because the grind is too fine or the circuit is partly blocked. What to do: Set the grind adjuster two steps coarser. If the code persists, run the descaling programme.
+
+E23 - Flow meter fault. Cause: T",correct,"Cause (pump overload from too-fine grind or partly blocked circuit) and adjustment (two steps coarser) both correct. Does not mention descaling if the code persists, but the question does not ask for it. Supported."
+vellora,V08,other,TRUE,"After making a cappuccino, what should the user do to prevent milk residue from blocking the frothing head?",Always accept the milk-system rinse prompt after each milk drink.,"After making a milk drink like a cappuccino, the user should accept the display's offer to rinse the milk system by placing a cup under the frothing head and pressing the flashing button.","nder the frothing head and press cappuccino: the machine first froths the milk, then brews the coffee on top of it. The quantity of milk foam can be set in the menu. For the best foam, use cold milk (around 5 degrees Celsius) straight from the refrigerator. Whole milk gives a creamier foam, skimmed milk a lighter and more abundant one. Plant-based drinks also work, but the result depends on the brand.
+
+After each milk drink, the display offers to rinse the milk system. Always accept: put a cup u
+---
+nk, the display offers to rinse the milk system. Always accept: put a cup under the frothing head and press the button that flashes. Milk residues dry very quickly and block the frothing head, which leads to a poor foam or to milk spitting out of the head.
+
+
+6. DAILY AND WEEKLY CLEANING
+
+Every day, empty and rinse the drip tray and the coffee grounds container. Do this while the machine is switched on: the machine counts the grounds and resets its counter only when it detects that the container",correct,Correct action (accept the milk-system rinse offered after each milk drink); the cup/flashing-button details are also in the retrieved chunks.
+vellora,V09,split_answer,TRUE,"How long does the water filter last, and what usage volume is specified as its alternative replacement limit?","The filter lasts two months or 50 litres of water, whichever comes first.","The water filter lasts for two months, and its alternative replacement limit is 50 litres of water.","which rinses the filter with half a tank of water. A filter lasts two months, or 50 litres of water. The machine counts the water used and asks for a replacement when the filter is exhausted. When a filter is installed and activated, the machine does not ask for descaling. Only use original Vellora filters: other filters may not fit the holder correctly, may let unfiltered water into the circuit, and are not covered by the warranty. Store spare filters in a cool, dry place, in their sealed bag.",correct,"Both limits correct (two months, 50 litres). Supported by the retrieved chunk."
+vellora,V10,exact_identifier,TRUE,"Which error code indicates that the milk system was not rinsed after the last milk drink, and what action clears it?",E37 indicates that the milk system was not rinsed. Place a cup under the frothing head and press the flashing button to start the rinse.,Error code E37 indicates that the milk system was not rinsed after the last milk drink. It is cleared by placing a cup under the frothing head and pressing the flashing button to start the milk rinse.,"is out of the milk. What to do: Dip the suction tube into the milk, or replace the empty carton.
+
+E36 - Frothing head blocked. Cause: Dried milk blocks the frothing head, usually because the milk system was not rinsed after use. What to do: Remove the frothing head, take it apart and wash all its parts in warm soapy water.
+
+E37 - Milk rinse not done. Cause: The milk system was not rinsed after the last milk drink. What to do: Place a cup under the frothing head and press the flashing button to
+---
+o do: Place a cup under the frothing head and press the flashing button to start the milk rinse.
+
+E38 - Milk temperature too high. Cause: The milk drawn by the milk system is warmer than 20 degrees Celsius. What to do: Use milk straight from the refrigerator. Do not leave the milk next to the machine.
+
+E39 - Milk system leak. Cause: Milk or water drips from the frothing head because a seal is missing or damaged. What to do: Check that all parts of the frothing head are assembled with their seals",correct,Correct code (E37) and correct clearing action. Supported by the retrieved chunks.
+vellora,V11,not_in_corpus,FALSE,"What is the Vellora Duo's official iOS application called, and where can it be downloaded?",The manual does not provide information about an official iOS application or an app download location.,The selected passages do not mention the name of the official iOS application for the Vellora Duo or where it can be downloaded.,,correct,Correctly abstains: says the passages do not mention an iOS app. No invented app name or store link.
+vellora,V12,not_in_corpus,FALSE,What is the machine's purchase price in euros?,The manual does not state the purchase price.,The provided evidence does not contain information about the machine's purchase price in euros.,,correct,Correctly abstains: says the evidence does not contain a purchase price. No invented price.
+kestrel,q01,exact_identifier,TRUE,What does error KST-2044 mean and how do I fix it?,The data source refused the connection because the Kestrel IP addresses are not on its allowlist. Add both 203.0.113.10 and 203.0.113.11; adding only one causes intermittent errors.,"Error KST-2044 means ""Source refused the connection from Kestrel."" This is caused by the database only accepting connections from an allowlist of IP addresses, while the Kestrel addresses are missing from it. To fix this, ask the customer to add both 203.0.113.10 and 203.0.113.11 to the allowlist of their database or firewall.","ps the connection.
+**Support action:** ask the customer to confirm the database is reachable from outside their network, on the host and port configured in the connector.
+**Escalate:** to Data Integrations if several customers report it for the same source type at the same time.
+
+### KST-2044 — Source refused the connection
+
+**User sees:** ""Your data source refused the connection from Kestrel.""
+**Cause:** the database only accepts connections from an allowlist of IP addresses, and the Kestrel addresses are missing from it.
+**Support action:** ask the customer to add both 203.0.113.10 and 203.0.113.11 to the allowlist of their database or firewall. Adding only one of them leads to errors that come and go, because connections can come from either address.
+**Escalate:** no.
+
+### KST-2051 — Cr",correct,"Meaning and fix (add both 203.0.113.10 and 203.0.113.11) correct and supported. Omits the warning that adding only one IP causes intermittent errors, but it does say both. Retrieval note: correct evidence at Hit@10 but not Hit@1; generation still succeeded."
+kestrel,q02,exact_identifier,TRUE,A user gets KST-4012 when accepting an invitation. What should support tell them?,"There is no free seat. An Admin must free a seat, or the Owner must add seats or upgrade. The same invitation then works if it is less than 7 days old.","Support should explain that an Admin of the workspace must remove a member to free a seat, or the Owner must add seats or move to a larger plan. Once a seat is free, the same invitation link will work again as long as it is less than 7 days old.","use a seat; the check happens at acceptance.
+**Support action:** explain that an Admin of the workspace must remove a member to free a seat, or the Owner must add seats or move to a larger plan. Once a seat is free, the same invitation link works again as long as it is less than 7 days old.
+**Escalate:** no.
+
+### KST-4019 — Ownership transfer pending
+
+**User sees:** ""An ownership transfer is waiting for confirmation.""
+**Cause:** the Owner started a transfer, and one of the two people has not confirmed it by e-mail.
+**Support action:** ask both people to check their inbox and spam folder. The transfer can be cancelled by the current Owner from **Settings → Members**.
+**Escalate:** no.
+
+## Delivery and embedding (KST-5xxx)
+
+### KST-5031 — Scheduled report not delivered
+
+**User sees:** the sc
+---
+t is the same on every plan and cannot be raised.
+**Escalate:** to Analytics Engine only if a query that used to finish quickly suddenly times out for many datasets of the same customer.
+
+### KST-3020 — Dataset refresh failed
+
+**User sees:** a red clock on the tiles.
+**Cause:** the tooltip shows a second code with the real cause, usually a KST-2xxx connector error.
+**Support action:** handle the underlying code.
+**Escalate:** depends on the underlying code.
+
+## Members and seats (KST-4xxx)
+
+### KST-4012 — No seat available
+
+**User sees:** ""This workspace has no seat available. Ask an Admin.""
+**Cause:** the person is accepting an invitation, but all seats of the plan are already used. Pending invitations do not use a seat; the check happens at acceptance.
+**Support action:** explain that an",correct,"Matches the support action: free a seat, or Owner adds seats / upgrades; same invitation works if under 7 days old. Supported."
+kestrel,q03,split_answer,TRUE,"What happens, step by step, when a customer's card payment fails?","E-mail to the Owner and billing contact, retries after 1, 3 and 7 days, then a 21-day grace period (everything works), then read-only, then suspension at 60 days. Nothing is deleted.","When a payment fails according to the 2026 billing policy: 1) The workspace Owner and billing contact immediately receive an email. 2) Automatic payment retries occur 1 day, 3 days, and 7 days after the first attempt using the payment method on file. 3) If all retries fail, the workspace enters a 21-day grace period from the first failed attempt where everything keeps working and a banner reminds Admins of the overdue payment. 4) After the grace period, the workspace becomes read-only (members can view but not edit dashboards, scheduled reports are paused, and datasets stop refreshing). 5) If still unpaid 60 days after the first failed attempt, the workspace is suspended until payment succeeds.","ed full months of the annual period. After 60 days, annual plans are not refundable.
+
+Refund requests must be sent by the workspace Owner, either from **Settings → Plan → Request a refund** or by e-mail to billing@kestrel.example. Approved refunds are processed within 14 days and returned to the original payment method.
+
+Charges caused by a billing error on our side (for example a duplicate charge) are always refunded in full, whatever the plan and whatever the date.
+
+## 7. Failed payments
+
+When a payment fails, the workspace Owner and the billing contact receive an e-mail straight away. We then retry the payment automatically 1 day, 3 days and 7 days after the first attempt.
+
+Each retry uses the payment method on file at the time of the retry, so updating the card before the next retry is
+---
+on file at the time of the retry, so updating the card before the next retry is usually enough to solve the problem. No late fee is charged.
+
+If all retries fail, the workspace enters a grace period of 21 days from the first failed attempt, during which everything keeps working. A banner reminds Admins that payment is overdue.
+
+After the grace period, the workspace becomes read-only: members can view dashboards but cannot edit them, scheduled reports are paused, and datasets stop refreshing.
+
+If the amount is still unpaid 60 days after the first failed attempt, the workspace is suspended: nobody can sign in to it until the outstanding amount is paid. A suspended workspace is not deleted, and returns to normal as soon as the payment succeeds.
+
+## 8. Cancellation
+
+The Owner can cancel a pai",correct,"All stages in the right order with correct timings: immediate e-mail, retries at 1/3/7 days, 21-day grace period, read-only, suspension at 60 days. Does not say explicitly that nothing is deleted, but 'suspended until payment succeeds' is consistent. Uses the current (2026) policy."
+kestrel,q04,split_answer,TRUE,"Which plans include single sign-on, and how does an admin set it up?","Business and Enterprise. An Admin opens Settings → Security → Single sign-on, downloads the Kestrel SP metadata, registers Kestrel in the identity provider, pastes the IdP metadata URL back, tests with one Admin, then enforces it.","Single sign-on (SAML) is included on the Business and Enterprise plans. To set it up, an Admin opens Settings → Security → Single sign-on, downloads the Kestrel service provider metadata, registers Kestrel in the identity provider, and pastes the identity provider metadata URL back into Kestrel.","ows 10 backup codes. Each backup code works once. Store them somewhere safe and separate from your authenticator device.
+
+Admins can make two-factor authentication mandatory for every member from **Settings → Security**. Members who have not set it up are asked to do so at their next sign-in.
+
+### 5.2 Single sign-on
+
+On the Business and Enterprise plans, workspaces can use single sign-on with any SAML 2.0 identity provider. To set it up, an Admin opens **Settings → Security → Single sign-on**, downloads the Kestrel service provider metadata, registers Kestrel in the identity provider, and pastes the identity provider metadata URL back into Kestrel. We recommend testing with one Admin account before choosing **Enforce for all members**. When single sign-on is enforced, passwords are disable
+---
+one workspace cannot see the content of another workspace, even inside the same organisation.
+
+## 2. Plans and limits
+
+Each workspace is on exactly one plan. The plan sets the number of seats, how often data refreshes, and which administration features are available.
+
+| | Free | Starter | Team | Business | Enterprise |
+|---|---|---|---|---|---|
+| Seats included | 2 | 5 | 20 | 100 | Custom |
+| Dashboards | 3 | 25 | Unlimited | Unlimited | Unlimited |
+| Data connectors | 1 | 3 | 10 | Unlimited | Unlimited |
+| Fastest refresh | Daily | Hourly | Every 15 minutes | Every 5 minutes | Every minute |
+| History kept | 30 days | 1 year | 2 years | 5 years | Custom |
+| Single sign-on (SAML) | — | — | — | Yes | Yes |
+| SCIM user provisioning | — | — | — | — | Yes |
+| Audit log | — | — | — | 90 days |",partial,"Plans correct (Business, Enterprise) and the first four setup steps correct. Omits testing with one Admin and then enforcing for all members. Cause: generation failure - that recommendation is in the retrieved chunk."
+kestrel,q05,vocabulary,TRUE,I lost my phone and I can't log in anymore. What can I do?,"Use a backup code. Without one, ask a workspace Admin to reset your second factor. If you are the only Admin or the Owner, contact support from the account's e-mail address; identity verification can take up to 2 business days.","If you no longer have your authenticator device, you can use one of your backup codes at the second-factor prompt, then set up two-factor authentication again from Profile → Security. If you do not have your authenticator device or any backup codes, ask a workspace Admin to reset your second factor from Settings → Members. If you are the only Admin or the workspace Owner, you should write to support from the e-mail address registered on your account.","nforce for all members**. When single sign-on is enforced, passwords are disabled and two-factor authentication is handled by your identity provider.
+
+### 5.3 Regaining access to your account
+
+If you no longer have your authenticator device, use one of your backup codes at the second-factor prompt, then set up two-factor authentication again from **Profile → Security**.
+
+If you have neither your authenticator device nor any backup code, ask an Admin of your workspace to reset your second factor from **Settings → Members**. You will set it up again at your next sign-in.
+
+If you are the only Admin, or the workspace Owner, write to support from the e-mail address registered on the account. For security reasons support verifies your identity before resetting anything; this verification can tak",correct,"Vocabulary gap bridged: 'phone' interpreted as the authenticator device. Backup codes, Admin reset from Settings > Members, and the only-Admin/Owner support route are all correct. Omits the up-to-2-business-days verification delay; that detail is cut off at the end of the retrieved chunk, so it was not available to the model."
+kestrel,q06,versions,TRUE,Can I get a refund on my annual plan 45 days after it renewed?,"Yes, under the current (March 2026) policy: annual plans are refundable within 60 days of renewal, pro-rated from the request date. The old 2025 policy allowed only 30 days.","Yes, depending on the applicable policy version. Under the 2025 policy, annual plans can only be refunded if requested within 30 days of purchase or renewal (meaning 45 days is too late). However, under the 2026 policy, annual plans can be refunded if requested within 60 days of the purchase or renewal date, pro-rated for the unused full months.","takes effect at the next renewal. No credit is given for removed seats during the current period.
+
+## 6. Refunds
+
+**Monthly plans** are not refundable. When a monthly plan is cancelled, it remains active until the end of the month already paid.
+
+**Annual plans** can be refunded in full if the request is made within 30 days of the purchase or renewal date. After 30 days, annual plans are not refundable.
+
+Refund requests must be sent by the workspace Owner to billing@kestrel.example. Approved refunds are processed within 10 business days and returned to the original payment method.
+
+Charges caused by a billing error on our side (for example a duplicate charge) are always refunded in full, whatever the plan and whatever the date.
+
+## 7. Failed payments
+
+If a payment fails, we retry the card
+---
+hs of its date.
+
+## 5. Adding and removing seats
+
+Seats can be added at any time. Added seats are charged immediately, pro-rated to the end of the current billing period.
+
+Seats can be removed at any time. On monthly plans the reduction takes effect at the next monthly charge. On annual plans the reduction takes effect at the next renewal, and no credit is given for the current period.
+
+## 6. Refunds
+
+**Monthly plans** are not refundable. When a monthly plan is cancelled, it remains active until the end of the month already paid.
+
+**Annual plans** can be refunded if the request is made within 60 days of the purchase or renewal date. The refund is pro-rated from the date of the request: you are refunded the unused full months of the annual period. After 60 days, annual plans are not refunda",partial,"Reaches 'yes' and cites the 60-day rule, but presents the 2025 (30-day) and 2026 (60-day) policies side by side without saying the 2026 policy is the current one. Cause: generation failure - both versions were retrieved; the model did not resolve which applies."
+kestrel,q07,versions,TRUE,How much do I save by paying annually instead of monthly?,20% compared with twelve months of monthly billing (it was 15% under the 2025 policy).,Customers who choose annual billing receive either a 15% discount (under the 2025 policy) or a 20% discount (under the 2026 policy) compared with twelve months of monthly billing.,"are charged once a year, on the anniversary of the purchase.
+
+Customers who choose annual billing receive a 15% discount compared with twelve months of monthly billing. Switching from monthly to annual billing is possible at any time and takes effect immediately; the unused part of the current month is credited. Switching from annual to monthly billing takes effect at the next renewal.
+
+## 3. Payment methods
+
+We accept credit and debit cards (Visa, Mastercard, American Express). Business and Enterprise customers can also pay by bank transfer against an invoice, with payment due within 30 days of the invoice date.
+
+The card on file can be updated by the workspace Owner from **Settings → Plan → Payment method**. We do not store full card numbers; they are held by our payment processor.
+
+##
+---
+id plans are billed per seat, either monthly or annually. Monthly plans are charged on the same day each month as the original purchase. Annual plans are charged once a year, on the anniversary of the purchase.
+
+Customers who choose annual billing receive a 20% discount compared with twelve months of monthly billing. Switching from monthly to annual billing is possible at any time and takes effect immediately; the unused part of the current month is credited. Switching from annual to monthly billing takes effect at the next renewal.
+
+## 3. Payment methods
+
+We accept credit and debit cards (Visa, Mastercard, American Express) and SEPA direct debit for customers in the euro area. Team, Business and Enterprise customers can also pay by bank transfer against an invoice, with payment due within",partial,"Gives both 15% (2025) and 20% (2026) without saying which applies now, so the user gets no single answer. Cause: generation failure - both versions were retrieved; same version-resolution problem as q06."
+kestrel,q08,two_hop,TRUE,"Error KST-5031 happened on the last two scheduled reports. Which team should support contact, and where?","Messaging, which owns postroom: post in #oncall-messaging as SEV-2. Outside 08:00â€“20:00 on weekdays, escalate to the Platform on-call.",Error KST-5031 on two consecutive deliveries should be escalated as SEV-2 to the team that owns postroom.,"(KST-5xxx)
+
+### KST-5031 — Scheduled report not delivered
+
+**User sees:** the schedule shows ""Last delivery failed"".
+**Cause:** the report was generated but the e-mail was not sent. This error is raised by postroom, the service that sends all Kestrel e-mails. A single occurrence is usually a temporary problem with a recipient's mail server.
+**Support action:** check whether the recipient's address is correct and whether the next delivery succeeds. Ask the customer to check that messages from kestrel.example are not blocked by their mail filter.
+**Escalate:** if the error happens on two consecutive deliveries, or for several customers on the same day, escalate to the team that owns postroom, as SEV-2.
+
+### KST-5038 — Embed token expired
+
+**User sees:** an embedded dashboard shows ""This link",wrong,"Gets the first hop (postroom, SEV-2) but not the second: does not name the owning team (Messaging), where to post (#oncall-messaging), or the off-hours Platform on-call escalation. It invents no team, so not unsupported. Cause: retrieval failure - only the runbook chunk was retrieved; the service catalog chunk mapping postroom to Messaging was not."
+kestrel,q09,not_in_corpus,FALSE,Is there a Kestrel mobile app for iPhone?,Not in the documents.,The selected passages do not establish whether there is a Kestrel mobile app for iPhone.,,correct,Correctly abstains: says the passages do not establish whether an iPhone app exists. No invented app.
+kestrel,q10,not_in_corpus,FALSE,How much does one seat cost per month on the Business plan?,Not in the documents (the billing policy says prices are on the pricing page).,"The provided evidence states that current prices are published on the Kestrel pricing page and are not repeated in the billing policies, and it does not contain the specific monthly cost per seat for the Business plan.",,correct,"Correctly abstains and points to the pricing page, matching the expected answer. Note: retrieved_evidence is empty for this row, so the pricing-page claim cannot be checked against this file."
