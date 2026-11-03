@@ -158,3 +158,27 @@ Potential improvement: Expand the evaluation with harder questions, paraphrases,
 - **Initial results:** With top-k = 5, E05 retrieved the expected source passage (Hit@5: 1/1, 100%). Both test cases returned their expected statuses (2/2, 100%): E05 returned `answered`, and E00 returned `insufficient_evidence`.
 - **Observed limitation:** For E00, retrieval returned unrelated passages about other error codes, although the answer generator correctly abstained in this test.
 - **Current status:** Initial evaluation completed. The evaluation dataset is being expanded, and the expanded run must be completed before drawing broader conclusions or comparing system versions.
+
+
+
+**Vellora — V02 (Hit@1 miss):** The Words question analysis found that
+`capacity` and `beneath` were absent from the indexed vocabulary.
+Inspection of the chunk locations showed that chunk 17 of
+`vellora-duo-espresso-machine.txt` contains the decisive evidence:
+a container of at least 1.5 litres must be placed under the coffee
+outlets during descaling. The source uses "under" rather than
+"beneath", and expresses the capacity as a volume rather than using
+the word "capacity". This indicates a vocabulary mismatch that may
+contribute to the ranking miss, although the evidence is present in
+the corpus.
+
+
+**Kestrel — q06 (Hit@1 miss):** The Words question analysis found
+`refund` (13 occurrences), `annual` (17), `days` (28), and `request`
+(8) in the indexed corpus, while `45` and `renewing` were absent.
+The relevant terms occur in both `billing-policy-2025.md` and
+`billing-policy-2026.md`. In particular, chunks 3 and 4 of the
+2026 policy contain overlapping refund, annual-plan, and day-related
+vocabulary. The presence of similar vocabulary in both policy
+versions may contribute to retrieval confusion. The question also
+uses paraphrased wording rather than the source's exact terminology.

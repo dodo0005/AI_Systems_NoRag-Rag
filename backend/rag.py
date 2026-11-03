@@ -138,6 +138,159 @@ def list_documents(corpus: str = DEFAULT_CORPUS) -> list[dict]:
     return documents
 
 
+WORD_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "been",
+    "being",
+    "but",
+    "by",
+    "can",
+    "could",
+    "did",
+    "do",
+    "does",
+    "for",
+    "from",
+    "had",
+    "has",
+    "have",
+    "how",
+    "i",
+    "in",
+    "into",
+    "is",
+    "it",
+    "its",
+    "may",
+    "might",
+    "of",
+    "on",
+    "or",
+    "should",
+    "that",
+    "the",
+    "their",
+    "them",
+    "there",
+    "these",
+    "this",
+    "those",
+    "to",
+    "was",
+    "were",
+    "what",
+    "when",
+    "where",
+    "which",
+    "who",
+    "why",
+    "will",
+    "with",
+    "would",
+    "you",
+    "your",
+}
+
+
+def analyze_words(
+    corpus: str = DEFAULT_CORPUS,
+    question: str = "",
+) -> dict:
+    """Analyse vocabulary or locate question words in indexed chunks."""
+    corpus_collection = get_collection(corpus)
+
+    indexed = corpus_collection.get(
+        include=["documents", "metadatas"],
+    )
+
+    word_locations = {}
+
+    for index, chunk_id in enumerate(indexed["ids"]):
+        text = indexed["documents"][index] or ""
+        metadata = indexed["metadatas"][index] or {}
+
+        document_id = metadata.get("document_id", "")
+        chunk_index = metadata.get("chunk_index", -1)
+
+        # Count occurrences while retaining each chunk's location.
+        words = re.findall(r"\b[a-zA-Z0-9]+(?:['-][a-zA-Z0-9]+)*\b", text)
+
+        for raw_word in words:
+            word = raw_word.casefold()
+
+            if word in WORD_STOPWORDS or len(word) < 2:
+                continue
+
+            if word not in word_locations:
+                word_locations[word] = {
+                    "word": word,
+                    "frequency": 0,
+                    "chunks": [],
+                }
+
+            entry = word_locations[word]
+            entry["frequency"] += 1
+
+            # Count every occurrence, but list each chunk only once per word.
+            if not entry["chunks"] or entry["chunks"][-1]["chunk_id"] != chunk_id:
+                entry["chunks"].append(
+                    {
+                        "chunk_id": chunk_id,
+                        "chunk_index": chunk_index,
+                        "document_id": document_id,
+                    }
+                )
+
+    if question.strip():
+        question_words = re.findall(
+            r"\b[a-zA-Z0-9]+(?:['-][a-zA-Z0-9]+)*\b",
+            question,
+        )
+
+        unique_words = list(
+            dict.fromkeys(
+                word.casefold()
+                for word in question_words
+                if word.casefold() not in WORD_STOPWORDS and len(word) >= 2
+            )
+        )
+
+        found = []
+        absent = []
+
+        for word in unique_words:
+            if word in word_locations:
+                found.append(word_locations[word])
+            else:
+                absent.append(word)
+
+        return {
+            "corpus": corpus,
+            "mode": "question",
+            "question": question,
+            "found": found,
+            "absent": absent,
+        }
+
+    vocabulary = sorted(
+        word_locations.values(),
+        key=lambda item: (-item["frequency"], item["word"]),
+    )
+
+    return {
+        "corpus": corpus,
+        "mode": "corpus",
+        "total_unique_words": len(vocabulary),
+        "words": vocabulary,
+    }
+
+
 def load_document(
     document_id: str,
     corpus: str = DEFAULT_CORPUS,
@@ -330,6 +483,7 @@ def retrieve_chunks(
     document_ids: list[str],
     top_k: int = 5,
     corpus: str = DEFAULT_CORPUS,
+    use_exact_match: bool = True,
 ):
     corpus_collection = get_collection(corpus)
     if not document_ids:
@@ -362,16 +516,20 @@ def retrieve_chunks(
             }
         )
 
-    # If the question mentions a specific error code, prioritize
-    # chunks that contain that exact code.
-    error_codes = set(re.findall(r"\bE\d{2}\b", question.upper()))
-
+    # Optionally prioritize chunks containing exact error codes.
+    # Disabling this allows evaluation of semantic-only retrieval.
     exact_matches = []
-    if error_codes:
-        for chunk in all_chunks:
-            text = chunk["text"].upper()
-            if any(re.search(rf"\b{re.escape(code)}\b", text) for code in error_codes):
-                exact_matches.append(chunk)
+
+    if use_exact_match:
+        error_codes = set(re.findall(r"\bE\d{2}\b", question.upper()))
+
+        if error_codes:
+            for chunk in all_chunks:
+                text = chunk["text"].upper()
+                if any(
+                    re.search(rf"\b{re.escape(code)}\b", text) for code in error_codes
+                ):
+                    exact_matches.append(chunk)
 
     # Run semantic search for broader context.
     result = corpus_collection.query(

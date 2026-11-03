@@ -1,173 +1,272 @@
 import argparse
 import csv
 import json
-import urllib.error
-import urllib.request
+import re
 from pathlib import Path
 
-from backend.rag import retrieve_chunks
+from backend.rag import list_documents, retrieve_chunks
 
 ROOT = Path(__file__).resolve().parent.parent
-DATASET = ROOT / "evaluation" / "evaluation_set.csv"
-RESULTS_DIR = ROOT / "evaluation"
+EVALUATION_DIR = ROOT / "evaluation"
+
+QUESTION_FILES = {
+    "vellora": EVALUATION_DIR / "questions.vellora.jsonl",
+    "kestrel": EVALUATION_DIR / "questions.kestrel.jsonl",
+}
+
+CONFIGURATIONS = {
+    "hybrid": True,
+    "semantic": False,
+}
+
+TOP_K = 10
+HIT_K_VALUES = (1, 3, 5, 10)
 
 
-def ask_api(api_url, question, document_id, top_k):
-    """Call the existing FastAPI question endpoint."""
-    payload = {
-        "question": question,
-        "document_ids": [document_id],
-        "top_k": top_k,
-    }
+def load_questions(path):
+    questions = []
 
-    request = urllib.request.Request(
-        f"{api_url.rstrip('/')}/api/ask",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
+    with path.open("r", encoding="utf-8") as file:
+        for line_number, line in enumerate(file, start=1):
+            if not line.strip():
+                continue
+
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    f"Invalid JSON in {path.name}, line {line_number}: {exc}"
+                ) from exc
+
+            if "question" not in item:
+                raise ValueError(f"Missing question in {path.name}, line {line_number}")
+
+            if not isinstance(item.get("answerable"), bool):
+                raise ValueError(
+                    f"'answerable' must be true or false in "
+                    f"{path.name}, line {line_number}"
+                )
+
+            if item["answerable"] and not item.get("evidence"):
+                raise ValueError(
+                    f"Answerable question has no evidence in "
+                    f"{path.name}, line {line_number}"
+                )
+
+            questions.append(item)
+
+    if not questions:
+        raise ValueError(f"No questions found in {path}")
+
+    return questions
+
+
+def normalize(value):
+    return " ".join(str(value).casefold().split())
+
+
+def chunk_source(chunk):
+    return (
+        chunk.get("document_id") or chunk.get("filename") or chunk.get("source") or ""
     )
 
-    try:
-        with urllib.request.urlopen(request, timeout=120) as response:
-            return json.loads(response.read().decode("utf-8")), ""
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        return None, f"HTTP {exc.code}: {detail}"
-    except Exception as exc:
-        return None, str(exc)
+
+def evidence_found(chunk, evidence_items):
+    source = Path(chunk_source(chunk)).name.casefold()
+    text = normalize(chunk.get("text", ""))
+
+    for evidence in evidence_items:
+        expected_source = Path(evidence.get("source", "")).name.casefold()
+        quote = normalize(evidence.get("quote", ""))
+
+        source_matches = not expected_source or source == expected_source
+        quote_matches = not quote or quote in text
+
+        if source_matches and quote_matches:
+            return True
+
+    return False
+
+
+def question_hit(chunks, evidence):
+    return any(evidence_found(chunk, evidence) for chunk in chunks)
+
+
+def evaluate_question(item, document_ids, corpus, config, use_exact_match):
+    question = item["question"].strip()
+
+    chunks = retrieve_chunks(
+        question=question,
+        document_ids=document_ids,
+        top_k=TOP_K,
+        corpus=corpus,
+        use_exact_match=use_exact_match,
+    )
+
+    answerable = item["answerable"]
+    evidence = item.get("evidence", [])
+
+    hits = {}
+    if answerable:
+        for k in HIT_K_VALUES:
+            hits[f"hit_at_{k}"] = question_hit(chunks[:k], evidence)
+
+    return {
+        "id": item.get("id", ""),
+        "corpus": corpus,
+        "configuration": config,
+        "question": question,
+        "type": item.get("type", item.get("question_type", "other")),
+        "answerable": answerable,
+        "expected_answer": item.get("expected_answer", ""),
+        "evidence": evidence,
+        "retrieval_hits": hits,
+        "retrieved_chunks": [
+            {
+                "chunk_id": chunk.get("chunk_id", ""),
+                "document_id": chunk_source(chunk),
+                "text": chunk.get("text", ""),
+            }
+            for chunk in chunks
+        ],
+    }
+
+
+def summarize(results, corpus, config):
+    relevant = [
+        result
+        for result in results
+        if result["corpus"] == corpus and result["configuration"] == config
+    ]
+
+    answerable = [result for result in relevant if result["answerable"]]
+    unanswerable_count = sum(not result["answerable"] for result in relevant)
+
+    groups = {"overall": answerable}
+
+    for question_type in sorted({r["type"] for r in answerable}):
+        groups[question_type] = [r for r in answerable if r["type"] == question_type]
+
+    rows = []
+
+    for question_type, group in groups.items():
+        row = {
+            "corpus": corpus,
+            "configuration": config,
+            "question_type": question_type,
+            "answerable_questions": len(group),
+            "unanswerable_questions": (
+                unanswerable_count if question_type == "overall" else ""
+            ),
+        }
+
+        for k in HIT_K_VALUES:
+            hits = sum(result["retrieval_hits"][f"hit_at_{k}"] for result in group)
+            row[f"HitRate@{k}"] = round(hits / len(group), 4) if group else ""
+
+        rows.append(row)
+
+    return rows
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--top-k", type=int, default=5)
-    parser.add_argument("--api-url", default="http://127.0.0.1:8000")
-    parser.add_argument("--label", default="current")
+    parser = argparse.ArgumentParser(
+        description="Evaluate retrieval across Vellora and Kestrel."
+    )
+    parser.add_argument(
+        "--corpus",
+        choices=["all", "vellora", "kestrel"],
+        default="all",
+    )
+    parser.add_argument(
+        "--config",
+        choices=["both", "hybrid", "semantic"],
+        default="both",
+    )
     args = parser.parse_args()
 
-    if not 1 <= args.top_k <= 20:
-        parser.error("--top-k must be between 1 and 20")
+    corpora = ["vellora", "kestrel"] if args.corpus == "all" else [args.corpus]
 
-    with DATASET.open("r", encoding="utf-8-sig", newline="") as file:
-        questions = list(csv.DictReader(file))
+    configs = ["hybrid", "semantic"] if args.config == "both" else [args.config]
 
-    if not questions:
-        raise SystemExit("The evaluation dataset is empty.")
+    all_results = []
+    summary_rows = []
 
-    results = []
+    for corpus in corpora:
+        question_file = QUESTION_FILES[corpus]
+        questions = load_questions(question_file)
 
-    for index, item in enumerate(questions, start=1):
-        question = item["question"].strip()
-        document_id = item["document_id"].strip()
-        expected_source_text = item.get("expected_source_text", "").strip()
-        expected_status = item["expected_status"].strip()
+        indexed_documents = [
+            document["document_id"]
+            for document in list_documents(corpus)
+            if document.get("indexed")
+        ]
 
-        print(f"[{index}/{len(questions)}] {question}")
+        if not indexed_documents:
+            raise RuntimeError(f"No indexed documents found for corpus '{corpus}'.")
 
-        retrieved_chunks = []
-        retrieval_error = ""
-
-        try:
-            retrieved_chunks = retrieve_chunks(
-                question=question,
-                document_ids=[document_id],
-                top_k=args.top_k,
-            )
-        except Exception as exc:
-            retrieval_error = str(exc)
-
-        # Use a stable source marker to judge retrieval.
-        # Unanswerable questions have no expected source marker.
-        if expected_source_text and not retrieval_error:
-            retrieval_hit = any(
-                expected_source_text.casefold() in chunk["text"].casefold()
-                for chunk in retrieved_chunks
-            )
-        else:
-            retrieval_hit = ""
-
-        api_result, api_error = ask_api(
-            args.api_url,
-            question,
-            document_id,
-            args.top_k,
-        )
-
-        actual_status = ""
-        answer = ""
-        references = []
-
-        if api_result is not None:
-            actual_status = api_result.get("status", "")
-            answer = api_result.get("answer", "")
-            references = api_result.get("references", [])
-
-        results.append(
-            {
-                "question": question,
-                "document_id": document_id,
-                "expected_answer": item["expected_answer"],
-                "expected_source": item["expected_source"],
-                "expected_source_text": expected_source_text,
-                "top_k": args.top_k,
-                "retrieved_chunk_ids": ";".join(
-                    chunk["chunk_id"] for chunk in retrieved_chunks
-                ),
-                "retrieved_source_texts": " || ".join(
-                    chunk["text"].replace("\n", " ") for chunk in retrieved_chunks
-                ),
-                "retrieval_hit": retrieval_hit,
-                "expected_status": expected_status,
-                "actual_status": actual_status,
-                "status_match": (
-                    actual_status == expected_status if actual_status else ""
-                ),
-                "answer": answer,
-                "api_error": api_error,
-                "retrieval_error": retrieval_error,
-                "answer_correct_manual": "",
-            }
-        )
-
-    output_file = RESULTS_DIR / f"results_{args.label}.csv"
-
-    with output_file.open("w", encoding="utf-8", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=results[0].keys())
-        writer.writeheader()
-        writer.writerows(results)
-
-    applicable = [
-        row
-        for row in results
-        if row["expected_source_text"] and row["retrieval_hit"] != ""
-    ]
-    hits = sum(row["retrieval_hit"] is True for row in applicable)
-
-    status_checked = [row for row in results if row["actual_status"]]
-    status_matches = sum(row["status_match"] is True for row in status_checked)
-
-    print("\n--- Evaluation summary ---")
-    print(f"Questions: {len(results)}")
-    print(f"Top-k: {args.top_k}")
-
-    if applicable:
         print(
-            f"Retrieval Hit@{args.top_k}: "
-            f"{hits}/{len(applicable)} = "
-            f"{hits / len(applicable):.1%}"
+            f"\n{corpus.upper()}: {len(questions)} questions, "
+            f"{len(indexed_documents)} indexed documents"
         )
-    else:
-        print("Retrieval Hit rate: no answerable source cases to score")
 
-    if status_checked:
-        print(
-            f"Expected-status accuracy: "
-            f"{status_matches}/{len(status_checked)} = "
-            f"{status_matches / len(status_checked):.1%}"
-        )
-    else:
-        print("Expected-status accuracy: no successful API responses")
+        for config in configs:
+            use_exact_match = CONFIGURATIONS[config]
+            print(f"\nRunning configuration: {config}")
 
-    print(f"Results saved to: {output_file}")
+            config_results = []
+
+            for index, item in enumerate(questions, start=1):
+                print(
+                    f"[{index}/{len(questions)}] "
+                    f"{item.get('id', '')}: {item['question']}"
+                )
+
+                result = evaluate_question(
+                    item=item,
+                    document_ids=indexed_documents,
+                    corpus=corpus,
+                    config=config,
+                    use_exact_match=use_exact_match,
+                )
+
+                config_results.append(result)
+                all_results.append(result)
+
+            output_path = EVALUATION_DIR / f"results_v2_{corpus}_{config}.jsonl"
+
+            with output_path.open("w", encoding="utf-8") as file:
+                for result in config_results:
+                    file.write(json.dumps(result, ensure_ascii=False) + "\n")
+
+            summary_rows.extend(summarize(config_results, corpus, config))
+
+            print(f"Saved detailed results: {output_path.name}")
+
+    summary_path = EVALUATION_DIR / "summary_v2.csv"
+
+    if summary_rows:
+        fieldnames = list(summary_rows[0].keys())
+
+        with summary_path.open("w", encoding="utf-8", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(summary_rows)
+
+    print("\nEvaluation complete.")
+    print(f"Summary saved to: {summary_path}")
+
+    for row in summary_rows:
+        if row["question_type"] == "overall":
+            print(
+                f"{row['corpus']} / {row['configuration']}: "
+                f"answerable={row['answerable_questions']}, "
+                f"unanswerable={row['unanswerable_questions']}, "
+                f"Hit@1={row['HitRate@1']}, "
+                f"Hit@3={row['HitRate@3']}, "
+                f"Hit@5={row['HitRate@5']}, "
+                f"Hit@10={row['HitRate@10']}"
+            )
 
 
 if __name__ == "__main__":

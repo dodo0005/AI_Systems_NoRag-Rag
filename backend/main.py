@@ -14,6 +14,7 @@ from backend.rag import (
     list_documents,
     rebuild_index,
     answer_question,
+    analyze_words,
 )
 from backend.schemas import AskRequest, AskResponse
 
@@ -268,6 +269,42 @@ def remove_document(
         raise HTTPException(
             status_code=500,
             detail="Document deletion failed.",
+        ) from exc
+
+
+@app.get("/api/words")
+def get_words(
+    corpus: str = Query(DEFAULT_CORPUS),
+    mode: str = Query("corpus"),
+    question: str = Query(""),
+):
+    """Return corpus vocabulary or analyse words in a question."""
+    if mode not in {"corpus", "question"}:
+        raise HTTPException(
+            status_code=400,
+            detail="Mode must be 'corpus' or 'question'.",
+        )
+
+    if mode == "question" and not question.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="A question is required in question mode.",
+        )
+
+    try:
+        return analyze_words(
+            corpus=corpus,
+            question=question if mode == "question" else "",
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail="Word analysis failed.",
         ) from exc
 
 

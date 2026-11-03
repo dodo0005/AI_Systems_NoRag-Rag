@@ -18,6 +18,19 @@ export default function App() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [apiOnline, setApiOnline] = useState(false);
+  const [activeTab, setActiveTab] = useState("ask");
+  const [wordMode, setWordMode] = useState("corpus");
+  const [wordQuestion, setWordQuestion] = useState("");
+  const [wordAnalysis, setWordAnalysis] = useState(null);
+  const [wordLoading, setWordLoading] = useState(false);
+  const [wordError, setWordError] = useState("");
+  const [wordSearch, setWordSearch] = useState("");
+
+  useEffect(() => {
+  if (activeTab === "words" && wordMode === "corpus") {
+    loadWordAnalysis("corpus");
+  }
+}, [activeTab, wordMode, corpus]);
 
   async function request(path, options = {}) {
     const response = await fetch(`${API}${path}`, options);
@@ -42,6 +55,50 @@ export default function App() {
   function documentId(doc) {
     return doc.document_id || doc.filename || doc.name;
   }
+
+
+
+  async function loadWordAnalysis(mode, question = "") {
+  setWordLoading(true);
+  setWordError("");
+
+  try {
+    const params = new URLSearchParams({
+      corpus,
+      mode,
+    });
+
+    if (mode === "question") {
+      params.set("question", question);
+    }
+
+    const response = await fetch(`${API}/words?${params}`);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Word analysis failed.");
+    }
+
+    const data = await response.json();
+    setWordAnalysis(data);
+  } catch (error) {
+    setWordError(error.message || "Unable to load word analysis.");
+    setWordAnalysis(null);
+  } finally {
+    setWordLoading(false);
+  }
+}
+
+function analyzeQuestionWords(event) {
+  event.preventDefault();
+
+  if (!wordQuestion.trim()) {
+    setWordError("Enter a question to analyze.");
+    return;
+  }
+
+  loadWordAnalysis("question", wordQuestion.trim());
+}
 
   async function loadDocuments() {
     try {
@@ -408,112 +465,330 @@ export default function App() {
         </aside>
 
         <section className="main-column">
-          <section className="panel ask-panel">
-            <p className="eyebrow">RETRIEVAL AUGMENTED GENERATION</p>
-            <h2>Ask your documents</h2>
+  <div className="panel tab-panel">
+    <div className="tab-buttons">
+      <button
+        className={`tab-button ${activeTab === "ask" ? "selected" : ""}`}
+        onClick={() => setActiveTab("ask")}
+        type="button"
+      >
+        Ask documents
+      </button>
 
-            <p className="muted">
-              Answers are generated from the selected documents, with source
-              passages you can inspect.
-            </p>
+      <button
+        className={`tab-button ${activeTab === "words" ? "selected" : ""}`}
+        onClick={() => setActiveTab("words")}
+        type="button"
+      >
+        Words
+      </button>
+    </div>
+  </div>
 
-            <div className="active-corpus">
-              Active knowledge base: <strong>{corpus}</strong>
-            </div>
+  {activeTab === "ask" && (
+    <>
+      <section className="panel ask-panel">
+        <p className="eyebrow">RETRIEVAL AUGMENTED GENERATION</p>
+        <h2>Ask your documents</h2>
 
-            <div className="selection-summary">
-              {selected.length} document{selected.length === 1 ? "" : "s"} selected
-            </div>
+        <p className="muted">
+          Answers are generated from the selected documents, with source
+          passages you can inspect.
+        </p>
 
-            <form onSubmit={askQuestion}>
-              <label className="field-label" htmlFor="question">
-                Your question
-              </label>
+        <div className="active-corpus">
+          Active knowledge base: <strong>{corpus}</strong>
+        </div>
 
-              <textarea
-                id="question"
-                rows="4"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="e.g. What should I do when error E05 appears?"
+        <div className="selection-summary">
+          {selected.length} document{selected.length === 1 ? "" : "s"} selected
+        </div>
+
+        <form onSubmit={askQuestion}>
+          <label className="field-label" htmlFor="question">
+            Your question
+          </label>
+
+          <textarea
+            id="question"
+            rows="4"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            placeholder="e.g. What should I do when error E05 appears?"
+          />
+
+          <div className="ask-controls">
+            <label className="setting-row compact">
+              <span>Retrieved chunks (top_k)</span>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={topK}
+                onChange={(event) => setTopK(event.target.value)}
               />
+            </label>
 
-              <div className="ask-controls">
-                <label className="setting-row compact">
-                  <span>Retrieved chunks (top_k)</span>
-                  <input
-                    type="number"
-                    min="1"
-                    max="20"
-                    value={topK}
-                    onChange={(event) => setTopK(event.target.value)}
-                  />
-                </label>
+            <button
+              className="button primary ask-button"
+              disabled={loading || !apiOnline}
+            >
+              {loading ? "Working..." : "Ask question"}
+            </button>
+          </div>
+        </form>
+      </section>
 
-                <button
-                  className="button primary ask-button"
-                  disabled={loading || !apiOnline}
-                >
-                  {loading ? "Working..." : "Ask question"}
-                </button>
-              </div>
-            </form>
-          </section>
+      {result && (
+        <section className="panel answer-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">RESPONSE · {corpus.toUpperCase()}</p>
+              <h2>Your answer</h2>
+            </div>
 
-          {result && (
-            <section className="panel answer-panel">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">RESPONSE · {corpus.toUpperCase()}</p>
-                  <h2>Your answer</h2>
-                </div>
+            <span
+              className={`answer-status ${
+                result.status === "answered" ? "answered" : "insufficient"
+              }`}
+            >
+              {result.status === "answered"
+                ? "Answered"
+                : "Insufficient evidence"}
+            </span>
+          </div>
 
-                <span
-                  className={`answer-status ${
-                    result.status === "answered" ? "answered" : "insufficient"
-                  }`}
-                >
-                  {result.status === "answered"
-                    ? "Answered"
-                    : "Insufficient evidence"}
-                </span>
-              </div>
+          <p className="answer-text">{result.answer}</p>
 
-              <p className="answer-text">{result.answer}</p>
+          <div className="references">
+            <h3>Source references ({result.references?.length || 0})</h3>
 
-              <div className="references">
-                <h3>Source references ({result.references?.length || 0})</h3>
+            {result.references?.length > 0 ? (
+              result.references.map((ref) => (
+                <details className="reference" key={ref.chunk_id}>
+                  <summary>
+                    <span>
+                      <strong>{ref.document_id}</strong>
+                      <small>
+                        Lines {ref.start_line}–{ref.end_line}
+                      </small>
+                    </span>
 
-                {result.references?.length > 0 ? (
-                  result.references.map((ref) => (
-                    <details className="reference" key={ref.chunk_id}>
-                      <summary>
-                        <span>
-                          <strong>{ref.document_id}</strong>
-                          <small>
-                            Lines {ref.start_line}–{ref.end_line}
-                          </small>
-                        </span>
+                    <span className="open-label">View passage +</span>
+                  </summary>
 
-                        <span className="open-label">View passage +</span>
-                      </summary>
-
-                      <pre>{ref.text}</pre>
-                    </details>
-                  ))
-                ) : (
-                  <p className="empty-state">
-                    No supporting references were returned.
-                  </p>
-                )}
-              </div>
-            </section>
-          )}
-
-          <footer className="footer">
-            Norag RAG · Evidence-based answers from your documents
-          </footer>
+                  <pre>{ref.text}</pre>
+                </details>
+              ))
+            ) : (
+              <p className="empty-state">
+                No supporting references were returned.
+              </p>
+            )}
+          </div>
         </section>
+      )}
+    </>
+  )}
+
+  {activeTab === "words" && (
+    <>
+      <section className="panel words-panel">
+        <p className="eyebrow">CORPUS ANALYSIS</p>
+        <h2>Words explorer</h2>
+
+        <p className="muted">
+          Explore the vocabulary of the selected knowledge base or check
+          which words from a question occur in its indexed chunks.
+        </p>
+
+        <div className="active-corpus">
+          Active knowledge base: <strong>{corpus}</strong>
+        </div>
+
+        <div className="word-mode-buttons">
+          <button
+            type="button"
+            className={`button ${wordMode === "corpus" ? "primary" : "secondary"}`}
+            onClick={() => {
+              setWordMode("corpus");
+              setWordAnalysis(null);
+              setWordSearch("");
+            }}
+          >
+            Corpus mode
+          </button>
+
+          <button
+            type="button"
+            className={`button ${wordMode === "question" ? "primary" : "secondary"}`}
+            onClick={() => {
+              setWordMode("question");
+              setWordAnalysis(null);
+              setWordError("");
+            }}
+          >
+            Question mode
+          </button>
+        </div>
+
+        {wordMode === "corpus" && (
+          <>
+            <label className="field-label" htmlFor="word-search">
+              Filter vocabulary
+            </label>
+
+            <input
+              id="word-search"
+              className="word-search"
+              type="text"
+              value={wordSearch}
+              onChange={(event) => setWordSearch(event.target.value)}
+              placeholder="Search for a word..."
+            />
+          </>
+        )}
+
+        {wordMode === "question" && (
+          <form onSubmit={analyzeQuestionWords}>
+            <label className="field-label" htmlFor="word-question">
+              Question to analyze
+            </label>
+
+            <textarea
+              id="word-question"
+              rows="4"
+              value={wordQuestion}
+              onChange={(event) => setWordQuestion(event.target.value)}
+              placeholder="Enter a question to inspect its vocabulary..."
+            />
+
+            <button
+              type="submit"
+              className="button primary"
+              disabled={wordLoading}
+            >
+              Analyze question
+            </button>
+          </form>
+        )}
+
+        {wordLoading && (
+          <p className="empty-state">Analyzing vocabulary...</p>
+        )}
+
+        {wordError && (
+          <div className="alert error">{wordError}</div>
+        )}
+      </section>
+
+      {wordAnalysis && wordMode === "corpus" && (
+        <section className="panel">
+          <div className="panel-heading">
+            <div>
+              <h2>Corpus vocabulary</h2>
+              <p className="muted">
+                {wordAnalysis.total_unique_words} unique words
+              </p>
+            </div>
+          </div>
+
+          <div className="word-results">
+            {wordAnalysis.words
+              .filter((item) =>
+                item.word.includes(wordSearch.trim().toLowerCase())
+              )
+              .map((item) => (
+                <details className="word-entry" key={item.word}>
+                  <summary>
+                    <strong>{item.word}</strong>
+                    <span>{item.frequency} occurrences</span>
+                  </summary>
+
+                  <div className="word-locations">
+                    {item.chunks.map((chunk) => (
+                      <div
+                        className="word-location"
+                        key={chunk.chunk_id}
+                      >
+                        <span>{chunk.document_id}</span>
+                        <small>Chunk {chunk.chunk_index + 1}</small>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ))}
+          </div>
+        </section>
+      )}
+
+      {wordAnalysis && wordMode === "question" && (
+        <section className="panel">
+          <h2>Question vocabulary results</h2>
+
+          <p className="muted">
+            Words found in the selected corpus and the chunks containing them.
+          </p>
+
+          <div className="word-result-section">
+            <h3>
+              Found words ({wordAnalysis.found.length})
+            </h3>
+
+            {wordAnalysis.found.length > 0 ? (
+              wordAnalysis.found.map((item) => (
+                <details className="word-entry" key={item.word}>
+                  <summary>
+                    <strong>{item.word}</strong>
+                    <span>{item.frequency} occurrences</span>
+                  </summary>
+
+                  <div className="word-locations">
+                    {item.chunks.map((chunk) => (
+                      <div
+                        className="word-location"
+                        key={chunk.chunk_id}
+                      >
+                        <span>{chunk.document_id}</span>
+                        <small>Chunk {chunk.chunk_index + 1}</small>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ))
+            ) : (
+              <p className="empty-state">No meaningful words were found.</p>
+            )}
+          </div>
+
+          <div className="word-result-section">
+            <h3>
+              Absent words ({wordAnalysis.absent.length})
+            </h3>
+
+            {wordAnalysis.absent.length > 0 ? (
+              <div className="absent-words">
+                {wordAnalysis.absent.map((word) => (
+                  <span className="absent-word" key={word}>
+                    {word}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="empty-state">
+                All meaningful question words occur in the corpus.
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+    </>
+  )}
+
+  <footer className="footer">
+    Norag RAG · Evidence-based answers from your documents
+  </footer>
+</section>
       </div>
     </main>
   );
