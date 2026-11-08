@@ -16,7 +16,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from backend.schemas import AskResponse, Reference
+from backend.schemas import AskResponse, Reference, Usage
 
 from backend.tokenizer import tokenize
 
@@ -732,6 +732,12 @@ EVIDENCE:
         response_format={"type": "json_object"},
     )
 
+    usage = Usage(
+        llm_calls=1,
+        prompt_tokens=getattr(response.usage, "prompt_tokens", 0) or 0,
+        completion_tokens=getattr(response.usage, "completion_tokens", 0) or 0,
+    )
+
     content = response.choices[0].message.content
 
     if not content:
@@ -766,6 +772,7 @@ EVIDENCE:
             status=status,
             answer=answer.strip(),
             references=[],
+            usage=usage,
         )
 
     if not citations:
@@ -778,6 +785,8 @@ EVIDENCE:
             text=allowed_chunks[chunk_id]["text"],
             start_line=allowed_chunks[chunk_id]["start_line"],
             end_line=allowed_chunks[chunk_id]["end_line"],
+            fused_rank=allowed_chunks[chunk_id].get("fused_rank"),
+            found_by=allowed_chunks[chunk_id].get("found_by", {}),
         )
         for chunk_id in dict.fromkeys(citations)
     ]
@@ -786,6 +795,7 @@ EVIDENCE:
         status="answered",
         answer=answer.strip(),
         references=references,
+        usage=usage,
     )
 
 
@@ -794,16 +804,25 @@ def answer_question(
     document_ids: list[str],
     top_k: int = 5,
     corpus: str = DEFAULT_CORPUS,
+    retrievers=DEFAULT_RETRIEVERS,
 ) -> AskResponse:
     """Run retrieval and grounded answer generation."""
-    chunks = retrieve_chunks(
+    retrieval = retrieve(
         question=question,
         document_ids=document_ids,
         top_k=top_k,
         corpus=corpus,
+        retrievers=retrievers,
     )
 
-    return generate_grounded_answer(
+    start = time.perf_counter()
+    response = generate_grounded_answer(
         question=question,
-        retrieved_chunks=chunks,
+        retrieved_chunks=retrieval["chunks"],
     )
+    generation_ms = round((time.perf_counter() - start) * 1000, 1)
+
+    response.retrievers = retrieval["retrievers"]
+    response.latency_ms = {**retrieval["timings_ms"], "generation": generation_ms}
+
+    return response

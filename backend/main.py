@@ -317,6 +317,7 @@ def ask_question_endpoint(request: AskRequest):
             document_ids=request.document_ids,
             top_k=request.top_k,
             corpus=request.corpus,
+            retrievers=request.retrievers,
         )
 
     except FileNotFoundError as exc:
