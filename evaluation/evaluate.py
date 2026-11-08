@@ -1,38 +1,42 @@
+"""V3 retrieval evaluation: several retriever configurations, both corpora.
+
+Examples (from the project root):
+    python evaluation/evaluate.py                         # every configuration, both corpora
+    python evaluation/evaluate.py --corpus kestrel --config dense dense+bm25
+    python evaluation/evaluate.py --corpus kestrel --config dense+bm25 --generate-answers
+"""
+
 import argparse
 import csv
 import json
-import re
 import sys
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-import time
+
 from openai import RateLimitError
 
-from backend.rag import (
-    generate_grounded_answer,
-    get_collection,
-    list_documents,
-    retrieve_chunks,
-)
+from backend.rag import generate_grounded_answer, list_documents, retrieve
 
-ROOT = Path(__file__).resolve().parent.parent
-EVALUATION_DIR = ROOT / "evaluation"
+EVALUATION_DIR = PROJECT_ROOT / "evaluation"
 
 QUESTION_FILES = {
     "vellora": EVALUATION_DIR / "questions.vellora.jsonl",
     "kestrel": EVALUATION_DIR / "questions.kestrel.jsonl",
 }
 
+# Configuration name -> retrievers switched on (fused with RRF).
 CONFIGURATIONS = {
-    "hybrid": True,
-    "semantic": False,
+    "dense": ["dense"],
+    "bm25": ["bm25"],
+    "dense+bm25": ["dense", "bm25"],
 }
 
 TOP_K = 10
-HIT_K_VALUES = (1, 3, 5, 10)
+K_VALUES = (1, 3, 5, 10)
 
 
 def load_questions(path):
@@ -77,69 +81,97 @@ def normalize(value):
     return " ".join(str(value).casefold().split())
 
 
-def chunk_source(chunk):
-    return (
-        chunk.get("document_id") or chunk.get("filename") or chunk.get("source") or ""
+def evidence_found(chunk, evidence):
+    """True if the chunk comes from the evidence's source and contains its quote."""
+    source = Path(chunk.get("document_id", "")).name.casefold()
+    text = normalize(chunk.get("text", ""))
+
+    expected_source = Path(evidence.get("source", "")).name.casefold()
+    quote = normalize(evidence.get("quote", ""))
+
+    source_matches = not expected_source or source == expected_source
+    quote_matches = not quote or quote in text
+
+    return source_matches and quote_matches
+
+
+def hit(chunks, evidence_items):
+    """HitRate: at least one evidence item is in the chunks."""
+    return any(
+        evidence_found(chunk, evidence)
+        for chunk in chunks
+        for evidence in evidence_items
     )
 
 
-def evidence_found(chunk, evidence_items):
-    source = Path(chunk_source(chunk)).name.casefold()
-    text = normalize(chunk.get("text", ""))
+def recall(chunks, evidence_items):
+    """Recall: fraction of the evidence items found in the chunks.
 
-    for evidence in evidence_items:
-        expected_source = Path(evidence.get("source", "")).name.casefold()
-        quote = normalize(evidence.get("quote", ""))
-
-        source_matches = not expected_source or source == expected_source
-        quote_matches = not quote or quote in text
-
-        if source_matches and quote_matches:
-            return True
-
-    return False
+    For a two_hop question, 1.0 means every hop was retrieved.
+    """
+    found = sum(
+        any(evidence_found(chunk, evidence) for chunk in chunks)
+        for evidence in evidence_items
+    )
+    return found / len(evidence_items)
 
 
-def question_hit(chunks, evidence):
-    return any(evidence_found(chunk, evidence) for chunk in chunks)
-
-
-def evaluate_question(item, document_ids, corpus, config, use_exact_match):
+def evaluate_question(item, document_ids, corpus, config):
     question = item["question"].strip()
 
-    chunks = retrieve_chunks(
+    start = time.perf_counter()
+    retrieval = retrieve(
         question=question,
         document_ids=document_ids,
         top_k=TOP_K,
         corpus=corpus,
-        use_exact_match=use_exact_match,
+        retrievers=CONFIGURATIONS[config],
     )
+    total_ms = round((time.perf_counter() - start) * 1000, 1)
 
+    chunks = retrieval["chunks"]
     answerable = item["answerable"]
     evidence = item.get("evidence", [])
 
     hits = {}
+    recalls = {}
     if answerable:
-        for k in HIT_K_VALUES:
-            hits[f"hit_at_{k}"] = question_hit(chunks[:k], evidence)
+        for k in K_VALUES:
+            hits[f"hit_at_{k}"] = hit(chunks[:k], evidence)
+            recalls[f"recall_at_{k}"] = round(recall(chunks[:k], evidence), 4)
 
     return {
         "id": item.get("id", ""),
         "corpus": corpus,
         "configuration": config,
+        "retrievers": retrieval["retrievers"],
         "question": question,
         "type": item.get("type", item.get("question_type", "other")),
         "answerable": answerable,
         "expected_answer": item.get("expected_answer", ""),
         "evidence": evidence,
         "retrieval_hits": hits,
+        "retrieval_recall": recalls,
+        # Cost of retrieval: no LLM call at query time (embeddings run locally).
+        "cost": {
+            "llm_calls": 0,
+            "tokens": 0,
+            "latency_ms": {**retrieval["timings_ms"], "total": total_ms},
+        },
         "retrieved_chunks": [
             {
-                "chunk_id": chunk.get("chunk_id", ""),
-                "document_id": chunk_source(chunk),
-                "start_line": chunk.get("start_line", 1),
-                "end_line": chunk.get("end_line", 1),
-                "text": chunk.get("text", ""),
+                "chunk_id": chunk["chunk_id"],
+                "document_id": chunk["document_id"],
+                "start_line": chunk["start_line"],
+                "end_line": chunk["end_line"],
+                "fused_rank": chunk["fused_rank"],
+                "found_by": chunk["found_by"],
+                "evidence": [
+                    index
+                    for index, item_evidence in enumerate(evidence)
+                    if evidence_found(chunk, item_evidence)
+                ],
+                "text": chunk["text"],
             }
             for chunk in chunks
         ],
@@ -147,22 +179,18 @@ def evaluate_question(item, document_ids, corpus, config, use_exact_match):
 
 
 def summarize(results, corpus, config):
-    relevant = [
-        result
-        for result in results
-        if result["corpus"] == corpus and result["configuration"] == config
-    ]
-
-    answerable = [result for result in relevant if result["answerable"]]
-    unanswerable_count = sum(not result["answerable"] for result in relevant)
+    answerable = [r for r in results if r["answerable"]]
+    unanswerable_count = sum(not r["answerable"] for r in results)
 
     groups = {"overall": answerable}
-
     for question_type in sorted({r["type"] for r in answerable}):
         groups[question_type] = [r for r in answerable if r["type"] == question_type]
 
-    rows = []
+    average_ms = round(
+        sum(r["cost"]["latency_ms"]["total"] for r in results) / len(results), 1
+    )
 
+    rows = []
     for question_type, group in groups.items():
         row = {
             "corpus": corpus,
@@ -174,241 +202,164 @@ def summarize(results, corpus, config):
             ),
         }
 
-        for k in HIT_K_VALUES:
-            hits = sum(result["retrieval_hits"][f"hit_at_{k}"] for result in group)
-            row[f"HitRate@{k}"] = round(hits / len(group), 4) if group else ""
+        for k in K_VALUES:
+            row[f"HitRate@{k}"] = (
+                round(
+                    sum(r["retrieval_hits"][f"hit_at_{k}"] for r in group) / len(group),
+                    4,
+                )
+                if group
+                else ""
+            )
+        for k in K_VALUES:
+            row[f"Recall@{k}"] = (
+                round(
+                    sum(r["retrieval_recall"][f"recall_at_{k}"] for r in group)
+                    / len(group),
+                    4,
+                )
+                if group
+                else ""
+            )
 
+        row["avg_retrieval_ms"] = average_ms if question_type == "overall" else ""
+        row["llm_calls_per_question"] = 0 if question_type == "overall" else ""
         rows.append(row)
 
     return rows
 
 
-def generate_answers_from_saved_results(corpus):
-    """Generate answers from saved retrieval results, supporting resume."""
-    input_path = EVALUATION_DIR / f"results_v2_{corpus}_hybrid.jsonl"
-    output_path = EVALUATION_DIR / f"answers_v2_{corpus}_hybrid.jsonl"
+def results_path(corpus, config):
+    return EVALUATION_DIR / f"results_v3_{corpus}_{config}.jsonl"
+
+
+def answers_path(corpus, config):
+    return EVALUATION_DIR / f"answers_v3_{corpus}_{config}.jsonl"
+
+
+def generate_answers(corpus, config):
+    """Generate answers from saved retrieval results (resumable)."""
+    input_path = results_path(corpus, config)
 
     if not input_path.exists():
         raise FileNotFoundError(
-            f"Retrieval results not found: {input_path}. "
-            "Run retrieval evaluation first."
+            f"{input_path.name} not found. Run the retrieval evaluation first."
         )
 
     with input_path.open("r", encoding="utf-8") as file:
         results = [json.loads(line) for line in file if line.strip()]
 
-    # Recover original line metadata from Chroma.
-    chunk_ids = list(
-        {
-            chunk["chunk_id"]
-            for result in results
-            for chunk in result["retrieved_chunks"]
-        }
-    )
-
-    collection = get_collection(corpus)
-    stored_chunks = collection.get(
-        ids=chunk_ids,
-        include=["metadatas"],
-    )
-
-    metadata_by_id = {
-        chunk_id: metadata
-        for chunk_id, metadata in zip(
-            stored_chunks["ids"],
-            stored_chunks["metadatas"],
-        )
-    }
-
-    for result in results:
-        for chunk in result["retrieved_chunks"]:
-            metadata = metadata_by_id.get(chunk["chunk_id"])
-
-            if metadata is None:
-                raise RuntimeError(
-                    f"Missing Chroma metadata for chunk {chunk['chunk_id']}"
-                )
-
-            chunk["start_line"] = metadata.get("start_line", 1)
-            chunk["end_line"] = metadata.get("end_line", 1)
-            chunk["document_id"] = metadata["document_id"]
-
-    # Resume from existing generated answers.
+    output_path = answers_path(corpus, config)
     completed_ids = set()
 
     if output_path.exists():
         with output_path.open("r", encoding="utf-8") as file:
-            existing = [json.loads(line) for line in file if line.strip()]
+            completed_ids = {json.loads(line)["id"] for line in file if line.strip()}
 
-        completed_ids = {
-            item["id"] for item in existing if item.get("generation") is not None
-        }
-
-    remaining = [result for result in results if result["id"] not in completed_ids]
-
-    print(
-        f"\n{corpus.upper()}: {len(completed_ids)} already completed; "
-        f"{len(remaining)} remaining"
-    )
+    remaining = [r for r in results if r["id"] not in completed_ids]
+    print(f"\n{corpus}/{config}: {len(completed_ids)} done, {len(remaining)} to go")
 
     with output_path.open("a", encoding="utf-8") as output:
         for index, result in enumerate(remaining, start=1):
-            print(
-                f"[{index}/{len(remaining)}] " f"Generating answer for {result['id']}"
-            )
-
-            generated = None
+            print(f"[{index}/{len(remaining)}] {result['id']}")
 
             for attempt in range(4):
                 try:
+                    start = time.perf_counter()
                     generated = generate_grounded_answer(
                         question=result["question"],
                         retrieved_chunks=result["retrieved_chunks"],
                     )
+                    generation_ms = round((time.perf_counter() - start) * 1000, 1)
                     break
-
                 except RateLimitError:
                     if attempt == 3:
                         raise
-
                     delay = 15 * (2**attempt)
-                    print(
-                        f"Gemini rate limit. Waiting {delay}s "
-                        f"before retry {attempt + 2}/4..."
-                    )
+                    print(f"Rate limit: waiting {delay}s...")
                     time.sleep(delay)
 
             generation = json.loads(generated.model_dump_json())
+            generation["latency_ms"] = generation_ms
 
-            answer_result = {
-                **result,
-                "generation": generation,
-            }
-
-            output.write(json.dumps(answer_result, ensure_ascii=False) + "\n")
+            output.write(
+                json.dumps({**result, "generation": generation}, ensure_ascii=False)
+                + "\n"
+            )
             output.flush()
 
-            completed_ids.add(result["id"])
-
-            print(f"Saved {result['id']} " f"({len(completed_ids)}/{len(results)})")
-
-    print(f"Saved generated answers: {output_path.name}")
-    return output_path
+    print(f"Saved: {output_path.name}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Evaluate retrieval across Vellora and Kestrel."
-    )
+    parser = argparse.ArgumentParser(description="V3 retrieval evaluation.")
     parser.add_argument(
-        "--corpus",
-        choices=["all", "vellora", "kestrel"],
-        default="all",
+        "--corpus", choices=["all", "vellora", "kestrel"], default="all"
     )
     parser.add_argument(
         "--config",
-        choices=["both", "hybrid", "semantic"],
-        default="both",
+        nargs="+",
+        choices=list(CONFIGURATIONS),
+        default=list(CONFIGURATIONS),
+        help="Retriever configurations to run (default: all).",
     )
     parser.add_argument(
         "--generate-answers",
         action="store_true",
-        help="Generate answers from saved hybrid retrieval results.",
+        help="Generate answers from saved retrieval results (calls the LLM).",
     )
     args = parser.parse_args()
-    if args.generate_answers:
-        corpora = (
-            ["vellora", "kestrel"]
-            if args.corpus == "all"
-            else [args.corpus]
-        )
-
-        for corpus in corpora:
-            generate_answers_from_saved_results(corpus)
-
-        return
 
     corpora = ["vellora", "kestrel"] if args.corpus == "all" else [args.corpus]
 
-    configs = ["hybrid", "semantic"] if args.config == "both" else [args.config]
+    if args.generate_answers:
+        for corpus in corpora:
+            for config in args.config:
+                generate_answers(corpus, config)
+        return
 
-    all_results = []
     summary_rows = []
 
     for corpus in corpora:
-        question_file = QUESTION_FILES[corpus]
-        questions = load_questions(question_file)
-
-        indexed_documents = [
-            document["document_id"]
-            for document in list_documents(corpus)
-            if document.get("indexed")
+        questions = load_questions(QUESTION_FILES[corpus])
+        document_ids = [
+            d["document_id"] for d in list_documents(corpus) if d.get("indexed")
         ]
 
-        if not indexed_documents:
-            raise RuntimeError(f"No indexed documents found for corpus '{corpus}'.")
+        if not document_ids:
+            raise RuntimeError(f"No indexed documents in corpus '{corpus}'.")
 
         print(
-            f"\n{corpus.upper()}: {len(questions)} questions, "
-            f"{len(indexed_documents)} indexed documents"
+            f"\n{corpus.upper()}: {len(questions)} questions, {len(document_ids)} documents"
         )
 
-        for config in configs:
-            use_exact_match = CONFIGURATIONS[config]
-            print(f"\nRunning configuration: {config}")
+        for config in args.config:
+            print(f"  configuration: {config}")
+            results = [
+                evaluate_question(item, document_ids, corpus, config)
+                for item in questions
+            ]
 
-            config_results = []
-
-            for index, item in enumerate(questions, start=1):
-                print(
-                    f"[{index}/{len(questions)}] "
-                    f"{item.get('id', '')}: {item['question']}"
-                )
-
-                result = evaluate_question(
-                    item=item,
-                    document_ids=indexed_documents,
-                    corpus=corpus,
-                    config=config,
-                    use_exact_match=use_exact_match,
-                )
-
-                config_results.append(result)
-                all_results.append(result)
-
-            output_path = EVALUATION_DIR / f"results_v2_{corpus}_{config}.jsonl"
-
-            with output_path.open("w", encoding="utf-8") as file:
-                for result in config_results:
+            with results_path(corpus, config).open("w", encoding="utf-8") as file:
+                for result in results:
                     file.write(json.dumps(result, ensure_ascii=False) + "\n")
 
-            summary_rows.extend(summarize(config_results, corpus, config))
+            summary_rows.extend(summarize(results, corpus, config))
 
-            print(f"Saved detailed results: {output_path.name}")
+    summary_path = EVALUATION_DIR / "summary_v3.csv"
+    with summary_path.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=list(summary_rows[0]))
+        writer.writeheader()
+        writer.writerows(summary_rows)
 
-    summary_path = EVALUATION_DIR / "summary_v2.csv"
-
-    if summary_rows:
-        fieldnames = list(summary_rows[0].keys())
-
-        with summary_path.open("w", encoding="utf-8", newline="") as file:
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(summary_rows)
-
-    print("\nEvaluation complete.")
-    print(f"Summary saved to: {summary_path}")
-
+    print(f"\nSummary saved to {summary_path.name}\n")
     for row in summary_rows:
         if row["question_type"] == "overall":
             print(
-                f"{row['corpus']} / {row['configuration']}: "
-                f"answerable={row['answerable_questions']}, "
-                f"unanswerable={row['unanswerable_questions']}, "
-                f"Hit@1={row['HitRate@1']}, "
-                f"Hit@3={row['HitRate@3']}, "
-                f"Hit@5={row['HitRate@5']}, "
-                f"Hit@10={row['HitRate@10']}"
+                f"{row['corpus']:8} {row['configuration']:12} "
+                f"Hit@1/3/5/10 = {row['HitRate@1']}/{row['HitRate@3']}/"
+                f"{row['HitRate@5']}/{row['HitRate@10']}   "
+                f"Recall@5 = {row['Recall@5']}   {row['avg_retrieval_ms']} ms"
             )
 
 
