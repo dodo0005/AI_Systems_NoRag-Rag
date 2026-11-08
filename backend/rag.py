@@ -17,6 +17,8 @@ from openai import OpenAI
 
 from backend.schemas import AskResponse, Reference
 
+from backend.tokenizer import tokenize
+
 import re
 
 # Resolve paths relative to the project, not the terminal's current directory.
@@ -138,66 +140,6 @@ def list_documents(corpus: str = DEFAULT_CORPUS) -> list[dict]:
     return documents
 
 
-WORD_STOPWORDS = {
-    "a",
-    "an",
-    "and",
-    "are",
-    "as",
-    "at",
-    "be",
-    "been",
-    "being",
-    "but",
-    "by",
-    "can",
-    "could",
-    "did",
-    "do",
-    "does",
-    "for",
-    "from",
-    "had",
-    "has",
-    "have",
-    "how",
-    "i",
-    "in",
-    "into",
-    "is",
-    "it",
-    "its",
-    "may",
-    "might",
-    "of",
-    "on",
-    "or",
-    "should",
-    "that",
-    "the",
-    "their",
-    "them",
-    "there",
-    "these",
-    "this",
-    "those",
-    "to",
-    "was",
-    "were",
-    "what",
-    "when",
-    "where",
-    "which",
-    "who",
-    "why",
-    "will",
-    "with",
-    "would",
-    "you",
-    "your",
-}
-
-
 def analyze_words(
     corpus: str = DEFAULT_CORPUS,
     question: str = "",
@@ -219,14 +161,7 @@ def analyze_words(
         chunk_index = metadata.get("chunk_index", -1)
 
         # Count occurrences while retaining each chunk's location.
-        words = re.findall(r"\b[a-zA-Z0-9]+(?:['-][a-zA-Z0-9]+)*\b", text)
-
-        for raw_word in words:
-            word = raw_word.casefold()
-
-            if word in WORD_STOPWORDS or len(word) < 2:
-                continue
-
+        for word in tokenize(text):
             if word not in word_locations:
                 word_locations[word] = {
                     "word": word,
@@ -248,18 +183,7 @@ def analyze_words(
                 )
 
     if question.strip():
-        question_words = re.findall(
-            r"\b[a-zA-Z0-9]+(?:['-][a-zA-Z0-9]+)*\b",
-            question,
-        )
-
-        unique_words = list(
-            dict.fromkeys(
-                word.casefold()
-                for word in question_words
-                if word.casefold() not in WORD_STOPWORDS and len(word) >= 2
-            )
-        )
+        unique_words = list(dict.fromkeys(tokenize(question)))
 
         found = []
         absent = []
