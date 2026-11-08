@@ -1,0 +1,837 @@
+{
+  "nodes": [
+    {
+      "id": "channel:#oncall-analytics",
+      "name": "#oncall-analytics",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "channel:#oncall-data-integrations",
+      "name": "#oncall-data-integrations",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "channel:#oncall-identity",
+      "name": "#oncall-identity",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "channel:#oncall-messaging",
+      "name": "#oncall-messaging",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "channel:#oncall-platform",
+      "name": "#oncall-platform",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "errorcode:kst-1012",
+      "name": "KST-1012",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "6b178c41a91cd0095126bbe4"
+      ]
+    },
+    {
+      "id": "errorcode:kst-2040",
+      "name": "KST-2040",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "6b178c41a91cd0095126bbe4"
+      ]
+    },
+    {
+      "id": "errorcode:kst-2044",
+      "name": "KST-2044",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "e29b19c8ec64910f37f693fe"
+      ]
+    },
+    {
+      "id": "errorcode:kst-2051",
+      "name": "KST-2051",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "ebd156b44f4f4d04fe8f4ba0"
+      ]
+    },
+    {
+      "id": "errorcode:kst-2xxx",
+      "name": "KST-2xxx",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "0d6fca2f12802f4b533a5a16"
+      ]
+    },
+    {
+      "id": "errorcode:kst-3012",
+      "name": "KST-3012",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "ebd156b44f4f4d04fe8f4ba0"
+      ]
+    },
+    {
+      "id": "errorcode:kst-3020",
+      "name": "KST-3020",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "0d6fca2f12802f4b533a5a16"
+      ]
+    },
+    {
+      "id": "errorcode:kst-4012",
+      "name": "KST-4012",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "0d6fca2f12802f4b533a5a16"
+      ]
+    },
+    {
+      "id": "errorcode:kst-5031",
+      "name": "KST-5031",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "045f828d97c95a7ba84327fd"
+      ]
+    },
+    {
+      "id": "errorcode:kst-6010",
+      "name": "KST-6010",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "f93023bc14b31e3f5f44c20b"
+      ]
+    },
+    {
+      "id": "person:inès-moreau",
+      "name": "Inès Moreau",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "person:jonas-berg",
+      "name": "Jonas Berg",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "person:léa-fontaine",
+      "name": "Léa Fontaine",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "person:priya-raman",
+      "name": "Priya Raman",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "person:samuel-okafor",
+      "name": "Samuel Okafor",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "person:tomasz-wójcik",
+      "name": "Tomasz Wójcik",
+      "type": "Person",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "service:analytics-engine",
+      "name": "Analytics Engine",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "0d6fca2f12802f4b533a5a16"
+      ]
+    },
+    {
+      "id": "service:auth",
+      "name": "auth",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "7445621a785905d2ec3047c8"
+      ]
+    },
+    {
+      "id": "service:connector-hub",
+      "name": "connector-hub",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "b903fd3368f61b664c2511ae"
+      ]
+    },
+    {
+      "id": "service:embed-svc",
+      "name": "embed-svc",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "d6289ba993dccb391a671efa"
+      ]
+    },
+    {
+      "id": "service:gateway",
+      "name": "gateway",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "7445621a785905d2ec3047c8"
+      ]
+    },
+    {
+      "id": "service:ledger",
+      "name": "ledger",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "d6289ba993dccb391a671efa"
+      ]
+    },
+    {
+      "id": "service:mailman",
+      "name": "mailman",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "d6289ba993dccb391a671efa"
+      ]
+    },
+    {
+      "id": "service:postroom",
+      "name": "postroom",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "045f828d97c95a7ba84327fd",
+        "b903fd3368f61b664c2511ae",
+        "d6289ba993dccb391a671efa"
+      ]
+    },
+    {
+      "id": "service:query-engine",
+      "name": "query-engine",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "b903fd3368f61b664c2511ae"
+      ]
+    },
+    {
+      "id": "service:scheduler",
+      "name": "scheduler",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "b903fd3368f61b664c2511ae"
+      ]
+    },
+    {
+      "id": "team:analytics-eng",
+      "name": "Analytics Eng",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "ebd156b44f4f4d04fe8f4ba0"
+      ]
+    },
+    {
+      "id": "team:analytics-engine",
+      "name": "Analytics Engine",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "b903fd3368f61b664c2511ae",
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "team:data-integrations",
+      "name": "Data Integrations",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "b903fd3368f61b664c2511ae",
+        "e29b19c8ec64910f37f693fe",
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "team:identity",
+      "name": "Identity",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "6b178c41a91cd0095126bbe4",
+        "b903fd3368f61b664c2511ae",
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "team:messaging",
+      "name": "Messaging",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "d6289ba993dccb391a671efa",
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    },
+    {
+      "id": "team:payments-core",
+      "name": "Payments Core",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6",
+        "f93023bc14b31e3f5f44c20b"
+      ]
+    },
+    {
+      "id": "team:platform",
+      "name": "Platform",
+      "type": "Team",
+      "aliases": [],
+      "chunk_ids": [
+        "7445621a785905d2ec3047c8",
+        "d6289ba993dccb391a671efa",
+        "e368a71b543ae00b88bc4bb6"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "service:gateway",
+      "relation": "owned_by",
+      "target": "team:platform",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "7445621a785905d2ec3047c8",
+          "quote": "Owner: **Platform**."
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "source": "service:connector-hub",
+      "relation": "owned_by",
+      "target": "team:data-integrations",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "b903fd3368f61b664c2511ae",
+          "quote": "Owner: **Data Integrations**."
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "source": "service:query-engine",
+      "relation": "owned_by",
+      "target": "team:analytics-engine",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "b903fd3368f61b664c2511ae",
+          "quote": "Owner: **Analytics Engine**."
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "source": "service:scheduler",
+      "relation": "owned_by",
+      "target": "team:analytics-engine",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "b903fd3368f61b664c2511ae",
+          "quote": "Owner: **Analytics Engine**."
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "source": "service:postroom",
+      "relation": "owned_by",
+      "target": "team:messaging",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "d6289ba993dccb391a671efa",
+          "quote": "Owner: **Messaging**."
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "source": "service:postroom",
+      "relation": "replaces",
+      "target": "service:mailman",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "d6289ba993dccb391a671efa",
+          "quote": "postroom replaced the older mailman service"
+        }
+      ]
+    },
+    {
+      "id": "e7",
+      "source": "service:embed-svc",
+      "relation": "owned_by",
+      "target": "team:platform",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "d6289ba993dccb391a671efa",
+          "quote": "Owner: **Platform**."
+        }
+      ]
+    },
+    {
+      "id": "e8",
+      "source": "team:platform",
+      "relation": "led_by",
+      "target": "person:samuel-okafor",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Platform | Samuel Okafor | #oncall-platform"
+        }
+      ]
+    },
+    {
+      "id": "e9",
+      "source": "team:platform",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-platform",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Platform | Samuel Okafor | #oncall-platform"
+        }
+      ]
+    },
+    {
+      "id": "e10",
+      "source": "team:identity",
+      "relation": "led_by",
+      "target": "person:priya-raman",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Identity | Priya Raman | #oncall-identity"
+        }
+      ]
+    },
+    {
+      "id": "e11",
+      "source": "team:identity",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-identity",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Identity | Priya Raman | #oncall-identity"
+        }
+      ]
+    },
+    {
+      "id": "e12",
+      "source": "team:data-integrations",
+      "relation": "led_by",
+      "target": "person:tomasz-wójcik",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Data Integrations | Tomasz Wójcik | #oncall-data-integrations"
+        }
+      ]
+    },
+    {
+      "id": "e13",
+      "source": "team:data-integrations",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-data-integrations",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Data Integrations | Tomasz Wójcik | #oncall-data-integrations"
+        }
+      ]
+    },
+    {
+      "id": "e14",
+      "source": "team:analytics-engine",
+      "relation": "led_by",
+      "target": "person:léa-fontaine",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Analytics Engine | Léa Fontaine | #oncall-analytics"
+        }
+      ]
+    },
+    {
+      "id": "e15",
+      "source": "team:analytics-engine",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-analytics",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Analytics Engine | Léa Fontaine | #oncall-analytics"
+        }
+      ]
+    },
+    {
+      "id": "e16",
+      "source": "team:messaging",
+      "relation": "led_by",
+      "target": "person:inès-moreau",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Messaging | Inès Moreau | #oncall-messaging"
+        }
+      ]
+    },
+    {
+      "id": "e17",
+      "source": "team:messaging",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-messaging",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Messaging | Inès Moreau | #oncall-messaging"
+        }
+      ]
+    },
+    {
+      "id": "e18",
+      "source": "team:payments-core",
+      "relation": "led_by",
+      "target": "person:jonas-berg",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Payments Core | Jonas Berg"
+        }
+      ]
+    },
+    {
+      "id": "e19",
+      "source": "errorcode:kst-1012",
+      "relation": "escalates_to",
+      "target": "team:identity",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "6b178c41a91cd0095126bbe4",
+          "quote": "Escalate: to Identity if the metadata is correct and the error persists."
+        }
+      ]
+    },
+    {
+      "id": "e20",
+      "source": "errorcode:kst-3012",
+      "relation": "escalates_to",
+      "target": "team:analytics-eng",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "ebd156b44f4f4d04fe8f4ba0",
+          "quote": "Escalate: to Analytics Eng"
+        }
+      ]
+    },
+    {
+      "id": "e21",
+      "source": "errorcode:kst-3020",
+      "relation": "escalates_to",
+      "target": "service:analytics-engine",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "0d6fca2f12802f4b533a5a16",
+          "quote": "Escalate: to Analytics Engine only if a query that used to finish quickly suddenly times out for many datasets of the same customer."
+        }
+      ]
+    },
+    {
+      "id": "e22",
+      "source": "errorcode:kst-3020",
+      "relation": "caused_by",
+      "target": "errorcode:kst-2xxx",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "0d6fca2f12802f4b533a5a16",
+          "quote": "Cause: the tooltip shows a second code with the real cause, usually a KST-2xxx connector error."
+        }
+      ]
+    },
+    {
+      "id": "e23",
+      "source": "errorcode:kst-5031",
+      "relation": "raised_by",
+      "target": "service:postroom",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "045f828d97c95a7ba84327fd",
+          "quote": "This error is raised by postroom"
+        }
+      ]
+    },
+    {
+      "id": "e24",
+      "source": "errorcode:kst-6010",
+      "relation": "escalates_to",
+      "target": "team:payments-core",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "f93023bc14b31e3f5f44c20b",
+          "quote": "Escalate: to Payments Core if more than three customers are affected on the same day"
+        }
+      ]
+    }
+  ],
+  "merges": [],
+  "possible_missed_merges": [
+    {
+      "name": "analytics engine",
+      "types": [
+        "Service",
+        "Team"
+      ]
+    }
+  ],
+  "schema": {
+    "entity_types": [
+      "ErrorCode",
+      "Service",
+      "Team",
+      "Person",
+      "Channel",
+      "Plan",
+      "Feature",
+      "Role"
+    ],
+    "relations": {
+      "raised_by": {
+        "source": [
+          "ErrorCode"
+        ],
+        "target": [
+          "Service"
+        ],
+        "meaning": "the error is raised by the service"
+      },
+      "escalates_to": {
+        "source": [
+          "ErrorCode"
+        ],
+        "target": [
+          "Service",
+          "Team"
+        ],
+        "meaning": "support escalates the error to this team (or to the team owning this service)"
+      },
+      "caused_by": {
+        "source": [
+          "ErrorCode"
+        ],
+        "target": [
+          "ErrorCode"
+        ],
+        "meaning": "the error is caused by another error"
+      },
+      "owned_by": {
+        "source": [
+          "Service"
+        ],
+        "target": [
+          "Team"
+        ],
+        "meaning": "the team owns the service"
+      },
+      "replaces": {
+        "source": [
+          "Service"
+        ],
+        "target": [
+          "Service"
+        ],
+        "meaning": "the first service replaced the second one"
+      },
+      "depends_on": {
+        "source": [
+          "Service"
+        ],
+        "target": [
+          "Service"
+        ],
+        "meaning": "the first service uses the second one"
+      },
+      "led_by": {
+        "source": [
+          "Team"
+        ],
+        "target": [
+          "Person"
+        ],
+        "meaning": "the person is the team's engineering lead"
+      },
+      "has_oncall_channel": {
+        "source": [
+          "Team"
+        ],
+        "target": [
+          "Channel"
+        ],
+        "meaning": "the team's on-call channel"
+      },
+      "covered_by": {
+        "source": [
+          "Team"
+        ],
+        "target": [
+          "Team"
+        ],
+        "meaning": "outside its hours, the first team is covered by the second"
+      },
+      "includes_feature": {
+        "source": [
+          "Plan"
+        ],
+        "target": [
+          "Feature"
+        ],
+        "meaning": "the plan includes the feature"
+      },
+      "provided_by": {
+        "source": [
+          "Feature"
+        ],
+        "target": [
+          "Service"
+        ],
+        "meaning": "the service provides the feature"
+      },
+      "requires_role": {
+        "source": [
+          "Feature"
+        ],
+        "target": [
+          "Role"
+        ],
+        "meaning": "using or managing the feature requires this role"
+      }
+    }
+  },
+  "metadata": {
+    "corpus": "kestrel",
+    "built_at": "2026-11-08T23:45:59+00:00",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "v1",
+    "chunk_size": 800,
+    "overlap_percent": 10,
+    "chunks": 43,
+    "counts": {
+      "nodes": 38,
+      "edges": 24,
+      "merges": 0,
+      "possible_missed_merges": 1
+    },
+    "cost": {
+      "llm_calls_this_run": 0,
+      "chunks_from_cache": 43,
+      "retries": 0,
+      "rate_limited": 0,
+      "prompt_tokens_this_run": 0,
+      "completion_tokens_this_run": 0,
+      "seconds": 0.0,
+      "total_from_cache": {
+        "calls": 43,
+        "prompt_tokens": 28453,
+        "completion_tokens": 3454,
+        "llm_seconds": 29.8
+      }
+    },
+    "failed_chunks": [],
+    "rejected": {}
+  },
+  "rejected_examples": []
+}
