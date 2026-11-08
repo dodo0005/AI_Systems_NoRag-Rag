@@ -4,12 +4,18 @@ import "./App.css";
 
 const API = "/api";
 
+const RETRIEVERS = [
+  { id: "dense", label: "Dense (embeddings)" },
+  { id: "bm25", label: "BM25 (keywords)" },
+];
+
 export default function App() {
   const [corpus, setCorpus] = useState("vellora");
   const [documents, setDocuments] = useState([]);
   const [selected, setSelected] = useState([]);
   const [question, setQuestion] = useState("");
   const [topK, setTopK] = useState(5);
+  const [retrievers, setRetrievers] = useState(["dense", "bm25"]);
   const [chunkSize, setChunkSize] = useState(800);
   const [overlap, setOverlap] = useState(10);
   const [file, setFile] = useState(null);
@@ -266,6 +272,11 @@ function analyzeQuestionWords(event) {
       return;
     }
 
+    if (retrievers.length === 0) {
+      setError("Switch on at least one retriever.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -277,6 +288,7 @@ function analyzeQuestionWords(event) {
           document_ids: selected,
           top_k: Number(topK),
           corpus,
+          retrievers,
         }),
       });
 
@@ -286,6 +298,13 @@ function analyzeQuestionWords(event) {
     } finally {
       setLoading(false);
     }
+  }
+    function toggleRetriever(id) {
+    setRetrievers((current) =>
+      current.includes(id)
+        ? current.filter((name) => name !== id)
+        : [...current, id],
+    );
   }
 
   return (
@@ -515,7 +534,22 @@ function analyzeQuestionWords(event) {
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder="e.g. What should I do when error E05 appears?"
-          />
+                  />
+          
+                    <fieldset className="retriever-toggles">
+            <legend>Retrievers (fused with RRF)</legend>
+
+            {RETRIEVERS.map((retriever) => (
+              <label key={retriever.id} className="retriever-toggle">
+                <input
+                  type="checkbox"
+                  checked={retrievers.includes(retriever.id)}
+                  onChange={() => toggleRetriever(retriever.id)}
+                />
+                {retriever.label}
+              </label>
+            ))}
+          </fieldset>
 
           <div className="ask-controls">
             <label className="setting-row compact">
@@ -559,6 +593,20 @@ function analyzeQuestionWords(event) {
           </div>
 
           <p className="answer-text">{result.answer}</p>
+          
+          
+          <p className="answer-meta">
+            Retrievers: {result.retrievers?.join(" + ") || "—"} ·{" "}
+            {result.usage?.llm_calls ?? 0} LLM call
+            {result.usage?.llm_calls === 1 ? "" : "s"} ·{" "}
+            {(result.usage?.prompt_tokens ?? 0) +
+              (result.usage?.completion_tokens ?? 0)}{" "}
+            tokens ·{" "}
+            {Math.round(
+              Object.values(result.latency_ms || {}).reduce((a, b) => a + b, 0),
+            )}{" "}
+            ms
+          </p>
 
           <div className="references">
             <h3>Source references ({result.references?.length || 0})</h3>
@@ -571,6 +619,12 @@ function analyzeQuestionWords(event) {
                       <strong>{ref.document_id}</strong>
                       <small>
                         Lines {ref.start_line}–{ref.end_line}
+                      </small>
+                                            <small className="found-by">
+                        Fused rank #{ref.fused_rank ?? "?"} · found by{" "}
+                        {Object.entries(ref.found_by || {})
+                          .map(([name, rank]) => `${name} #${rank}`)
+                          .join(", ") || "—"}
                       </small>
                     </span>
 
