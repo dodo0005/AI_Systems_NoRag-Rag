@@ -19,11 +19,15 @@ from backend.schemas import AskResponse, Reference
 
 from backend.tokenizer import tokenize
 
+from backend.bm25 import BM25Index
+
 import re
 
 # Resolve paths relative to the project, not the terminal's current directory.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CHROMA_DIR = PROJECT_ROOT / "chroma_db"
+
+BM25_DIR = PROJECT_ROOT / "bm25_index"
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
@@ -290,6 +294,7 @@ def index_document(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     overlap_percent: int = DEFAULT_OVERLAP_PERCENT,
     corpus: str = DEFAULT_CORPUS,
+    update_bm25: bool = True,
 ) -> int:
     """Index one document in the selected corpus."""
     corpus_collection = get_collection(corpus)
@@ -333,6 +338,9 @@ def index_document(
             metadatas=metadatas,
         )
 
+    if update_bm25:
+        rebuild_bm25(corpus)
+
     return len(chunks)
 
 
@@ -369,18 +377,76 @@ def rebuild_index(
                 chunk_size=chunk_size,
                 overlap_percent=overlap_percent,
                 corpus=corpus,
+                update_bm25=False,
             )
             results[document.name] = count
 
         except (ValueError, FileNotFoundError, OSError) as exc:
             failures[document.name] = str(exc)
 
+    rebuild_bm25(corpus)
+
     return {
         "indexed_documents": len(results),
         "indexed_chunks": sum(results.values()),
         "documents": results,
         "failures": failures,
+        
     }
+
+_bm25_cache: dict[str, BM25Index] = {}
+
+
+def get_bm25_path(corpus: str = DEFAULT_CORPUS) -> Path:
+    """Return the file that stores a corpus's BM25 index."""
+    get_corpus_config(corpus)  # rejects unknown corpus names
+    return BM25_DIR / f"{corpus}.json"
+
+
+def rebuild_bm25(corpus: str = DEFAULT_CORPUS) -> BM25Index:
+    """Rebuild a corpus's BM25 index from the chunks stored in Chroma.
+
+    A full rebuild on every change: adding or removing chunks changes the IDF
+    of every word, and our corpora are small enough for this to be fast.
+    """
+    corpus_collection = get_collection(corpus)
+    stored = corpus_collection.get(include=["documents", "metadatas"])
+
+    chunks = [
+        {
+            "chunk_id": chunk_id,
+            "document_id": (metadata or {}).get("document_id", ""),
+            "text": text or "",
+        }
+        for chunk_id, text, metadata in zip(
+            stored["ids"],
+            stored["documents"],
+            stored["metadatas"],
+        )
+    ]
+
+    index = BM25Index(chunks)
+    index.save(get_bm25_path(corpus))
+    _bm25_cache[corpus] = index
+
+    return index
+
+
+def get_bm25_index(corpus: str = DEFAULT_CORPUS) -> BM25Index:
+    """Return a corpus's BM25 index: from memory, else from disk, else rebuilt."""
+    if corpus in _bm25_cache:
+        return _bm25_cache[corpus]
+
+    path = get_bm25_path(corpus)
+
+    try:
+        index = BM25Index.load(path)
+    except (FileNotFoundError, ValueError, KeyError):
+        # Missing, old-format or corrupted file: rebuild it from Chroma.
+        return rebuild_bm25(corpus)
+
+    _bm25_cache[corpus] = index
+    return index
 
 
 def delete_document(
@@ -394,6 +460,7 @@ def delete_document(
     corpus_collection.delete(where={"document_id": document_id})
 
     path.unlink()
+    rebuild_bm25(corpus)
 
 
 load_dotenv()
