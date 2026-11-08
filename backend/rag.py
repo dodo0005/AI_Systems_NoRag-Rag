@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import time
 from pathlib import Path
 
 import chromadb
@@ -21,7 +22,6 @@ from backend.tokenizer import tokenize
 
 from backend.bm25 import BM25Index
 
-import re
 
 # Resolve paths relative to the project, not the terminal's current directory.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -469,95 +469,191 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 
-def retrieve_chunks(
+# ---------- Retrieval: one function per retriever, fused with RRF ----------
+
+RETRIEVER_NAMES = ("dense", "bm25")
+DEFAULT_RETRIEVERS = ("dense", "bm25")
+CANDIDATES_PER_RETRIEVER = 20  # each retriever proposes this many chunks
+RRF_K = 60  # standard RRF constant (Cormack et al., 2009)
+
+
+def validate_retrievers(retrievers) -> list[str]:
+    """Return the requested retrievers without duplicates, or raise."""
+    names = list(dict.fromkeys(retrievers or []))
+
+    if not names:
+        raise ValueError("Switch on at least one retriever.")
+
+    unknown = [name for name in names if name not in RETRIEVER_NAMES]
+    if unknown:
+        raise ValueError(f"Unknown retriever(s): {', '.join(unknown)}.")
+
+    return names
+
+
+def dense_search(
+    question: str,
+    document_ids: list[str],
+    corpus: str,
+    n: int,
+) -> list[str]:
+    """Embedding search in Chroma. Returns chunk ids, best first."""
+    corpus_collection = get_collection(corpus)
+    where = {"document_id": {"$in": document_ids}}
+
+    available = len(corpus_collection.get(where=where, include=[])["ids"])
+    if not available:
+        return []
+
+    result = corpus_collection.query(
+        query_texts=[question],
+        n_results=min(n, available),
+        where=where,
+        include=["distances"],
+    )
+
+    return result["ids"][0]
+
+
+def bm25_search(
+    question: str,
+    document_ids: list[str],
+    corpus: str,
+    n: int,
+) -> list[str]:
+    """BM25 search on the corpus index. Returns chunk ids, best first."""
+    index = get_bm25_index(corpus)
+    ranked = index.search(question, allowed_document_ids=set(document_ids), n=n)
+
+    return [chunk_id for chunk_id, _score in ranked]
+
+
+def rrf_fuse(
+    ranked_lists: dict[str, list[str]],
+    k: int = RRF_K,
+    weights: dict[str, float] | None = None,
+) -> list[dict]:
+    """Reciprocal Rank Fusion: score(d) = sum over retrievers of w / (k + rank).
+
+    Only ranks are used, never the raw scores, because a BM25 score and a
+    cosine distance are not on the same scale.
+    Each result remembers which retriever found it, and at which rank.
+    """
+    fused: dict[str, dict] = {}
+
+    for name, chunk_ids in ranked_lists.items():
+        weight = 1.0 if weights is None else weights.get(name, 1.0)
+
+        for rank, chunk_id in enumerate(chunk_ids, start=1):
+            entry = fused.setdefault(
+                chunk_id,
+                {"chunk_id": chunk_id, "rrf_score": 0.0, "found_by": {}},
+            )
+            entry["rrf_score"] += weight / (k + rank)
+            entry["found_by"][name] = rank
+
+    # Ties: best single rank first, then chunk id, so the order is reproducible.
+    return sorted(
+        fused.values(),
+        key=lambda e: (-e["rrf_score"], min(e["found_by"].values()), e["chunk_id"]),
+    )
+
+
+def retrieve(
     question: str,
     document_ids: list[str],
     top_k: int = 5,
     corpus: str = DEFAULT_CORPUS,
-    use_exact_match: bool = True,
-):
-    corpus_collection = get_collection(corpus)
+    retrievers=DEFAULT_RETRIEVERS,
+    candidates: int = CANDIDATES_PER_RETRIEVER,
+    rrf_k: int = RRF_K,
+    weights: dict[str, float] | None = None,
+) -> dict:
+    """Run the switched-on retrievers, fuse them with RRF, keep the top_k.
+
+    Returns the chunks plus the details the UI and the evaluation need:
+    each retriever's ranked list and how long it took.
+    """
+    retrievers = validate_retrievers(retrievers)
+
     if not document_ids:
         raise ValueError("Select at least one document.")
 
     for document_id in document_ids:
         validate_document_id(document_id, corpus)
 
-    # Load chunks from the selected documents.
-    selected = corpus_collection.get(
-        where={"document_id": {"$in": document_ids}},
-        include=["documents", "metadatas"],
+    n = max(candidates, top_k)
+    ranked_lists: dict[str, list[str]] = {}
+    timings_ms: dict[str, float] = {}
+
+    for name in retrievers:
+        start = time.perf_counter()
+
+        if name == "dense":
+            ranked_lists[name] = dense_search(question, document_ids, corpus, n)
+        elif name == "bm25":
+            ranked_lists[name] = bm25_search(question, document_ids, corpus, n)
+
+        timings_ms[name] = round((time.perf_counter() - start) * 1000, 1)
+
+    fused = rrf_fuse(ranked_lists, k=rrf_k, weights=weights)[:top_k]
+
+    # Load text and line numbers for the chunks we keep.
+    ids = [entry["chunk_id"] for entry in fused]
+    stored = (
+        get_collection(corpus).get(ids=ids, include=["documents", "metadatas"])
+        if ids
+        else {"ids": [], "documents": [], "metadatas": []}
     )
+    by_id = {
+        chunk_id: (text, metadata or {})
+        for chunk_id, text, metadata in zip(
+            stored["ids"], stored["documents"], stored["metadatas"]
+        )
+    }
 
-    if not selected["ids"]:
-        return []
+    chunks = []
+    for fused_rank, entry in enumerate(fused, start=1):
+        if entry["chunk_id"] not in by_id:
+            continue  # stale BM25 entry: chunk no longer in Chroma
 
-    # Build a lookup of all selected chunks.
-    all_chunks = []
-    for i, chunk_id in enumerate(selected["ids"]):
-        metadata = selected["metadatas"][i]
-        all_chunks.append(
+        text, metadata = by_id[entry["chunk_id"]]
+        chunks.append(
             {
-                "chunk_id": chunk_id,
-                "document_id": metadata["document_id"],
-                "text": selected["documents"][i],
+                "chunk_id": entry["chunk_id"],
+                "document_id": metadata.get("document_id", ""),
+                "text": text,
                 "start_line": metadata.get("start_line", 1),
                 "end_line": metadata.get("end_line", 1),
-                "distance": None,
+                "fused_rank": fused_rank,
+                "rrf_score": round(entry["rrf_score"], 6),
+                "found_by": entry["found_by"],
             }
         )
 
-    # Optionally prioritize chunks containing exact error codes.
-    # Disabling this allows evaluation of semantic-only retrieval.
-    exact_matches = []
+    return {
+        "chunks": chunks,
+        "retrievers": retrievers,
+        "ranked_lists": ranked_lists,
+        "timings_ms": timings_ms,
+    }
 
-    if use_exact_match:
-        error_codes = set(re.findall(r"\bE\d{2}\b", question.upper()))
 
-        if error_codes:
-            for chunk in all_chunks:
-                text = chunk["text"].upper()
-                if any(
-                    re.search(rf"\b{re.escape(code)}\b", text) for code in error_codes
-                ):
-                    exact_matches.append(chunk)
-
-    # Run semantic search for broader context.
-    result = corpus_collection.query(
-        query_texts=[question],
-        n_results=min(top_k, len(selected["ids"])),
-        where={"document_id": {"$in": document_ids}},
-        include=["documents", "metadatas", "distances"],
-    )
-
-    semantic_matches = []
-    for i, chunk_id in enumerate(result["ids"][0]):
-        metadata = result["metadatas"][0][i]
-        semantic_matches.append(
-            {
-                "chunk_id": chunk_id,
-                "document_id": metadata["document_id"],
-                "text": result["documents"][0][i],
-                "start_line": metadata.get("start_line", 1),
-                "end_line": metadata.get("end_line", 1),
-                "distance": result["distances"][0][i],
-            }
-        )
-
-    # Keep exact matches first, then add semantic matches without
-    # duplicating chunks. Respect the requested top_k.
-    combined = []
-    seen = set()
-
-    for chunk in exact_matches + semantic_matches:
-        if chunk["chunk_id"] not in seen:
-            combined.append(chunk)
-            seen.add(chunk["chunk_id"])
-
-        if len(combined) >= top_k:
-            break
-
-    return combined
+def retrieve_chunks(
+    question: str,
+    document_ids: list[str],
+    top_k: int = 5,
+    corpus: str = DEFAULT_CORPUS,
+    retrievers=DEFAULT_RETRIEVERS,
+) -> list[dict]:
+    """Shortcut when only the chunks are needed."""
+    return retrieve(
+        question,
+        document_ids,
+        top_k=top_k,
+        corpus=corpus,
+        retrievers=retrievers,
+    )["chunks"]
 
 
 def generate_grounded_answer(
