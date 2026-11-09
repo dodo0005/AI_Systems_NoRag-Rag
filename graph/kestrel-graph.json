@@ -37,6 +37,15 @@
       ]
     },
     {
+      "id": "channel:#oncall-payments",
+      "name": "#oncall-payments",
+      "type": "Channel",
+      "aliases": [],
+      "chunk_ids": [
+        "672242501dff0d4a525b1f0b"
+      ]
+    },
+    {
       "id": "channel:#oncall-platform",
       "name": "#oncall-platform",
       "type": "Channel",
@@ -46,12 +55,22 @@
       ]
     },
     {
+      "id": "errorcode:kst-1007",
+      "name": "KST-1007",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "be0e36a8107f68d752651401"
+      ]
+    },
+    {
       "id": "errorcode:kst-1012",
       "name": "KST-1012",
       "type": "ErrorCode",
       "aliases": [],
       "chunk_ids": [
-        "6b178c41a91cd0095126bbe4"
+        "6b178c41a91cd0095126bbe4",
+        "be0e36a8107f68d752651401"
       ]
     },
     {
@@ -61,15 +80,6 @@
       "aliases": [],
       "chunk_ids": [
         "6b178c41a91cd0095126bbe4"
-      ]
-    },
-    {
-      "id": "errorcode:kst-2044",
-      "name": "KST-2044",
-      "type": "ErrorCode",
-      "aliases": [],
-      "chunk_ids": [
-        "e29b19c8ec64910f37f693fe"
       ]
     },
     {
@@ -127,12 +137,93 @@
       ]
     },
     {
+      "id": "errorcode:kst-5038",
+      "name": "KST-5038",
+      "type": "ErrorCode",
+      "aliases": [],
+      "chunk_ids": [
+        "045f828d97c95a7ba84327fd"
+      ]
+    },
+    {
       "id": "errorcode:kst-6010",
       "name": "KST-6010",
       "type": "ErrorCode",
       "aliases": [],
       "chunk_ids": [
         "f93023bc14b31e3f5f44c20b"
+      ]
+    },
+    {
+      "id": "feature:audit-log",
+      "name": "Audit log",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:dashboards",
+      "name": "Dashboards",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:data-connectors",
+      "name": "Data connectors",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:fastest-refresh",
+      "name": "Fastest refresh",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:history-kept",
+      "name": "History kept",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:scim-user-provisioning",
+      "name": "SCIM user provisioning",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:seats-included",
+      "name": "Seats included",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "feature:single-sign-on-saml",
+      "name": "Single sign-on (SAML)",
+      "type": "Feature",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
       ]
     },
     {
@@ -150,6 +241,7 @@
       "type": "Person",
       "aliases": [],
       "chunk_ids": [
+        "672242501dff0d4a525b1f0b",
         "e368a71b543ae00b88bc4bb6"
       ]
     },
@@ -190,12 +282,66 @@
       ]
     },
     {
+      "id": "plan:business",
+      "name": "Business",
+      "type": "Plan",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "plan:enterprise",
+      "name": "Enterprise",
+      "type": "Plan",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "plan:free",
+      "name": "Free",
+      "type": "Plan",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "plan:starter",
+      "name": "Starter",
+      "type": "Plan",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
+      "id": "plan:team",
+      "name": "Team",
+      "type": "Plan",
+      "aliases": [],
+      "chunk_ids": [
+        "c0854df86952ee9515304c6d"
+      ]
+    },
+    {
       "id": "service:analytics-engine",
       "name": "Analytics Engine",
       "type": "Service",
       "aliases": [],
       "chunk_ids": [
         "0d6fca2f12802f4b533a5a16"
+      ]
+    },
+    {
+      "id": "service:audit-log",
+      "name": "audit-log",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "e368a71b543ae00b88bc4bb6"
       ]
     },
     {
@@ -253,6 +399,15 @@
       ]
     },
     {
+      "id": "service:payments-core",
+      "name": "Payments Core",
+      "type": "Service",
+      "aliases": [],
+      "chunk_ids": [
+        "f93023bc14b31e3f5f44c20b"
+      ]
+    },
+    {
       "id": "service:postroom",
       "name": "postroom",
       "type": "Service",
@@ -307,7 +462,6 @@
       "aliases": [],
       "chunk_ids": [
         "b903fd3368f61b664c2511ae",
-        "e29b19c8ec64910f37f693fe",
         "e368a71b543ae00b88bc4bb6"
       ]
     },
@@ -338,8 +492,8 @@
       "type": "Team",
       "aliases": [],
       "chunk_ids": [
-        "e368a71b543ae00b88bc4bb6",
-        "f93023bc14b31e3f5f44c20b"
+        "672242501dff0d4a525b1f0b",
+        "e368a71b543ae00b88bc4bb6"
       ]
     },
     {
@@ -348,6 +502,7 @@
       "type": "Team",
       "aliases": [],
       "chunk_ids": [
+        "672242501dff0d4a525b1f0b",
         "7445621a785905d2ec3047c8",
         "d6289ba993dccb391a671efa",
         "e368a71b543ae00b88bc4bb6"
@@ -357,6 +512,45 @@
   "edges": [
     {
       "id": "e1",
+      "source": "plan:business",
+      "relation": "includes_feature",
+      "target": "feature:single-sign-on-saml",
+      "evidence": [
+        {
+          "document_id": "product-guide.md",
+          "chunk_id": "c0854df86952ee9515304c6d",
+          "quote": "| Single sign-on (SAML) | — | — | — | Yes | Yes |"
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "source": "plan:enterprise",
+      "relation": "includes_feature",
+      "target": "feature:single-sign-on-saml",
+      "evidence": [
+        {
+          "document_id": "product-guide.md",
+          "chunk_id": "c0854df86952ee9515304c6d",
+          "quote": "| Single sign-on (SAML) | — | — | — | Yes | Yes |"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "source": "plan:enterprise",
+      "relation": "includes_feature",
+      "target": "feature:scim-user-provisioning",
+      "evidence": [
+        {
+          "document_id": "product-guide.md",
+          "chunk_id": "c0854df86952ee9515304c6d",
+          "quote": "| SCIM user provisioning | — | — | — | — | Yes |"
+        }
+      ]
+    },
+    {
+      "id": "e4",
       "source": "service:gateway",
       "relation": "owned_by",
       "target": "team:platform",
@@ -369,7 +563,7 @@
       ]
     },
     {
-      "id": "e2",
+      "id": "e5",
       "source": "service:connector-hub",
       "relation": "owned_by",
       "target": "team:data-integrations",
@@ -382,7 +576,7 @@
       ]
     },
     {
-      "id": "e3",
+      "id": "e6",
       "source": "service:query-engine",
       "relation": "owned_by",
       "target": "team:analytics-engine",
@@ -395,7 +589,7 @@
       ]
     },
     {
-      "id": "e4",
+      "id": "e7",
       "source": "service:scheduler",
       "relation": "owned_by",
       "target": "team:analytics-engine",
@@ -408,7 +602,7 @@
       ]
     },
     {
-      "id": "e5",
+      "id": "e8",
       "source": "service:postroom",
       "relation": "owned_by",
       "target": "team:messaging",
@@ -421,7 +615,7 @@
       ]
     },
     {
-      "id": "e6",
+      "id": "e9",
       "source": "service:postroom",
       "relation": "replaces",
       "target": "service:mailman",
@@ -429,12 +623,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "d6289ba993dccb391a671efa",
-          "quote": "postroom replaced the older mailman service"
+          "quote": "postroom replaced the older mailman service in November 2025."
         }
       ]
     },
     {
-      "id": "e7",
+      "id": "e10",
       "source": "service:embed-svc",
       "relation": "owned_by",
       "target": "team:platform",
@@ -447,7 +641,20 @@
       ]
     },
     {
-      "id": "e8",
+      "id": "e11",
+      "source": "service:audit-log",
+      "relation": "owned_by",
+      "target": "team:identity",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "e368a71b543ae00b88bc4bb6",
+          "quote": "Owner: **Identity**."
+        }
+      ]
+    },
+    {
+      "id": "e12",
       "source": "team:platform",
       "relation": "led_by",
       "target": "person:samuel-okafor",
@@ -455,12 +662,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Platform | Samuel Okafor | #oncall-platform"
+          "quote": "| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e9",
+      "id": "e13",
       "source": "team:platform",
       "relation": "has_oncall_channel",
       "target": "channel:#oncall-platform",
@@ -468,12 +675,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Platform | Samuel Okafor | #oncall-platform"
+          "quote": "| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e10",
+      "id": "e14",
       "source": "team:identity",
       "relation": "led_by",
       "target": "person:priya-raman",
@@ -481,12 +688,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Identity | Priya Raman | #oncall-identity"
+          "quote": "| Identity | Priya Raman | #oncall-identity | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e11",
+      "id": "e15",
       "source": "team:identity",
       "relation": "has_oncall_channel",
       "target": "channel:#oncall-identity",
@@ -494,12 +701,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Identity | Priya Raman | #oncall-identity"
+          "quote": "| Identity | Priya Raman | #oncall-identity | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e12",
+      "id": "e16",
       "source": "team:data-integrations",
       "relation": "led_by",
       "target": "person:tomasz-wójcik",
@@ -507,12 +714,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Data Integrations | Tomasz Wójcik | #oncall-data-integrations"
+          "quote": "| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |"
         }
       ]
     },
     {
-      "id": "e13",
+      "id": "e17",
       "source": "team:data-integrations",
       "relation": "has_oncall_channel",
       "target": "channel:#oncall-data-integrations",
@@ -520,12 +727,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Data Integrations | Tomasz Wójcik | #oncall-data-integrations"
+          "quote": "| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |"
         }
       ]
     },
     {
-      "id": "e14",
+      "id": "e18",
       "source": "team:analytics-engine",
       "relation": "led_by",
       "target": "person:léa-fontaine",
@@ -533,12 +740,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Analytics Engine | Léa Fontaine | #oncall-analytics"
+          "quote": "| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e15",
+      "id": "e19",
       "source": "team:analytics-engine",
       "relation": "has_oncall_channel",
       "target": "channel:#oncall-analytics",
@@ -546,12 +753,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Analytics Engine | Léa Fontaine | #oncall-analytics"
+          "quote": "| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |"
         }
       ]
     },
     {
-      "id": "e16",
+      "id": "e20",
       "source": "team:messaging",
       "relation": "led_by",
       "target": "person:inès-moreau",
@@ -559,12 +766,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Messaging | Inès Moreau | #oncall-messaging"
+          "quote": "| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |"
         }
       ]
     },
     {
-      "id": "e17",
+      "id": "e21",
       "source": "team:messaging",
       "relation": "has_oncall_channel",
       "target": "channel:#oncall-messaging",
@@ -572,12 +779,12 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Messaging | Inès Moreau | #oncall-messaging"
+          "quote": "| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |"
         }
       ]
     },
     {
-      "id": "e18",
+      "id": "e22",
       "source": "team:payments-core",
       "relation": "led_by",
       "target": "person:jonas-berg",
@@ -585,12 +792,30 @@
         {
           "document_id": "service-catalog.md",
           "chunk_id": "e368a71b543ae00b88bc4bb6",
-          "quote": "Payments Core | Jonas Berg"
+          "quote": "| Payments Core | Jonas Berg |"
+        },
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "672242501dff0d4a525b1f0b",
+          "quote": "| Payments Core | Jonas Berg | #oncall-payments |"
         }
       ]
     },
     {
-      "id": "e19",
+      "id": "e23",
+      "source": "team:payments-core",
+      "relation": "has_oncall_channel",
+      "target": "channel:#oncall-payments",
+      "evidence": [
+        {
+          "document_id": "service-catalog.md",
+          "chunk_id": "672242501dff0d4a525b1f0b",
+          "quote": "| Payments Core | Jonas Berg | #oncall-payments |"
+        }
+      ]
+    },
+    {
+      "id": "e24",
       "source": "errorcode:kst-1012",
       "relation": "escalates_to",
       "target": "team:identity",
@@ -598,12 +823,12 @@
         {
           "document_id": "support-runbook-errors.md",
           "chunk_id": "6b178c41a91cd0095126bbe4",
-          "quote": "Escalate: to Identity if the metadata is correct and the error persists."
+          "quote": "**Escalate:** to Identity if the metadata is correct and the error persists."
         }
       ]
     },
     {
-      "id": "e20",
+      "id": "e25",
       "source": "errorcode:kst-3012",
       "relation": "escalates_to",
       "target": "team:analytics-eng",
@@ -611,25 +836,12 @@
         {
           "document_id": "support-runbook-errors.md",
           "chunk_id": "ebd156b44f4f4d04fe8f4ba0",
-          "quote": "Escalate: to Analytics Eng"
+          "quote": "**Escalate:** to Analytics Eng"
         }
       ]
     },
     {
-      "id": "e21",
-      "source": "errorcode:kst-3020",
-      "relation": "escalates_to",
-      "target": "service:analytics-engine",
-      "evidence": [
-        {
-          "document_id": "support-runbook-errors.md",
-          "chunk_id": "0d6fca2f12802f4b533a5a16",
-          "quote": "Escalate: to Analytics Engine only if a query that used to finish quickly suddenly times out for many datasets of the same customer."
-        }
-      ]
-    },
-    {
-      "id": "e22",
+      "id": "e26",
       "source": "errorcode:kst-3020",
       "relation": "caused_by",
       "target": "errorcode:kst-2xxx",
@@ -637,12 +849,12 @@
         {
           "document_id": "support-runbook-errors.md",
           "chunk_id": "0d6fca2f12802f4b533a5a16",
-          "quote": "Cause: the tooltip shows a second code with the real cause, usually a KST-2xxx connector error."
+          "quote": "usually a KST-2xxx connector error."
         }
       ]
     },
     {
-      "id": "e23",
+      "id": "e27",
       "source": "errorcode:kst-5031",
       "relation": "raised_by",
       "target": "service:postroom",
@@ -655,15 +867,28 @@
       ]
     },
     {
-      "id": "e24",
+      "id": "e28",
+      "source": "errorcode:kst-5031",
+      "relation": "escalates_to",
+      "target": "service:postroom",
+      "evidence": [
+        {
+          "document_id": "support-runbook-errors.md",
+          "chunk_id": "045f828d97c95a7ba84327fd",
+          "quote": "escalate to the team that owns postroom"
+        }
+      ]
+    },
+    {
+      "id": "e29",
       "source": "errorcode:kst-6010",
       "relation": "escalates_to",
-      "target": "team:payments-core",
+      "target": "service:payments-core",
       "evidence": [
         {
           "document_id": "support-runbook-errors.md",
           "chunk_id": "f93023bc14b31e3f5f44c20b",
-          "quote": "Escalate: to Payments Core if more than three customers are affected on the same day"
+          "quote": "**Escalate:** to Payments Core if more than three customers are affected on the same day (possible incident)."
         }
       ]
     }
@@ -672,6 +897,13 @@
   "possible_missed_merges": [
     {
       "name": "analytics engine",
+      "types": [
+        "Service",
+        "Team"
+      ]
+    },
+    {
+      "name": "payments core",
       "types": [
         "Service",
         "Team"
@@ -803,31 +1035,31 @@
   },
   "metadata": {
     "corpus": "kestrel",
-    "built_at": "2026-11-08T23:45:59+00:00",
+    "built_at": "2026-11-08T23:55:09+00:00",
     "model": "gemini-3.5-flash-lite",
-    "prompt_version": "v1",
+    "prompt_version": "v2",
     "chunk_size": 800,
     "overlap_percent": 10,
     "chunks": 43,
     "counts": {
-      "nodes": 38,
-      "edges": 24,
+      "nodes": 55,
+      "edges": 29,
       "merges": 0,
-      "possible_missed_merges": 1
+      "possible_missed_merges": 2
     },
     "cost": {
-      "llm_calls_this_run": 0,
-      "chunks_from_cache": 43,
+      "llm_calls_this_run": 43,
+      "chunks_from_cache": 0,
       "retries": 0,
       "rate_limited": 0,
-      "prompt_tokens_this_run": 0,
-      "completion_tokens_this_run": 0,
-      "seconds": 0.0,
+      "prompt_tokens_this_run": 36236,
+      "completion_tokens_this_run": 4009,
+      "seconds": 201.0,
       "total_from_cache": {
-        "calls": 43,
-        "prompt_tokens": 28453,
-        "completion_tokens": 3454,
-        "llm_seconds": 29.8
+        "calls": 86,
+        "prompt_tokens": 64689,
+        "completion_tokens": 7463,
+        "llm_seconds": 58.6
       }
     },
     "failed_chunks": [],

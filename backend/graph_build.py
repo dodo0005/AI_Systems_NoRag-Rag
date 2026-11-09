@@ -42,10 +42,12 @@ from backend.rag import GEMINI_MODEL, PROJECT_ROOT, get_collection
 
 GRAPH_DIR = PROJECT_ROOT / "graph"
 CACHE_DIR = GRAPH_DIR / "cache"
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"
 
 GRAPH_MODEL = os.getenv("GRAPH_MODEL", GEMINI_MODEL)
-CALL_DELAY_SECONDS = float(os.getenv("GRAPH_CALL_DELAY", "4"))  # free tier: ~15 calls/min
+CALL_DELAY_SECONDS = float(
+    os.getenv("GRAPH_CALL_DELAY", "4")
+)  # free tier: ~15 calls/min
 
 
 def api_keys() -> list[str]:
@@ -73,12 +75,22 @@ Relation types (use only these, with these source -> target types):
 {relations}
 
 Rules:
-- Extract only facts the excerpt states explicitly. Never use outside knowledge.
+- Extract EVERY fact of the excerpt that matches a relation type, not only the main one.
+  Only facts the excerpt states explicitly; never use outside knowledge.
+- Tables: read every row. A team row with a lead and a channel gives one led_by
+  and one has_oncall_channel relation. A plan column with "Yes" for a feature
+  gives one includes_feature relation.
+- Error code sections: a line "Escalate: to X" gives escalates_to from that
+  section's error code to X; "escalate to the team that owns S" gives
+  escalates_to from the error code to the service S. Use the error code of the
+  section the line is in, never the code of another section.
 - Use entity names exactly as written in the excerpt (e.g. "KST-5031", "postroom",
-  "Messaging", "#oncall-messaging").
+  "Messaging", "#oncall-messaging"). If a name is cut off at the start or the end
+  of the excerpt, skip it.
 - "aliases": other names the excerpt uses for the SAME entity (may be empty).
 - Every relation's source and target must be names from your entities list.
-- "quote": copy, word for word, the shortest part of the excerpt that states the relation.
+- "quote": copy, character for character, the shortest part of the excerpt that
+  states the relation, including any ** or | characters.
 - If the excerpt states no relation, return empty lists.
 
 Return only a JSON object:
@@ -127,8 +139,12 @@ class Extractor:
                         response_format={"type": "json_object"},
                     )
                     usage = {
-                        "prompt_tokens": getattr(response.usage, "prompt_tokens", 0) or 0,
-                        "completion_tokens": getattr(response.usage, "completion_tokens", 0) or 0,
+                        "prompt_tokens": getattr(response.usage, "prompt_tokens", 0)
+                        or 0,
+                        "completion_tokens": getattr(
+                            response.usage, "completion_tokens", 0
+                        )
+                        or 0,
                         "seconds": round(time.perf_counter() - started, 2),
                     }
                     self.stats["llm_calls"] += 1
@@ -147,7 +163,9 @@ class Extractor:
                 self.key_index = (self.key_index + 1) % len(self.keys)
                 print(f"    switching to API key #{self.key_index + 1}")
 
-        raise RuntimeError("Every API key is rate-limited. Re-run later: done chunks are cached.")
+        raise RuntimeError(
+            "Every API key is rate-limited. Re-run later: done chunks are cached."
+        )
 
     def extract(self, chunk: dict) -> tuple[dict | None, str]:
         """Return (parsed JSON or None, status) for one chunk."""
@@ -169,8 +187,7 @@ class Extractor:
             # One retry, telling the model what was wrong.
             self.stats["retries"] += 1
             raw, usage = self.call(
-                prompt
-                + "\nYour previous answer was not a valid JSON object with "
+                prompt + "\nYour previous answer was not a valid JSON object with "
                 '"entities" and "relations" lists. Return only that JSON object.'
             )
             parsed = parse_json(raw)
@@ -193,7 +210,9 @@ def parse_json(raw: str) -> dict | None:
         return None
     if not isinstance(data, dict):
         return None
-    if not isinstance(data.get("entities"), list) or not isinstance(data.get("relations"), list):
+    if not isinstance(data.get("entities"), list) or not isinstance(
+        data.get("relations"), list
+    ):
         return None
     return data
 
@@ -201,13 +220,17 @@ def parse_json(raw: str) -> dict | None:
 # ---------- validation ----------
 
 
-def validate_chunk_output(data: dict, chunk: dict, rejected: Counter, examples: list) -> tuple[list, list]:
+def validate_chunk_output(
+    data: dict, chunk: dict, rejected: Counter, examples: list
+) -> tuple[list, list]:
     """Keep only the entities and relations that pass every check."""
 
     def reject(reason: str, item):
         rejected[reason] += 1
         if len(examples) < 25:
-            examples.append({"chunk_id": chunk["chunk_id"], "reason": reason, "item": item})
+            examples.append(
+                {"chunk_id": chunk["chunk_id"], "reason": reason, "item": item}
+            )
 
     entities: list[ExtractedEntity] = []
     for item in data["entities"]:
@@ -333,7 +356,11 @@ def resolve_and_assemble(extractions: list[tuple[dict, list, list]]) -> dict:
                 {
                     "node": node_id,
                     "merged_names": sorted(names),
-                    "method": "alias given by the LLM" if len(keys) > 1 else "same normalised name",
+                    "method": (
+                        "alias given by the LLM"
+                        if len(keys) > 1
+                        else "same normalised name"
+                    ),
                 }
             )
 
@@ -350,15 +377,24 @@ def resolve_and_assemble(extractions: list[tuple[dict, list, list]]) -> dict:
     edges_by_triple: dict[tuple, dict] = {}
     for chunk, _entities, relations in extractions:
         for relation, source_type, target_type in relations:
-            source = node_id_of_key.get((source_type, normalize_name(relation.source, source_type)))
-            target = node_id_of_key.get((target_type, normalize_name(relation.target, target_type)))
+            source = node_id_of_key.get(
+                (source_type, normalize_name(relation.source, source_type))
+            )
+            target = node_id_of_key.get(
+                (target_type, normalize_name(relation.target, target_type))
+            )
             if not source or not target or source == target:
                 continue
 
             triple = (source, relation.relation, target)
             edge = edges_by_triple.setdefault(
                 triple,
-                {"source": source, "relation": relation.relation, "target": target, "evidence": []},
+                {
+                    "source": source,
+                    "relation": relation.relation,
+                    "target": target,
+                    "evidence": [],
+                },
             )
             if all(e["chunk_id"] != chunk["chunk_id"] for e in edge["evidence"]):
                 edge["evidence"].append(
@@ -395,7 +431,9 @@ def load_chunks(corpus: str) -> list[dict]:
             "overlap_percent": (metadata or {}).get("overlap_percent"),
             "text": text or "",
         }
-        for chunk_id, text, metadata in zip(stored["ids"], stored["documents"], stored["metadatas"])
+        for chunk_id, text, metadata in zip(
+            stored["ids"], stored["documents"], stored["metadatas"]
+        )
     ]
     return sorted(chunks, key=lambda c: (c["document_id"], c["chunk_index"]))
 
@@ -413,7 +451,9 @@ def build_graph(corpus: str, limit: int | None = None) -> dict:
     started = time.perf_counter()
 
     for number, chunk in enumerate(chunks, start=1):
-        print(f"[{number}/{len(chunks)}] {chunk['document_id']} #{chunk['chunk_index']}")
+        print(
+            f"[{number}/{len(chunks)}] {chunk['document_id']} #{chunk['chunk_index']}"
+        )
         data, status = extractor.extract(chunk)
 
         if data is None:
@@ -485,7 +525,9 @@ def build_graph(corpus: str, limit: int | None = None) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Build the concept graph of a corpus.")
     parser.add_argument("--corpus", default="kestrel", choices=["kestrel"])
-    parser.add_argument("--limit", type=int, help="Only the first N chunks (for a cheap test).")
+    parser.add_argument(
+        "--limit", type=int, help="Only the first N chunks (for a cheap test)."
+    )
     args = parser.parse_args()
     build_graph(args.corpus, limit=args.limit)
 
