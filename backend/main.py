@@ -15,6 +15,7 @@ from backend.rag import (
     rebuild_index,
     answer_question,
     analyze_words,
+    RetrievalError,
 )
 from backend.schemas import AskRequest, AskResponse
 
@@ -323,6 +324,13 @@ def ask_question_endpoint(request: AskRequest):
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
+            detail=str(exc),
+        ) from exc
+
+    except RetrievalError as exc:
+        # The request itself is wrong (document, retriever, missing graph).
+        raise HTTPException(
+            status_code=400,
             detail=str(exc),
         ) from exc
 

@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-RetrieverName = Literal["dense", "bm25"]
+RetrieverName = Literal["dense", "bm25", "graph"]
 
 
 class AskRequest(BaseModel):
@@ -52,6 +52,27 @@ class Usage(BaseModel):
     completion_tokens: int = 0
 
 
+class GraphEntity(BaseModel):
+    name: str
+    type: str
+
+
+class GraphEdge(BaseModel):
+    source: str
+    relation: str
+    target: str
+    hop: int
+    chunk_ids: list[str]
+    quote: str
+
+
+class GraphPath(BaseModel):
+    entities: list[GraphEntity] = Field(default_factory=list)  # found in the question
+    edges: list[GraphEdge] = Field(default_factory=list)  # followed in the walk
+    chunk_ids: list[str] = Field(default_factory=list)  # the graph's ranked chunks
+    in_context: list[str] = Field(default_factory=list)  # those that survived fusion
+
+
 class AskResponse(BaseModel):
     status: Literal["answered", "insufficient_evidence"]
     answer: str
@@ -59,6 +80,7 @@ class AskResponse(BaseModel):
     retrievers: list[str] = Field(default_factory=list)
     usage: Usage = Field(default_factory=Usage)
     latency_ms: dict[str, float] = Field(default_factory=dict)
+    graph_path: GraphPath | None = None
 
 
 class ErrorResponse(BaseModel):

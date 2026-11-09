@@ -16,17 +16,14 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from backend.schemas import AskResponse, Reference, Usage
-
-from backend.tokenizer import tokenize
-
 from backend.bm25 import BM25Index
-
+from backend.graph import ConceptGraph, graph_file
+from backend.schemas import AskResponse, GraphPath, Reference, Usage
+from backend.tokenizer import tokenize
 
 # Resolve paths relative to the project, not the terminal's current directory.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CHROMA_DIR = PROJECT_ROOT / "chroma_db"
-
 BM25_DIR = PROJECT_ROOT / "bm25_index"
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
@@ -338,6 +335,7 @@ def index_document(
             metadatas=metadatas,
         )
 
+    # Keep the BM25 index in sync with Chroma.
     if update_bm25:
         rebuild_bm25(corpus)
 
@@ -377,13 +375,14 @@ def rebuild_index(
                 chunk_size=chunk_size,
                 overlap_percent=overlap_percent,
                 corpus=corpus,
-                update_bm25=False,
+                update_bm25=False,  # rebuilt once, after the loop
             )
             results[document.name] = count
 
         except (ValueError, FileNotFoundError, OSError) as exc:
             failures[document.name] = str(exc)
 
+    # One BM25 rebuild for the whole corpus, not one per document.
     rebuild_bm25(corpus)
 
     return {
@@ -391,8 +390,8 @@ def rebuild_index(
         "indexed_chunks": sum(results.values()),
         "documents": results,
         "failures": failures,
-        
     }
+
 
 _bm25_cache: dict[str, BM25Index] = {}
 
@@ -460,6 +459,8 @@ def delete_document(
     corpus_collection.delete(where={"document_id": document_id})
 
     path.unlink()
+
+    # The deleted document's chunks must leave the BM25 index too.
     rebuild_bm25(corpus)
 
 
@@ -471,10 +472,17 @@ GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 # ---------- Retrieval: one function per retriever, fused with RRF ----------
 
-RETRIEVER_NAMES = ("dense", "bm25")
+RETRIEVER_NAMES = ("dense", "bm25", "graph")
 DEFAULT_RETRIEVERS = ("dense", "bm25")
 CANDIDATES_PER_RETRIEVER = 20  # each retriever proposes this many chunks
 RRF_K = 60  # standard RRF constant (Cormack et al., 2009)
+
+
+class RetrievalError(ValueError):
+    """A problem with the request itself (bad retriever, document, missing graph).
+
+    Kept separate from LLM validation errors so the API can answer 400, not 502.
+    """
 
 
 def validate_retrievers(retrievers) -> list[str]:
@@ -482,11 +490,11 @@ def validate_retrievers(retrievers) -> list[str]:
     names = list(dict.fromkeys(retrievers or []))
 
     if not names:
-        raise ValueError("Switch on at least one retriever.")
+        raise RetrievalError("Switch on at least one retriever.")
 
     unknown = [name for name in names if name not in RETRIEVER_NAMES]
     if unknown:
-        raise ValueError(f"Unknown retriever(s): {', '.join(unknown)}.")
+        raise RetrievalError(f"Unknown retriever(s): {', '.join(unknown)}.")
 
     return names
 
@@ -526,6 +534,40 @@ def bm25_search(
     ranked = index.search(question, allowed_document_ids=set(document_ids), n=n)
 
     return [chunk_id for chunk_id, _score in ranked]
+
+
+_graph_cache: dict[str, tuple[float, ConceptGraph]] = {}
+
+
+def get_concept_graph(corpus: str) -> ConceptGraph:
+    """Load graph/<corpus>-graph.json, reloading it when the file changes."""
+    path = graph_file(corpus)
+
+    if not path.exists():
+        raise RetrievalError(
+            f"No concept graph for '{corpus}'. The graph is built for Kestrel only: "
+            "python -m backend.graph_build --corpus kestrel"
+        )
+
+    modified = path.stat().st_mtime
+    cached = _graph_cache.get(corpus)
+    if cached and cached[0] == modified:
+        return cached[1]
+
+    graph = ConceptGraph.load(path)
+    _graph_cache[corpus] = (modified, graph)
+    return graph
+
+
+def graph_search(
+    question: str,
+    document_ids: list[str],
+    corpus: str,
+    n: int,
+) -> tuple[list[str], dict]:
+    """Concept graph walk. Returns chunk ids (best first) and the path behind them."""
+    graph = get_concept_graph(corpus)
+    return graph.search(question, allowed_document_ids=set(document_ids), n=n)
 
 
 def rrf_fuse(
@@ -577,14 +619,18 @@ def retrieve(
     retrievers = validate_retrievers(retrievers)
 
     if not document_ids:
-        raise ValueError("Select at least one document.")
+        raise RetrievalError("Select at least one document.")
 
     for document_id in document_ids:
-        validate_document_id(document_id, corpus)
+        try:
+            validate_document_id(document_id, corpus)
+        except ValueError as exc:
+            raise RetrievalError(str(exc)) from exc
 
     n = max(candidates, top_k)
     ranked_lists: dict[str, list[str]] = {}
     timings_ms: dict[str, float] = {}
+    graph_path = None
 
     for name in retrievers:
         start = time.perf_counter()
@@ -593,6 +639,10 @@ def retrieve(
             ranked_lists[name] = dense_search(question, document_ids, corpus, n)
         elif name == "bm25":
             ranked_lists[name] = bm25_search(question, document_ids, corpus, n)
+        elif name == "graph":
+            ranked_lists[name], graph_path = graph_search(
+                question, document_ids, corpus, n
+            )
 
         timings_ms[name] = round((time.perf_counter() - start) * 1000, 1)
 
@@ -631,11 +681,17 @@ def retrieve(
             }
         )
 
+    if graph_path is not None:
+        # Which of the graph's chunks survived fusion and reach the LLM?
+        kept = {chunk["chunk_id"] for chunk in chunks}
+        graph_path["in_context"] = [c for c in graph_path["chunk_ids"] if c in kept]
+
     return {
         "chunks": chunks,
         "retrievers": retrievers,
         "ranked_lists": ranked_lists,
         "timings_ms": timings_ms,
+        "graph_path": graph_path,
     }
 
 
@@ -823,6 +879,8 @@ def answer_question(
     generation_ms = round((time.perf_counter() - start) * 1000, 1)
 
     response.retrievers = retrieval["retrievers"]
+    if retrieval["graph_path"] is not None:
+        response.graph_path = GraphPath.model_validate(retrieval["graph_path"])
     response.latency_ms = {**retrieval["timings_ms"], "generation": generation_ms}
 
     return response
