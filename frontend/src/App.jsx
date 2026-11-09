@@ -4,9 +4,11 @@ import "./App.css";
 
 const API = "/api";
 
+// Retrievers the user can switch on or off. RRF fuses the ones that are on.
 const RETRIEVERS = [
   { id: "dense", label: "Dense (embeddings)" },
   { id: "bm25", label: "BM25 (keywords)" },
+  { id: "graph", label: "Concept graph", corpora: ["kestrel"] },
 ];
 
 export default function App() {
@@ -272,7 +274,7 @@ function analyzeQuestionWords(event) {
       return;
     }
 
-    if (retrievers.length === 0) {
+    if (activeRetrievers.length === 0) {
       setError("Switch on at least one retriever.");
       return;
     }
@@ -288,7 +290,7 @@ function analyzeQuestionWords(event) {
           document_ids: selected,
           top_k: Number(topK),
           corpus,
-          retrievers,
+          retrievers: activeRetrievers,
         }),
       });
 
@@ -299,7 +301,17 @@ function analyzeQuestionWords(event) {
       setLoading(false);
     }
   }
-    function toggleRetriever(id) {
+
+  // A retriever with a "corpora" list exists only for those corpora.
+  function isAvailable(retriever) {
+    return !retriever.corpora || retriever.corpora.includes(corpus);
+  }
+
+  const activeRetrievers = retrievers.filter((id) =>
+    isAvailable(RETRIEVERS.find((retriever) => retriever.id === id)),
+  );
+
+  function toggleRetriever(id) {
     setRetrievers((current) =>
       current.includes(id)
         ? current.filter((name) => name !== id)
@@ -534,19 +546,27 @@ function analyzeQuestionWords(event) {
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder="e.g. What should I do when error E05 appears?"
-                  />
-          
-                    <fieldset className="retriever-toggles">
+          />
+
+          <fieldset className="retriever-toggles">
             <legend>Retrievers (fused with RRF)</legend>
 
             {RETRIEVERS.map((retriever) => (
               <label key={retriever.id} className="retriever-toggle">
                 <input
                   type="checkbox"
-                  checked={retrievers.includes(retriever.id)}
+                  disabled={!isAvailable(retriever)}
+                  checked={
+                    isAvailable(retriever) && retrievers.includes(retriever.id)
+                  }
                   onChange={() => toggleRetriever(retriever.id)}
                 />
                 {retriever.label}
+                {retriever.corpora && (
+                  <small className="retriever-note">
+                    ({retriever.corpora.join(", ")} only)
+                  </small>
+                )}
               </label>
             ))}
           </fieldset>
@@ -593,8 +613,7 @@ function analyzeQuestionWords(event) {
           </div>
 
           <p className="answer-text">{result.answer}</p>
-          
-          
+
           <p className="answer-meta">
             Retrievers: {result.retrievers?.join(" + ") || "—"} ·{" "}
             {result.usage?.llm_calls ?? 0} LLM call
@@ -608,6 +627,48 @@ function analyzeQuestionWords(event) {
             ms
           </p>
 
+          {result.graph_path && (
+            <details className="graph-path" open>
+              <summary>
+                Graph path · {result.graph_path.entities.length} entit
+                {result.graph_path.entities.length === 1 ? "y" : "ies"} in the
+                question · {result.graph_path.edges.length} edges followed ·{" "}
+                {result.graph_path.in_context.length}/
+                {result.graph_path.chunk_ids.length} graph chunks reached the
+                answer context
+              </summary>
+
+              <p>
+                <strong>Entities found in the question:</strong>{" "}
+                {result.graph_path.entities
+                  .map((entity) => `${entity.name} (${entity.type})`)
+                  .join(", ") || "none"}
+              </p>
+
+              <ol className="graph-edges">
+                {result.graph_path.edges.map((edge, index) => (
+                  <li key={index}>
+                    <span className="hop">hop {edge.hop}</span> {edge.source}{" "}
+                    <em>—{edge.relation}→</em> {edge.target}
+                    <small>
+                      {" "}
+                      · “{edge.quote}” · chunk{" "}
+                      {edge.chunk_ids
+                        .map(
+                          (id) =>
+                            id.slice(0, 8) +
+                            (result.graph_path.in_context.includes(id)
+                              ? " (in context)"
+                              : ""),
+                        )
+                        .join(", ")}
+                    </small>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
+
           <div className="references">
             <h3>Source references ({result.references?.length || 0})</h3>
 
@@ -620,8 +681,9 @@ function analyzeQuestionWords(event) {
                       <small>
                         Lines {ref.start_line}–{ref.end_line}
                       </small>
-                                            <small className="found-by">
-                        Fused rank #{ref.fused_rank ?? "?"} · found by{" "}
+                      <small className="found-by">
+                        Chunk {ref.chunk_id.slice(0, 8)} · fused rank #
+                        {ref.fused_rank ?? "?"} · found by{" "}
                         {Object.entries(ref.found_by || {})
                           .map(([name, rank]) => `${name} #${rank}`)
                           .join(", ") || "—"}

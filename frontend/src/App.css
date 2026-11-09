@@ -674,8 +674,6 @@ textarea {
   color: #8d302b;
   font-size: 0.82rem;
 }
-
-
 /* ---------- V3: retriever toggles and provenance ---------- */
 
 .retriever-toggles {
@@ -710,4 +708,50 @@ textarea {
 
 .reference summary small.found-by {
   color: #526b49;
+}
+
+/* ---------- V3: concept graph path ---------- */
+
+.retriever-note {
+  color: #7b8177;
+  font-size: 0.72rem;
+}
+
+.retriever-toggle:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.graph-path {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid #e4e8df;
+  border-radius: 10px;
+  background: #f7f8f5;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.graph-path summary {
+  cursor: pointer;
+  color: #526b49;
+  font-weight: 600;
+}
+
+.graph-edges {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.graph-edges .hop {
+  display: inline-block;
+  min-width: 44px;
+  color: #7b8177;
+  font-size: 0.72rem;
+}
+
+.graph-edges small {
+  color: #7b8177;
+  overflow-wrap: anywhere;
 }
