@@ -17,7 +17,7 @@ export default function App() {
   const [selected, setSelected] = useState([]);
   const [question, setQuestion] = useState("");
   const [topK, setTopK] = useState(5);
-  const [retrievers, setRetrievers] = useState(["dense", "bm25"]);
+  const [retrievers, setRetrievers] = useState(["dense", "bm25", "graph"]);
   const [chunkSize, setChunkSize] = useState(800);
   const [overlap, setOverlap] = useState(10);
   const [file, setFile] = useState(null);
