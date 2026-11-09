@@ -1,0 +1,163 @@
+n,edge_id,source,relation,target,document_id,chunk_id,quote,chunk_text,grade,comment
+1,e4,gateway,owned_by,Platform,service-catalog.md,7445621a785905d2ec3047c8,Owner: **Platform**.,"# Kestrel Analytics — Service Catalog
+
+Internal document · Owner: Platform team · Last updated: 15 September 2026
+
+This catalog lists the production services of Kestrel, what each one does, and which team owns it. The owning team is responsible for the service's on-call rotation, its alerts and its runbook entries. When in doubt about who owns something, ask in #platform-help.
+
+## 1. Services
+
+### gateway
+
+Public entry point for the web app and the public API. Handles TLS, rate limiting and request routing to the other services. Rate limit: 600 API requests per minute per workspace; requests above the limit receive HTTP 429.
+Owner: **Platform**.
+
+### auth
+
+Sign-in with password, two-factor authentication, single sign-on (SAML) and SCIM provisioning. Issues the session tokens used by every",correct,"Chunk says under '### gateway': 'Owner: **Platform**.' Right entity, relation and direction."
+2,e11,audit-log,owned_by,Identity,service-catalog.md,e368a71b543ae00b88bc4bb6,Owner: **Identity**.,"illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,Chunk says under '### audit-log': 'Owner: **Identity**.' Correct.
+3,e17,Data Integrations,has_oncall_channel,#oncall-data-integrations,service-catalog.md,e368a71b543ae00b88bc4bb6,"| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |","illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,Teams table row: Data Integrations has on-call channel #oncall-data-integrations. Correct.
+4,e27,KST-5031,raised_by,postroom,support-runbook-errors.md,045f828d97c95a7ba84327fd,This error is raised by postroom,"(KST-5xxx)
+
+### KST-5031 — Scheduled report not delivered
+
+**User sees:** the schedule shows ""Last delivery failed"".
+**Cause:** the report was generated but the e-mail was not sent. This error is raised by postroom, the service that sends all Kestrel e-mails. A single occurrence is usually a temporary problem with a recipient's mail server.
+**Support action:** check whether the recipient's address is correct and whether the next delivery succeeds. Ask the customer to check that messages from kestrel.example are not blocked by their mail filter.
+**Escalate:** if the error happens on two consecutive deliveries, or for several customers on the same day, escalate to the team that owns postroom, as SEV-2.
+
+### KST-5038 — Embed token expired
+
+**User sees:** an embedded dashboard shows ""This link",correct,"KST-5031 section: 'This error is raised by postroom'. Correct, and it is hop 1 of q08."
+5,e21,Messaging,has_oncall_channel,#oncall-messaging,service-catalog.md,e368a71b543ae00b88bc4bb6,"| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |","illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,"Teams table row: Messaging -> #oncall-messaging. Correct, and it is the last hop of q08."
+6,e29,KST-6010,escalates_to,Payments Core,support-runbook-errors.md,f93023bc14b31e3f5f44c20b,**Escalate:** to Payments Core if more than three customers are affected on the same day (possible incident).,"Refund Policy for retries, grace period and read-only rules. Support cannot take card details over e-mail or chat.
+**Escalate:** to Payments Core only if the customer shows that the bank approved the payment.
+
+### KST-6010 — Duplicate charge detected
+
+**User sees:** nothing; this code appears in the admin console when two charges for the same period are found.
+**Cause:** a retry and a manual payment went through for the same invoice.
+**Support action:** confirm the duplicate in the admin console and request a full refund of the second charge; billing errors are always refunded.
+**Escalate:** to Payments Core if more than three customers are affected on the same day (possible incident).",correct,"Correct, but the triple loses the condition: escalate only if more than three customers are affected the same day. The schema has no place for conditions."
+7,e8,postroom,owned_by,Messaging,service-catalog.md,d6289ba993dccb391a671efa,Owner: **Messaging**.,"ngine**.
+
+### postroom
+
+Sends every e-mail that leaves Kestrel: scheduled reports, invitations, password resets, ownership transfer confirmations and billing notifications. Tracks bounces and removes a recipient from a schedule after three rejections.
+Owner: **Messaging**.
+
+postroom replaced the older mailman service in November 2025. mailman is switched off; old alerts or documents that mention it refer to postroom today.
+
+### embed-svc
+
+Issues and checks embed tokens for dashboards embedded in customer applications.
+Owner: **Platform**.
+
+### ledger
+
+Subscriptions, seats, invoices and payments. Generates invoice PDFs, runs the automatic payment retries, and applies the grace period and read-only rules of the Billing and Refund Policy. Talks to the payment processor; never stores full card",correct,"Under '### postroom': 'Owner: **Messaging**.' Correct, and it is hop 2 of q08."
+8,e20,Messaging,led_by,Inès Moreau,service-catalog.md,e368a71b543ae00b88bc4bb6,"| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |","illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,Teams table: Engineering lead of Messaging is Inès Moreau. Correct.
+9,e22,Payments Core,led_by,Jonas Berg,service-catalog.md,e368a71b543ae00b88bc4bb6,| Payments Core | Jonas Berg |,"illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,"Teams table: Engineering lead of Payments Core is Jonas Berg. Correct. The row is cut at the end of the chunk, after the channel, but the lead is inside the chunk."
+10,e18,Analytics Engine,led_by,Léa Fontaine,service-catalog.md,e368a71b543ae00b88bc4bb6,| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |,"illing and Refund Policy. Talks to the payment processor; never stores full card numbers.
+Owner: **Payments Core**.
+
+### audit-log
+
+Records security-relevant events (sign-ins, role changes, connector edits, exports) for workspaces on Business and Enterprise plans.
+Owner: **Identity**.
+
+## 2. Teams
+
+| Team | Engineering lead | On-call channel | Working hours (Paris time) |
+|---|---|---|---|
+| Platform | Samuel Okafor | #oncall-platform | 24/7 rotation |
+| Identity | Priya Raman | #oncall-identity | 24/7 rotation |
+| Data Integrations | Tomasz Wójcik | #oncall-data-integrations | 08:00–20:00, weekdays |
+| Analytics Engine | Léa Fontaine | #oncall-analytics | 24/7 rotation |
+| Messaging | Inès Moreau | #oncall-messaging | 08:00–20:00, weekdays |
+| Payments Core | Jonas Berg | #oncall-payments",correct,Teams table: Engineering lead of Analytics Engine is Léa Fontaine. Correct.
