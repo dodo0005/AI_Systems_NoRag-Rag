@@ -4,6 +4,7 @@ Examples (from the project root):
     python evaluation/evaluate.py                         # every configuration, both corpora
     python evaluation/evaluate.py --corpus kestrel --config dense dense+bm25
     python evaluation/evaluate.py --corpus kestrel --config dense+bm25 --generate-answers
+    python evaluation/evaluate.py --corpus kestrel --candidates 40   # measure a change
 """
 
 import argparse
@@ -28,12 +29,31 @@ QUESTION_FILES = {
     "kestrel": EVALUATION_DIR / "questions.kestrel.jsonl",
 }
 
-# Configuration name -> retrievers switched on (fused with RRF).
+# Configuration name -> retrievers switched on (fused with RRF), optional RRF
+# weights (weighted RRF), optional corpora restriction (the graph is Kestrel only).
+# Weights were fixed before running, not tuned on the question sets.
 CONFIGURATIONS = {
-    "dense": ["dense"],
-    "bm25": ["bm25"],
-    "dense+bm25": ["dense", "bm25"],
+    "dense": {"retrievers": ["dense"]},
+    "bm25": {"retrievers": ["bm25"]},
+    "dense+bm25": {"retrievers": ["dense", "bm25"]},
+    "dense+bm25_w": {
+        "retrievers": ["dense", "bm25"],
+        "weights": {"dense": 1.0, "bm25": 2.0},
+    },
+    "graph": {"retrievers": ["graph"], "corpora": ["kestrel"]},
+    "dense+bm25+graph": {
+        "retrievers": ["dense", "bm25", "graph"],
+        "corpora": ["kestrel"],
+    },
+    "dense+bm25+graph_w": {
+        "retrievers": ["dense", "bm25", "graph"],
+        "weights": {"dense": 1.0, "bm25": 1.0, "graph": 2.0},
+        "corpora": ["kestrel"],
+    },
 }
+
+# Defaults of the app; change them from the command line to measure their effect.
+OPTIONS = {"candidates": 20, "rrf_k": 60}
 
 TOP_K = 10
 K_VALUES = (1, 3, 5, 10)
@@ -119,13 +139,18 @@ def recall(chunks, evidence_items):
 def evaluate_question(item, document_ids, corpus, config):
     question = item["question"].strip()
 
+    settings = CONFIGURATIONS[config]
+
     start = time.perf_counter()
     retrieval = retrieve(
         question=question,
         document_ids=document_ids,
         top_k=TOP_K,
         corpus=corpus,
-        retrievers=CONFIGURATIONS[config],
+        retrievers=settings["retrievers"],
+        weights=settings.get("weights"),
+        candidates=OPTIONS["candidates"],
+        rrf_k=OPTIONS["rrf_k"],
     )
     total_ms = round((time.perf_counter() - start) * 1000, 1)
 
@@ -140,10 +165,24 @@ def evaluate_question(item, document_ids, corpus, config):
             hits[f"hit_at_{k}"] = hit(chunks[:k], evidence)
             recalls[f"recall_at_{k}"] = round(recall(chunks[:k], evidence), 4)
 
+    # Did the graph's chunks survive fusion? (graph configurations only)
+    graph_stats = None
+    if retrieval["graph_path"] is not None:
+        top5 = chunks[:5]
+        graph_stats = {
+            "entities_found": [e["name"] for e in retrieval["graph_path"]["entities"]],
+            "candidates": len(retrieval["ranked_lists"]["graph"]),
+            "in_top_5": sum("graph" in c["found_by"] for c in top5),
+            "only_graph_in_top_5": sum(set(c["found_by"]) == {"graph"} for c in top5),
+        }
+
     return {
         "id": item.get("id", ""),
         "corpus": corpus,
         "configuration": config,
+        "weights": settings.get("weights"),
+        "options": dict(OPTIONS),
+        "graph": graph_stats,
         "retrievers": retrieval["retrievers"],
         "question": question,
         "type": item.get("type", item.get("question_type", "other")),
@@ -224,17 +263,52 @@ def summarize(results, corpus, config):
 
         row["avg_retrieval_ms"] = average_ms if question_type == "overall" else ""
         row["llm_calls_per_question"] = 0 if question_type == "overall" else ""
+
+        with_graph = [r for r in group if r.get("graph")]
+        row["graph_entity_found_rate"] = (
+            round(
+                sum(bool(r["graph"]["entities_found"]) for r in with_graph)
+                / len(with_graph),
+                4,
+            )
+            if with_graph
+            else ""
+        )
+        row["avg_graph_chunks_in_top5"] = (
+            round(sum(r["graph"]["in_top_5"] for r in with_graph) / len(with_graph), 2)
+            if with_graph
+            else ""
+        )
+        row["avg_graph_only_chunks_in_top5"] = (
+            round(
+                sum(r["graph"]["only_graph_in_top_5"] for r in with_graph)
+                / len(with_graph),
+                2,
+            )
+            if with_graph
+            else ""
+        )
         rows.append(row)
 
     return rows
 
 
+def run_suffix():
+    """Non-default options go into file names, so runs never overwrite each other."""
+    suffix = ""
+    if OPTIONS["candidates"] != 20:
+        suffix += f"_c{OPTIONS['candidates']}"
+    if OPTIONS["rrf_k"] != 60:
+        suffix += f"_k{OPTIONS['rrf_k']}"
+    return suffix
+
+
 def results_path(corpus, config):
-    return EVALUATION_DIR / f"results_v3_{corpus}_{config}.jsonl"
+    return EVALUATION_DIR / f"results_v3_{corpus}_{config}{run_suffix()}.jsonl"
 
 
 def answers_path(corpus, config):
-    return EVALUATION_DIR / f"answers_v3_{corpus}_{config}.jsonl"
+    return EVALUATION_DIR / f"answers_v3_{corpus}_{config}{run_suffix()}.jsonl"
 
 
 def generate_answers(corpus, config):
@@ -308,14 +382,30 @@ def main():
         action="store_true",
         help="Generate answers from saved retrieval results (calls the LLM).",
     )
+    parser.add_argument(
+        "--candidates",
+        type=int,
+        default=20,
+        help="Chunks each retriever proposes before fusion (default 20).",
+    )
+    parser.add_argument(
+        "--rrf-k", type=int, default=60, help="RRF constant k (default 60)."
+    )
     args = parser.parse_args()
 
+    OPTIONS["candidates"] = args.candidates
+    OPTIONS["rrf_k"] = args.rrf_k
+
     corpora = ["vellora", "kestrel"] if args.corpus == "all" else [args.corpus]
+
+    def applies(config, corpus):
+        return corpus in CONFIGURATIONS[config].get("corpora", [corpus])
 
     if args.generate_answers:
         for corpus in corpora:
             for config in args.config:
-                generate_answers(corpus, config)
+                if applies(config, corpus):
+                    generate_answers(corpus, config)
         return
 
     summary_rows = []
@@ -334,6 +424,8 @@ def main():
         )
 
         for config in args.config:
+            if not applies(config, corpus):
+                continue
             print(f"  configuration: {config}")
             results = [
                 evaluate_question(item, document_ids, corpus, config)
@@ -346,7 +438,7 @@ def main():
 
             summary_rows.extend(summarize(results, corpus, config))
 
-    summary_path = EVALUATION_DIR / "summary_v3.csv"
+    summary_path = EVALUATION_DIR / f"summary_v3{run_suffix()}.csv"
     with summary_path.open("w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=list(summary_rows[0]))
         writer.writeheader()
@@ -356,7 +448,7 @@ def main():
     for row in summary_rows:
         if row["question_type"] == "overall":
             print(
-                f"{row['corpus']:8} {row['configuration']:12} "
+                f"{row['corpus']:8} {row['configuration']:20} "
                 f"Hit@1/3/5/10 = {row['HitRate@1']}/{row['HitRate@3']}/"
                 f"{row['HitRate@5']}/{row['HitRate@10']}   "
                 f"Recall@5 = {row['Recall@5']}   {row['avg_retrieval_ms']} ms"
