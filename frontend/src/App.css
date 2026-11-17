@@ -1129,3 +1129,24 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* The app is designed light-only: keep it light when the OS is in dark mode
+   (otherwise headings, buttons and selects take the dark-theme text colour). */
+:root {
+  color-scheme: light;
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+}
+
+.entity-list button,
+.inline-controls select,
+.graph-sidebar select,
+.graph-sidebar input,
+.corpus-selector select,
+textarea,
+input {
+  color: #20251f;
+}
