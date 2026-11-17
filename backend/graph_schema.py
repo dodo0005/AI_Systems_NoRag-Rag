@@ -2,13 +2,16 @@
 
 The schema is fixed (not open to whatever the LLM finds): a fixed list is easy to
 validate and to query, and stops the LLM inventing 40 spellings of "owned by".
-It was written for the Kestrel knowledge base: error codes, services, teams.
+Two schemas: KESTREL, written for the Kestrel knowledge base (error codes,
+services, teams), and GENERIC, for documents a user uploads, whose content we
+cannot know in advance. Same idea for both: a short closed list.
 """
 
 from __future__ import annotations
 
 import re
 import unicodedata
+from dataclasses import dataclass
 from typing import Literal
 
 from pydantic import BaseModel, Field
@@ -58,15 +61,66 @@ RelationType = Literal[
 ]
 
 
+# ---------- generic schema, for uploaded documents ----------
+
+GENERIC_ENTITY_TYPES: tuple[str, ...] = (
+    "Person",  # Raskolnikov, Inès Moreau
+    "Organization",  # a company, a team, a police department
+    "Product",  # Vellora Duo, a plan, an app
+    "Component",  # a part of a product or a system: steam wand, ledger service
+    "Concept",  # a process, a rule, a feature, an idea: descaling, refund policy
+    "Place",  # St. Petersburg, a room, a region
+    "Event",  # a murder, an outage, a renewal
+)
+
+_ANY = set(GENERIC_ENTITY_TYPES)
+_PEOPLE = {"Person"}
+_GROUPS = {"Organization"}
+
+GENERIC_RELATION_SIGNATURES: dict[str, tuple[set[str], set[str], str]] = {
+    "part_of": (_ANY, _ANY, "the first is a part or a member of the second"),
+    "uses": (_ANY, _ANY, "the first uses or depends on the second"),
+    "requires": (_ANY, _ANY, "the first needs the second (a condition, a role, a step)"),
+    "causes": (_ANY, _ANY, "the first causes or leads to the second"),
+    "produces": (_ANY, _ANY, "the first produces, provides or creates the second"),
+    "located_in": (_ANY, {"Place", "Organization", "Product", "Component"}, "the first is in the second"),
+    "member_of": (_PEOPLE, _GROUPS, "the person belongs to or works for the organization"),
+    "owned_by": (_ANY, _PEOPLE | _GROUPS, "the first is owned or run by the second"),
+    "knows": (_PEOPLE, _PEOPLE, "the two people know each other"),
+    "family_of": (_PEOPLE, _PEOPLE, "the two people are related by family"),
+    "involved_in": (_PEOPLE | _GROUPS, {"Event"}, "the person or organization takes part in the event"),
+}
+
+
+@dataclass(frozen=True)
+class GraphSchema:
+    name: str
+    entity_types: tuple[str, ...]
+    relations: dict
+    domain: str  # one line for the prompt
+
+
+KESTREL_SCHEMA = GraphSchema("kestrel", ENTITY_TYPES, RELATION_SIGNATURES,
+                             "a company knowledge base (error codes, services, teams, plans)")
+GENERIC_SCHEMA = GraphSchema("generic", GENERIC_ENTITY_TYPES, GENERIC_RELATION_SIGNATURES,
+                             "a document uploaded by a user")
+
+
+def schema_for(corpus: str) -> GraphSchema:
+    return KESTREL_SCHEMA if corpus == "kestrel" else GENERIC_SCHEMA
+
+
 class ExtractedEntity(BaseModel):
+    """Shape only; the type is checked against the corpus's schema afterwards."""
+
     name: str = Field(min_length=1, max_length=120)
-    type: EntityType
+    type: str = Field(min_length=1, max_length=40)
     aliases: list[str] = Field(default_factory=list, max_length=5)
 
 
 class ExtractedRelation(BaseModel):
     source: str = Field(min_length=1, max_length=120)
-    relation: RelationType
+    relation: str = Field(min_length=1, max_length=40)
     target: str = Field(min_length=1, max_length=120)
     quote: str = Field(min_length=3, max_length=400)
 
