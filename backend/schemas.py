@@ -5,6 +5,13 @@ from pydantic import BaseModel, Field, model_validator
 RetrieverName = Literal["dense", "bm25", "graph"]
 
 
+class Turn(BaseModel):
+    """One earlier exchange of the conversation (conversation mode)."""
+
+    question: str = Field(max_length=5000)
+    answer: str = Field(max_length=20000)
+
+
 class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=5000)
     document_ids: list[str] = Field(min_length=1)
@@ -14,6 +21,8 @@ class AskRequest(BaseModel):
         default_factory=lambda: ["dense", "bm25"],
         min_length=1,
     )
+    # Conversation mode: earlier turns, oldest first. Empty = single question.
+    history: list[Turn] = Field(default_factory=list, max_length=20)
 
     @model_validator(mode="after")
     def validate_question_and_documents(self):
@@ -74,13 +83,24 @@ class GraphPath(BaseModel):
 
 
 class AskResponse(BaseModel):
-    status: Literal["answered", "insufficient_evidence"]
+    status: Literal["answered", "insufficient_evidence", "blocked"]
     answer: str
     references: list[Reference] = Field(default_factory=list)
     retrievers: list[str] = Field(default_factory=list)
     usage: Usage = Field(default_factory=Usage)
     latency_ms: dict[str, float] = Field(default_factory=dict)
     graph_path: GraphPath | None = None
+    trace_id: str | None = None
+    cost_usd: float = 0.0
+    rewritten_question: str | None = None  # conversation mode
+    warnings: list[str] = Field(default_factory=list)  # guardrails
+    withheld_chunks: list[str] = Field(default_factory=list)
+
+
+class GraphBuildRequest(BaseModel):
+    corpus: Literal["vellora", "kestrel"] = "vellora"
+    # Empty = every indexed document of the corpus.
+    document_ids: list[str] = Field(default_factory=list)
 
 
 class ErrorResponse(BaseModel):
