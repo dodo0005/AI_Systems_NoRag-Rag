@@ -1,10 +1,11 @@
-"""V3 retrieval evaluation: several retriever configurations, both corpora.
+"""Retrieval evaluation: several retriever configurations, both corpora.
 
 Examples (from the project root):
     python evaluation/evaluate.py                         # every configuration, both corpora
     python evaluation/evaluate.py --corpus kestrel --config dense dense+bm25
     python evaluation/evaluate.py --corpus kestrel --config dense+bm25 --generate-answers
     python evaluation/evaluate.py --corpus kestrel --candidates 40   # measure a change
+    python evaluation/evaluate.py --release v4 --config dense dense+bm25 dense+bm25+graph
 """
 
 import argparse
@@ -20,7 +21,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from openai import RateLimitError
 
-from backend.rag import generate_grounded_answer, list_documents, retrieve
+from backend.llm import LLMRateLimited
+from backend.rag import generate_grounded_answer, list_documents, pipeline_config, retrieve
+from backend.tracing import config_fingerprint
 
 EVALUATION_DIR = PROJECT_ROOT / "evaluation"
 
@@ -40,10 +43,11 @@ CONFIGURATIONS = {
         "retrievers": ["dense", "bm25"],
         "weights": {"dense": 1.0, "bm25": 2.0},
     },
-    "graph": {"retrievers": ["graph"], "corpora": ["kestrel"]},
+    # The graph runs on every corpus that has one (Kestrel; Vellora once built).
+    "graph": {"retrievers": ["graph"], "needs_graph": True},
     "dense+bm25+graph": {
         "retrievers": ["dense", "bm25", "graph"],
-        "corpora": ["kestrel"],
+        "needs_graph": True,
     },
     "dense+bm25+graph_w": {
         "retrievers": ["dense", "bm25", "graph"],
@@ -53,7 +57,7 @@ CONFIGURATIONS = {
 }
 
 # Defaults of the app; change them from the command line to measure their effect.
-OPTIONS = {"candidates": 20, "rrf_k": 60}
+OPTIONS = {"candidates": 20, "rrf_k": 60, "release": "v3"}
 
 TOP_K = 10
 K_VALUES = (1, 3, 5, 10)
@@ -304,11 +308,11 @@ def run_suffix():
 
 
 def results_path(corpus, config):
-    return EVALUATION_DIR / f"results_v3_{corpus}_{config}{run_suffix()}.jsonl"
+    return EVALUATION_DIR / f"results_{OPTIONS['release']}_{corpus}_{config}{run_suffix()}.jsonl"
 
 
 def answers_path(corpus, config):
-    return EVALUATION_DIR / f"answers_v3_{corpus}_{config}{run_suffix()}.jsonl"
+    return EVALUATION_DIR / f"answers_{OPTIONS['release']}_{corpus}_{config}{run_suffix()}.jsonl"
 
 
 def generate_answers(corpus, config):
@@ -346,7 +350,7 @@ def generate_answers(corpus, config):
                     )
                     generation_ms = round((time.perf_counter() - start) * 1000, 1)
                     break
-                except RateLimitError:
+                except (RateLimitError, LLMRateLimited):
                     if attempt == 3:
                         raise
                     delay = 15 * (2**attempt)
@@ -366,7 +370,7 @@ def generate_answers(corpus, config):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="V3 retrieval evaluation.")
+    parser = argparse.ArgumentParser(description="Retrieval evaluation.")
     parser.add_argument(
         "--corpus", choices=["all", "vellora", "kestrel"], default="all"
     )
@@ -391,15 +395,23 @@ def main():
     parser.add_argument(
         "--rrf-k", type=int, default=60, help="RRF constant k (default 60)."
     )
+    parser.add_argument(
+        "--release", default="v3",
+        help="Prefix of the output files: v3 (default) or v4 for the final re-run.",
+    )
     args = parser.parse_args()
 
     OPTIONS["candidates"] = args.candidates
     OPTIONS["rrf_k"] = args.rrf_k
+    OPTIONS["release"] = args.release
 
     corpora = ["vellora", "kestrel"] if args.corpus == "all" else [args.corpus]
 
     def applies(config, corpus):
-        return corpus in CONFIGURATIONS[config].get("corpora", [corpus])
+        settings = CONFIGURATIONS[config]
+        if settings.get("needs_graph"):
+            return (PROJECT_ROOT / "graph" / f"{corpus}-graph.json").exists()
+        return corpus in settings.get("corpora", [corpus])
 
     if args.generate_answers:
         for corpus in corpora:
@@ -436,9 +448,16 @@ def main():
                 for result in results:
                     file.write(json.dumps(result, ensure_ascii=False) + "\n")
 
-            summary_rows.extend(summarize(results, corpus, config))
+            rows = summarize(results, corpus, config)
+            # Which pipeline these numbers describe (C9: compare with the traces).
+            fingerprint = config_fingerprint(
+                pipeline_config(corpus, CONFIGURATIONS[config]["retrievers"], 5, False)
+            )
+            for row in rows:
+                row["fingerprint"] = fingerprint
+            summary_rows.extend(rows)
 
-    summary_path = EVALUATION_DIR / f"summary_v3{run_suffix()}.csv"
+    summary_path = EVALUATION_DIR / f"summary_{OPTIONS['release']}{run_suffix()}.csv"
     with summary_path.open("w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=list(summary_rows[0]))
         writer.writeheader()
