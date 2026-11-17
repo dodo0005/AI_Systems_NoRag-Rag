@@ -40,3 +40,30 @@ def test_cost_uses_the_prices_from_the_environment(monkeypatch):
 def test_describe_never_shows_the_key(monkeypatch):
     monkeypatch.setenv("LLM_API_KEY", "super-secret-key")
     assert "super-secret-key" not in str(llm.describe())
+
+
+def test_a_503_from_the_provider_is_retried(monkeypatch):
+    """Gemini answers 503 "model overloaded" now and then: retry, don't fail."""
+    import httpx
+    import openai
+
+    calls = {"n": 0}
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                response = httpx.Response(503, request=httpx.Request("POST", "http://llm.invalid"))
+                raise openai.InternalServerError("overloaded", response=response, body=None)
+            message = type("M", (), {"content": '{"ok": true}'})
+            choice = type("C", (), {"message": message})
+            usage = type("U", (), {"prompt_tokens": 10, "completion_tokens": 2})
+            return type("R", (), {"choices": [choice], "usage": usage, "model": "m"})
+
+    class FakeClient:
+        chat = type("Chat", (), {"completions": FakeCompletions()})
+
+    monkeypatch.setattr(llm, "_client", lambda url, key: FakeClient())
+    monkeypatch.setattr(llm.time, "sleep", lambda seconds: None)
+    result = llm.chat("hello")
+    assert result.content == '{"ok": true}' and calls["n"] == 2

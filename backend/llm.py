@@ -19,7 +19,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai import OpenAI, RateLimitError
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    InternalServerError,
+    OpenAI,
+    RateLimitError,
+)
 
 from backend.tracing import current_trace
 
@@ -114,9 +120,11 @@ def chat(
     json_mode: bool = True,
     temperature: float | None = 0,
     model: str | None = None,
-    max_attempts: int = 3,
+    max_attempts: int = 4,
 ) -> LLMResult:
-    """One chat completion. On 429: back off, retry, then try the next key."""
+    """One chat completion. On 429: back off, retry, then try the next key.
+    On 5xx (e.g. Gemini's 503 "model overloaded") or a lost connection:
+    back off and retry the same key; these are usually gone a few seconds later."""
     s = settings()
     if not s.keys:
         raise LLMNotConfigured("LLM_API_KEY is not set. Check your .env or .env.local file.")
@@ -142,6 +150,11 @@ def chat(
                 last_error = exc
                 time.sleep(min(30, 2 * 2**attempt))
                 continue
+            except (InternalServerError, APIConnectionError, APITimeoutError) as exc:
+                last_error = exc
+                if attempt < max_attempts - 1:
+                    time.sleep(min(30, 2 * 2**attempt))
+                continue
 
             usage = getattr(response, "usage", None)
             input_tokens = getattr(usage, "prompt_tokens", 0) or 0
@@ -161,4 +174,6 @@ def chat(
 
             return result
 
-    raise LLMRateLimited("The LLM provider is rate-limiting every key. Try again later.") from last_error
+    if isinstance(last_error, RateLimitError):
+        raise LLMRateLimited("The LLM provider is rate-limiting every key. Try again later.") from last_error
+    raise last_error
