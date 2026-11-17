@@ -30,3 +30,7 @@ future/
 
 # BM25 index files (rebuilt from Chroma)
 bm25_index/
+
+traces/
+quarantine/
+frontend/dist/
