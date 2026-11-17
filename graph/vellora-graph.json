@@ -1,0 +1,3533 @@
+{
+  "nodes": [
+    {
+      "id": "component:ambient-light-sensor",
+      "name": "ambient light sensor",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:aroma-preserving-lid",
+      "name": "aroma-preserving lid",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:automatic-milk-system",
+      "name": "automatic milk system",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "427fa67d456bb290aecb8e14"
+      ]
+    },
+    {
+      "id": "component:bean-hopper",
+      "name": "bean hopper",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "49625de8b94b7ef24933dbac",
+        "4a8a4b57d0c175c8e62c7aef",
+        "8a6321e350f43fd53a0aa1b7",
+        "9e2b865b6da05724617bee0d",
+        "b5f041d689d64e23ec999fc4",
+        "b7298700a2d570c05f8b9f48",
+        "f4951f3faf48969f943d2b73"
+      ]
+    },
+    {
+      "id": "component:bean-hopper-lid",
+      "name": "bean hopper lid",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75"
+      ]
+    },
+    {
+      "id": "component:brewing-unit",
+      "name": "brewing unit",
+      "type": "Component",
+      "aliases": [
+        "Brewing unit"
+      ],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899",
+        "2cc43efc6c50df262998acae",
+        "34ba017019cf01ab2de4fedc",
+        "9e2b865b6da05724617bee0d",
+        "d3a1a417d26c5d6faf36ed2f",
+        "db27ce3a8ad56bc10d7eed7c",
+        "f4951f3faf48969f943d2b73",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "component:brewing-unit-grease",
+      "name": "brewing unit grease",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "419f8c9dde1f6662fe97265c"
+      ]
+    },
+    {
+      "id": "component:burrs",
+      "name": "burrs",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac",
+        "4a8a4b57d0c175c8e62c7aef",
+        "b7298700a2d570c05f8b9f48"
+      ]
+    },
+    {
+      "id": "component:button",
+      "name": "button",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75"
+      ]
+    },
+    {
+      "id": "component:buttons",
+      "name": "buttons",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "component:cappuccino",
+      "name": "cappuccino",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:cardboard",
+      "name": "cardboard",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "419f8c9dde1f6662fe97265c"
+      ]
+    },
+    {
+      "id": "component:chute",
+      "name": "chute",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "component:chute-lid",
+      "name": "chute lid",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "8a6321e350f43fd53a0aa1b7",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "component:circuit",
+      "name": "circuit",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "46863c15d37956f4c0ac46de"
+      ]
+    },
+    {
+      "id": "component:coffee-grounds-container",
+      "name": "coffee grounds container",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "34ba017019cf01ab2de4fedc",
+        "9e2b865b6da05724617bee0d",
+        "db27ce3a8ad56bc10d7eed7c"
+      ]
+    },
+    {
+      "id": "component:coffee-outlets",
+      "name": "coffee outlets",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105",
+        "db27ce3a8ad56bc10d7eed7c",
+        "e4c01da95c10c818ccf30873",
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:coffee-powder",
+      "name": "coffee powder",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "d3a1a417d26c5d6faf36ed2f"
+      ]
+    },
+    {
+      "id": "component:coffee-residue",
+      "name": "coffee residue",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "34ba017019cf01ab2de4fedc"
+      ]
+    },
+    {
+      "id": "component:colour-display",
+      "name": "colour display",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:conical-grinder",
+      "name": "conical grinder",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "427fa67d456bb290aecb8e14"
+      ]
+    },
+    {
+      "id": "component:control-panel",
+      "name": "control panel",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "9e2b865b6da05724617bee0d",
+        "c8c27a713544c7cdbeb3597c",
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "component:cooling-fan",
+      "name": "cooling fan",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:cup-sensor",
+      "name": "cup sensor",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105",
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:dried-milk",
+      "name": "Dried milk",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f0cf6b9ab6ec90f41aba8093"
+      ]
+    },
+    {
+      "id": "component:drip-tray",
+      "name": "drip tray",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105",
+        "1c551276def2e1575e0ea74f",
+        "34ba017019cf01ab2de4fedc",
+        "46863c15d37956f4c0ac46de",
+        "94c74a7cda2be0aae265768f",
+        "9e2b865b6da05724617bee0d",
+        "db27ce3a8ad56bc10d7eed7c",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "component:e15",
+      "name": "E15",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5c21ac0a721d843a5c6e6796"
+      ]
+    },
+    {
+      "id": "component:e16",
+      "name": "E16",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5c21ac0a721d843a5c6e6796"
+      ]
+    },
+    {
+      "id": "component:e17",
+      "name": "E17",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5c21ac0a721d843a5c6e6796"
+      ]
+    },
+    {
+      "id": "component:electronic-board",
+      "name": "electronic board",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:espresso",
+      "name": "espresso",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:filter-holder",
+      "name": "filter holder",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:float",
+      "name": "float",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "34ba017019cf01ab2de4fedc"
+      ]
+    },
+    {
+      "id": "component:float-indicator",
+      "name": "float indicator",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105",
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:flow-meter",
+      "name": "flow meter",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "9bcb0e9a9229c5a66cf5311a"
+      ]
+    },
+    {
+      "id": "component:frothing-head",
+      "name": "frothing head",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593",
+        "9e2b865b6da05724617bee0d",
+        "b7298700a2d570c05f8b9f48",
+        "db27ce3a8ad56bc10d7eed7c",
+        "eb3525cfd6a71c713ef6f3e8",
+        "f0cf6b9ab6ec90f41aba8093",
+        "f4951f3faf48969f943d2b73"
+      ]
+    },
+    {
+      "id": "component:grind-adjuster",
+      "name": "grind adjuster",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "2f7423413b6247418f0a8b75",
+        "4a8a4b57d0c175c8e62c7aef",
+        "5e57c851ec0c77330b578b4d",
+        "8a6321e350f43fd53a0aa1b7",
+        "9e2b865b6da05724617bee0d",
+        "f4951f3faf48969f943d2b73"
+      ]
+    },
+    {
+      "id": "component:grinder",
+      "name": "grinder",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "4a8a4b57d0c175c8e62c7aef",
+        "5e57c851ec0c77330b578b4d",
+        "8a6321e350f43fd53a0aa1b7",
+        "b5f041d689d64e23ec999fc4",
+        "e4c01da95c10c818ccf30873"
+      ]
+    },
+    {
+      "id": "component:grinder-motor",
+      "name": "grinder motor",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac",
+        "4a8a4b57d0c175c8e62c7aef",
+        "b7298700a2d570c05f8b9f48"
+      ]
+    },
+    {
+      "id": "component:grounds-container",
+      "name": "grounds container",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "34ba017019cf01ab2de4fedc"
+      ]
+    },
+    {
+      "id": "component:heater",
+      "name": "heater",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d",
+        "a9ec98a7cfb1e86fae13320f",
+        "c8c27a713544c7cdbeb3597c",
+        "ee5558e3f979b9bcd3ecfb1f"
+      ]
+    },
+    {
+      "id": "component:height-adjustable-coffee-outlets",
+      "name": "height-adjustable coffee outlets",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:hot-water",
+      "name": "hot water",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:hot-water-and-steam-wand",
+      "name": "hot water and steam wand",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:internal-clock",
+      "name": "internal clock",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "component:lungo",
+      "name": "lungo",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:main-board",
+      "name": "main board",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "3764e248d028b0dc3371c98f",
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:main-electronic-board",
+      "name": "main electronic board",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "component:maintenance-counters",
+      "name": "maintenance counters",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "94c74a7cda2be0aae265768f"
+      ]
+    },
+    {
+      "id": "component:menu",
+      "name": "menu",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:menu-button",
+      "name": "menu button",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d",
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "component:milk-carton",
+      "name": "milk carton",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "component:milk-container",
+      "name": "milk container",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9bcb0e9a9229c5a66cf5311a",
+        "fdc5e90e2d13c255aaabf86a"
+      ]
+    },
+    {
+      "id": "component:milk-container-accessory",
+      "name": "milk container accessory",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9bcb0e9a9229c5a66cf5311a"
+      ]
+    },
+    {
+      "id": "component:milk-system",
+      "name": "milk system",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593",
+        "9e2b865b6da05724617bee0d",
+        "db27ce3a8ad56bc10d7eed7c",
+        "f0cf6b9ab6ec90f41aba8093"
+      ]
+    },
+    {
+      "id": "component:paper",
+      "name": "paper",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "419f8c9dde1f6662fe97265c"
+      ]
+    },
+    {
+      "id": "component:pipes",
+      "name": "pipes",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5e57c851ec0c77330b578b4d",
+        "a9ec98a7cfb1e86fae13320f"
+      ]
+    },
+    {
+      "id": "component:power",
+      "name": "power",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:pre-ground-coffee-chute",
+      "name": "pre-ground coffee chute",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "component:pump",
+      "name": "pump",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d",
+        "2bfe73b143961aa31d9d8d0c"
+      ]
+    },
+    {
+      "id": "component:refrigerator",
+      "name": "refrigerator",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "9bcb0e9a9229c5a66cf5311a"
+      ]
+    },
+    {
+      "id": "component:router",
+      "name": "router",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "3764e248d028b0dc3371c98f"
+      ]
+    },
+    {
+      "id": "component:safety-valve",
+      "name": "safety valve",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5e57c851ec0c77330b578b4d"
+      ]
+    },
+    {
+      "id": "component:seal",
+      "name": "seal",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "component:side-door",
+      "name": "side door",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "34ba017019cf01ab2de4fedc",
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "component:software",
+      "name": "software",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "component:steam-circuit",
+      "name": "steam circuit",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "component:steam-wand",
+      "name": "steam wand",
+      "type": "Component",
+      "aliases": [
+        "The steam wand"
+      ],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "46863c15d37956f4c0ac46de",
+        "727cf8f795003bf11e426593",
+        "e4c01da95c10c818ccf30873"
+      ]
+    },
+    {
+      "id": "component:suction-tube",
+      "name": "suction tube",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593",
+        "9e2b865b6da05724617bee0d",
+        "b7298700a2d570c05f8b9f48",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "component:tank-valve",
+      "name": "tank valve",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "5e57c851ec0c77330b578b4d"
+      ]
+    },
+    {
+      "id": "component:temperature-sensor",
+      "name": "Temperature sensor",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "component:thermoblock",
+      "name": "thermoblock",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "5c21ac0a721d843a5c6e6796"
+      ]
+    },
+    {
+      "id": "component:thermoblock-heater",
+      "name": "thermoblock heater",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "427fa67d456bb290aecb8e14"
+      ]
+    },
+    {
+      "id": "component:upper-burr",
+      "name": "upper burr",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac"
+      ]
+    },
+    {
+      "id": "component:valve",
+      "name": "valve",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "component:valve-seal",
+      "name": "valve seal",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "component:valve-that-sends-water-to-the-steam-wand",
+      "name": "The valve that sends water to the steam wand",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "component:ventilation-slots",
+      "name": "ventilation slots",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "component:water-circuit",
+      "name": "Water circuit",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c"
+      ]
+    },
+    {
+      "id": "component:water-filter",
+      "name": "water filter",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "297953408260d7dba965b5e0",
+        "419f8c9dde1f6662fe97265c",
+        "a9ec98a7cfb1e86fae13320f",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "component:water-tank",
+      "name": "water tank",
+      "type": "Component",
+      "aliases": [
+        "Water tank"
+      ],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f",
+        "22b7aa87a41277cf5547a08d",
+        "2bfe73b143961aa31d9d8d0c",
+        "46863c15d37956f4c0ac46de",
+        "5e57c851ec0c77330b578b4d",
+        "655225c44e36974b6c15868b",
+        "9e2b865b6da05724617bee0d",
+        "a0cb70a4c935c57ac1dce59a",
+        "b5f041d689d64e23ec999fc4",
+        "db27ce3a8ad56bc10d7eed7c"
+      ]
+    },
+    {
+      "id": "component:wi-fi-module",
+      "name": "Wi-Fi module",
+      "type": "Component",
+      "aliases": [],
+      "chunk_ids": [
+        "3764e248d028b0dc3371c98f",
+        "f1b74d5a5d7ed664d352b908"
+      ]
+    },
+    {
+      "id": "concept:air-bubble",
+      "name": "air bubble",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "concept:automatic-switch-off",
+      "name": "automatic switch-off",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:child-lock-active",
+      "name": "Child lock active",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:cleaning",
+      "name": "cleaning",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:cleaning-programme",
+      "name": "cleaning programme",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "94c74a7cda2be0aae265768f",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:coffee-outlets-blocked",
+      "name": "Coffee outlets blocked",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:coffee-strength",
+      "name": "coffee strength",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2f7423413b6247418f0a8b75",
+        "8a6321e350f43fd53a0aa1b7",
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:coffee-temperature",
+      "name": "coffee temperature",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:counter-reset-needed",
+      "name": "Counter reset needed",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:cup-sensor-fault",
+      "name": "Cup sensor fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:descaling",
+      "name": "descaling",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:descaling-programme",
+      "name": "descaling programme",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "5c21ac0a721d843a5c6e6796",
+        "5e57c851ec0c77330b578b4d",
+        "727cf8f795003bf11e426593",
+        "94c74a7cda2be0aae265768f",
+        "fdc5e90e2d13c255aaabf86a"
+      ]
+    },
+    {
+      "id": "concept:display-language",
+      "name": "display language",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d",
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:display-too-dark",
+      "name": "Display too dark",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:drip-tray-full",
+      "name": "Drip tray full",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:drip-tray-missing",
+      "name": "Drip tray missing",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:e02",
+      "name": "E02",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:e03",
+      "name": "E03",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:e04",
+      "name": "E04",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:e05",
+      "name": "E05",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:e18-temperature-sensor-fault",
+      "name": "E18 - Temperature sensor fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "concept:e19-steam-temperature-not-reached",
+      "name": "E19 - Steam temperature not reached",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "concept:e20-water-temperature-unstable",
+      "name": "E20 - Water temperature unstable",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "concept:e21-pump-not-priming",
+      "name": "E21 - Pump not priming",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "concept:e22-pump-overload",
+      "name": "E22 - Pump overload",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c"
+      ]
+    },
+    {
+      "id": "concept:e23-flow-meter-fault",
+      "name": "E23 - Flow meter fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c"
+      ]
+    },
+    {
+      "id": "concept:e24-pump-noise-abnormal",
+      "name": "E24 - Pump noise abnormal",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c"
+      ]
+    },
+    {
+      "id": "concept:e32",
+      "name": "E32",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:e33",
+      "name": "E33",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:e34",
+      "name": "E34",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:e35",
+      "name": "E35",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:e52",
+      "name": "E52",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:e53",
+      "name": "E53",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:e54",
+      "name": "E54",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:e55",
+      "name": "E55",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:e56",
+      "name": "E56",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1",
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:e57",
+      "name": "E57",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:e58",
+      "name": "E58",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:e59",
+      "name": "E59",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:e60",
+      "name": "E60",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:e65",
+      "name": "E65",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:e66",
+      "name": "E66",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:e67",
+      "name": "E67",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:e68",
+      "name": "E68",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:e72",
+      "name": "E72",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:e73",
+      "name": "E73",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:e74",
+      "name": "E74",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:e75",
+      "name": "E75",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:e76",
+      "name": "E76",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:e85",
+      "name": "E85",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:e86",
+      "name": "E86",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:e87",
+      "name": "E87",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:e88",
+      "name": "E88",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:energy-saving-mode",
+      "name": "energy saving mode",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:energy-saving-mode-active",
+      "name": "Energy saving mode active",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:filter-programme",
+      "name": "filter programme",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "concept:filter-replacement",
+      "name": "filter replacement",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:flow",
+      "name": "flow",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "8a6321e350f43fd53a0aa1b7"
+      ]
+    },
+    {
+      "id": "concept:grind",
+      "name": "grind",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "2bfe73b143961aa31d9d8d0c",
+        "8a6321e350f43fd53a0aa1b7"
+      ]
+    },
+    {
+      "id": "concept:grounds-container-full",
+      "name": "Grounds container full",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:hot-water-valve-fault",
+      "name": "Hot water valve fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:limescale",
+      "name": "limescale",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d",
+        "5e57c851ec0c77330b578b4d"
+      ]
+    },
+    {
+      "id": "concept:main-board-fault",
+      "name": "Main board fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:maintenance-programmes",
+      "name": "maintenance programmes",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:memory-full",
+      "name": "Memory full",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:menu",
+      "name": "menu",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "concept:milk-not-detected",
+      "name": "Milk not detected",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:milk-residues",
+      "name": "Milk residues",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "db27ce3a8ad56bc10d7eed7c"
+      ]
+    },
+    {
+      "id": "concept:milk-spitting-out-of-the-head",
+      "name": "milk spitting out of the head",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "db27ce3a8ad56bc10d7eed7c"
+      ]
+    },
+    {
+      "id": "concept:milk-system-not-connected",
+      "name": "Milk system not connected",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:poor-foam",
+      "name": "poor foam",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "db27ce3a8ad56bc10d7eed7c"
+      ]
+    },
+    {
+      "id": "concept:rinsing",
+      "name": "rinsing",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:service-interval-reached",
+      "name": "Service interval reached",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "concept:settings-reset",
+      "name": "Settings reset",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "62228771907366222019a3a1"
+      ]
+    },
+    {
+      "id": "concept:software-update",
+      "name": "software update",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:standby-fault",
+      "name": "Standby fault",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "concept:steam-pressure-too-low",
+      "name": "Steam pressure too low",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "727cf8f795003bf11e426593"
+      ]
+    },
+    {
+      "id": "concept:user-settings",
+      "name": "user settings",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "concept:water-hardness",
+      "name": "water hardness",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "9e2b865b6da05724617bee0d"
+      ]
+    },
+    {
+      "id": "concept:water-tank-empty",
+      "name": "Water tank empty",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "concept:water-tank-seal-leaking",
+      "name": "Water tank seal leaking",
+      "type": "Concept",
+      "aliases": [],
+      "chunk_ids": [
+        "1c551276def2e1575e0ea74f"
+      ]
+    },
+    {
+      "id": "event:descaling-programme",
+      "name": "descaling programme",
+      "type": "Event",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "event:power-cut",
+      "name": "power cut",
+      "type": "Event",
+      "aliases": [],
+      "chunk_ids": [
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "event:power-cut-during-preparation",
+      "name": "Power cut during preparation",
+      "type": "Event",
+      "aliases": [],
+      "chunk_ids": [
+        "13b72c0c0cca47dcfb559105"
+      ]
+    },
+    {
+      "id": "event:rinse",
+      "name": "rinse",
+      "type": "Event",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "event:scheduled-switch-on-failed",
+      "name": "Scheduled switch-on failed",
+      "type": "Event",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "organization:customer-service",
+      "name": "customer service",
+      "type": "Organization",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d",
+        "2f7423413b6247418f0a8b75",
+        "419f8c9dde1f6662fe97265c",
+        "5c21ac0a721d843a5c6e6796",
+        "5e57c851ec0c77330b578b4d",
+        "94c74a7cda2be0aae265768f",
+        "a0cb70a4c935c57ac1dce59a",
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "organization:vellora",
+      "name": "Vellora",
+      "type": "Organization",
+      "aliases": [],
+      "chunk_ids": [
+        "3af26f6cac19931be69c6300",
+        "ee5558e3f979b9bcd3ecfb1f",
+        "fdc5e90e2d13c255aaabf86a"
+      ]
+    },
+    {
+      "id": "organization:vellora-customer-service",
+      "name": "Vellora customer service",
+      "type": "Organization",
+      "aliases": [],
+      "chunk_ids": [
+        "655225c44e36974b6c15868b"
+      ]
+    },
+    {
+      "id": "place:collection-point-for-electrical-and-electronic-equipment",
+      "name": "collection point for electrical and electronic equipment",
+      "type": "Place",
+      "aliases": [],
+      "chunk_ids": [
+        "419f8c9dde1f6662fe97265c"
+      ]
+    },
+    {
+      "id": "place:service-centre",
+      "name": "service centre",
+      "type": "Place",
+      "aliases": [],
+      "chunk_ids": [
+        "419f8c9dde1f6662fe97265c"
+      ]
+    },
+    {
+      "id": "product:air-conditioner",
+      "name": "air conditioner",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "22b7aa87a41277cf5547a08d"
+      ]
+    },
+    {
+      "id": "product:app",
+      "name": "app",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "3764e248d028b0dc3371c98f"
+      ]
+    },
+    {
+      "id": "product:carton",
+      "name": "carton",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:cleaning-tablet",
+      "name": "cleaning tablet",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "94c74a7cda2be0aae265768f",
+        "a9ec98a7cfb1e86fae13320f",
+        "d3a1a417d26c5d6faf36ed2f",
+        "f95d08e3dbe09cf8c79384a9"
+      ]
+    },
+    {
+      "id": "product:coffee",
+      "name": "coffee",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "297953408260d7dba965b5e0",
+        "8a6321e350f43fd53a0aa1b7"
+      ]
+    },
+    {
+      "id": "product:coffee-beans",
+      "name": "coffee beans",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "4a8a4b57d0c175c8e62c7aef",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:coffees",
+      "name": "coffees",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "c8c27a713544c7cdbeb3597c"
+      ]
+    },
+    {
+      "id": "product:cold-milk",
+      "name": "cold milk",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:cup",
+      "name": "cup",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:dishwasher",
+      "name": "dishwasher",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "d3a1a417d26c5d6faf36ed2f"
+      ]
+    },
+    {
+      "id": "product:espresso",
+      "name": "espresso",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "e4c01da95c10c818ccf30873"
+      ]
+    },
+    {
+      "id": "product:espresso-machine",
+      "name": "Vellora Duo",
+      "type": "Product",
+      "aliases": [
+        "espresso machine"
+      ],
+      "chunk_ids": [
+        "3c88114cd8a01d678972261a",
+        "427fa67d456bb290aecb8e14",
+        "bdcc0b23ad9344c897a72246"
+      ]
+    },
+    {
+      "id": "product:foam",
+      "name": "foam",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:grease-supplied-with-the-machine",
+      "name": "grease supplied with the machine",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899"
+      ]
+    },
+    {
+      "id": "product:ground-coffee",
+      "name": "ground coffee",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899",
+        "8a6321e350f43fd53a0aa1b7",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:hexagonal-key",
+      "name": "hexagonal key",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac"
+      ]
+    },
+    {
+      "id": "product:instant-coffee",
+      "name": "instant coffee",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:jug",
+      "name": "jug",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:knife",
+      "name": "knife",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac"
+      ]
+    },
+    {
+      "id": "product:lungo",
+      "name": "lungo",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "e4c01da95c10c818ccf30873"
+      ]
+    },
+    {
+      "id": "product:machine",
+      "name": "machine",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "2cc43efc6c50df262998acae",
+        "2f7423413b6247418f0a8b75",
+        "3764e248d028b0dc3371c98f",
+        "4a8a4b57d0c175c8e62c7aef",
+        "94c74a7cda2be0aae265768f",
+        "b5f041d689d64e23ec999fc4",
+        "c8c27a713544c7cdbeb3597c",
+        "db27ce3a8ad56bc10d7eed7c",
+        "eb3525cfd6a71c713ef6f3e8",
+        "f3934f747dd73386266c80c7"
+      ]
+    },
+    {
+      "id": "product:measuring-spoon",
+      "name": "measuring spoon",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899",
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:milk-foam",
+      "name": "milk foam",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:phone",
+      "name": "phone",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "3764e248d028b0dc3371c98f"
+      ]
+    },
+    {
+      "id": "product:plant-based-drinks",
+      "name": "Plant-based drinks",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:pre-ground-coffee",
+      "name": "pre-ground coffee",
+      "type": "Product",
+      "aliases": [
+        "Pre-ground coffee"
+      ],
+      "chunk_ids": [
+        "15f67cf24af7be3dbc95b899",
+        "8a6321e350f43fd53a0aa1b7"
+      ]
+    },
+    {
+      "id": "product:refrigerator",
+      "name": "refrigerator",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:screwdriver",
+      "name": "screwdriver",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac"
+      ]
+    },
+    {
+      "id": "product:skimmed-milk",
+      "name": "skimmed milk",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    },
+    {
+      "id": "product:vacuum-cleaner",
+      "name": "vacuum cleaner",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "49625de8b94b7ef24933dbac"
+      ]
+    },
+    {
+      "id": "product:vellora-app",
+      "name": "Vellora app",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "3764e248d028b0dc3371c98f"
+      ]
+    },
+    {
+      "id": "product:whole-milk",
+      "name": "Whole milk",
+      "type": "Product",
+      "aliases": [],
+      "chunk_ids": [
+        "eb3525cfd6a71c713ef6f3e8"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "component:conical-grinder",
+      "relation": "part_of",
+      "target": "product:espresso-machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "427fa67d456bb290aecb8e14",
+          "quote": "bean-to-cup espresso machine with an integrated conical grinder"
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "source": "component:thermoblock-heater",
+      "relation": "part_of",
+      "target": "product:espresso-machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "427fa67d456bb290aecb8e14",
+          "quote": "a thermoblock heater"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "source": "component:automatic-milk-system",
+      "relation": "part_of",
+      "target": "product:espresso-machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "427fa67d456bb290aecb8e14",
+          "quote": "an automatic milk system"
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "source": "component:aroma-preserving-lid",
+      "relation": "part_of",
+      "target": "component:bean-hopper",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "bean hopper with its aroma-preserving lid"
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "source": "component:filter-holder",
+      "relation": "part_of",
+      "target": "component:water-tank",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "water tank (1.8 litres) with its filter holder"
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "source": "component:brewing-unit",
+      "relation": "part_of",
+      "target": "component:side-door",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "brewing unit behind the side door"
+        }
+      ]
+    },
+    {
+      "id": "e7",
+      "source": "component:float-indicator",
+      "relation": "part_of",
+      "target": "component:drip-tray",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "drip tray with its float indicator"
+        }
+      ]
+    },
+    {
+      "id": "e8",
+      "source": "component:suction-tube",
+      "relation": "part_of",
+      "target": "component:milk-system",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "milk system with its suction tube and frothing head"
+        }
+      ]
+    },
+    {
+      "id": "e9",
+      "source": "component:frothing-head",
+      "relation": "part_of",
+      "target": "component:milk-system",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "milk system with its suction tube and frothing head"
+        }
+      ]
+    },
+    {
+      "id": "e10",
+      "source": "component:colour-display",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "control panel with its colour display"
+        }
+      ]
+    },
+    {
+      "id": "e11",
+      "source": "component:power",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "The control panel has six buttons: power"
+        }
+      ]
+    },
+    {
+      "id": "e12",
+      "source": "component:espresso",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "espresso"
+        }
+      ]
+    },
+    {
+      "id": "e13",
+      "source": "component:lungo",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "lungo"
+        }
+      ]
+    },
+    {
+      "id": "e14",
+      "source": "component:cappuccino",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "cappuccino"
+        }
+      ]
+    },
+    {
+      "id": "e15",
+      "source": "component:hot-water",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "hot water"
+        }
+      ]
+    },
+    {
+      "id": "e16",
+      "source": "component:menu",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "menu"
+        }
+      ]
+    },
+    {
+      "id": "e17",
+      "source": "concept:coffee-strength",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "settings: coffee strength, coffee temperature, water hardness, automatic switch-off, display language and the maintenance programmes"
+        }
+      ]
+    },
+    {
+      "id": "e18",
+      "source": "concept:coffee-temperature",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "settings: coffee strength, coffee temperature, water hardness, automatic switch-off, display language and the maintenance programmes"
+        }
+      ]
+    },
+    {
+      "id": "e19",
+      "source": "concept:water-hardness",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "settings: coffee strength, coffee temperature, water hardness, automatic switch-off, display language and the maintenance programmes"
+        }
+      ]
+    },
+    {
+      "id": "e20",
+      "source": "concept:automatic-switch-off",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "settings: coffee strength, coffee temperature, water hardness, automatic switch-off, display language and the maintenance programmes"
+        }
+      ]
+    },
+    {
+      "id": "e21",
+      "source": "concept:display-language",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "settings: coffee strength, coffee temperature, water hardness, automatic switch-off, display language and the maintenance programmes"
+        }
+      ]
+    },
+    {
+      "id": "e22",
+      "source": "concept:rinsing",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "maintenance programmes (rinsing, cleaning, descaling and filter replacement)"
+        }
+      ]
+    },
+    {
+      "id": "e23",
+      "source": "concept:cleaning",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "maintenance programmes (rinsing, cleaning, descaling and filter replacement)"
+        }
+      ]
+    },
+    {
+      "id": "e24",
+      "source": "concept:descaling",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "maintenance programmes (rinsing, cleaning, descaling and filter replacement)"
+        }
+      ]
+    },
+    {
+      "id": "e25",
+      "source": "concept:filter-replacement",
+      "relation": "part_of",
+      "target": "concept:maintenance-programmes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "9e2b865b6da05724617bee0d",
+          "quote": "maintenance programmes (rinsing, cleaning, descaling and filter replacement)"
+        }
+      ]
+    },
+    {
+      "id": "e26",
+      "source": "concept:coffee-strength",
+      "relation": "causes",
+      "target": "product:ground-coffee",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "8a6321e350f43fd53a0aa1b7",
+          "quote": "Strength changes the quantity of ground coffee used for each cup, between 7 and 14 grams."
+        }
+      ]
+    },
+    {
+      "id": "e27",
+      "source": "component:grind-adjuster",
+      "relation": "located_in",
+      "target": "component:bean-hopper",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "8a6321e350f43fd53a0aa1b7",
+          "quote": "The grind adjuster on top of the bean hopper sets the fineness of the grind from 1 (finest) to 9 (coarsest)."
+        }
+      ]
+    },
+    {
+      "id": "e28",
+      "source": "concept:grind",
+      "relation": "causes",
+      "target": "product:coffee",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "8a6321e350f43fd53a0aa1b7",
+          "quote": "A finer grind gives a stronger, more intense coffee and a slower flow; a coarser grind gives a lighter coffee and a faster flow."
+        }
+      ]
+    },
+    {
+      "id": "e29",
+      "source": "concept:grind",
+      "relation": "causes",
+      "target": "concept:flow",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "8a6321e350f43fd53a0aa1b7",
+          "quote": "A finer grind gives a stronger, more intense coffee and a slower flow; a coarser grind gives a lighter coffee and a faster flow."
+        }
+      ]
+    },
+    {
+      "id": "e30",
+      "source": "product:coffee",
+      "relation": "causes",
+      "target": "concept:grind",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "8a6321e350f43fd53a0aa1b7",
+          "quote": "If the coffee comes out drop by drop, the grind is too fine; if it comes out too fast and pale, the grind is too coarse."
+        }
+      ]
+    },
+    {
+      "id": "e31",
+      "source": "component:suction-tube",
+      "relation": "uses",
+      "target": "component:frothing-head",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "eb3525cfd6a71c713ef6f3e8",
+          "quote": "Connect the suction tube to the frothing head"
+        }
+      ]
+    },
+    {
+      "id": "e32",
+      "source": "product:cold-milk",
+      "relation": "located_in",
+      "target": "product:refrigerator",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "eb3525cfd6a71c713ef6f3e8",
+          "quote": "cold milk (around 5 degrees Celsius) straight from the refrigerator"
+        }
+      ]
+    },
+    {
+      "id": "e33",
+      "source": "product:whole-milk",
+      "relation": "produces",
+      "target": "product:foam",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "eb3525cfd6a71c713ef6f3e8",
+          "quote": "Whole milk gives a creamier foam"
+        }
+      ]
+    },
+    {
+      "id": "e34",
+      "source": "product:skimmed-milk",
+      "relation": "produces",
+      "target": "product:foam",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "eb3525cfd6a71c713ef6f3e8",
+          "quote": "skimmed milk a lighter and more abundant one"
+        }
+      ]
+    },
+    {
+      "id": "e35",
+      "source": "concept:milk-residues",
+      "relation": "causes",
+      "target": "concept:poor-foam",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "db27ce3a8ad56bc10d7eed7c",
+          "quote": "Milk residues dry very quickly and block the frothing head, which leads to a poor foam"
+        }
+      ]
+    },
+    {
+      "id": "e36",
+      "source": "concept:milk-residues",
+      "relation": "causes",
+      "target": "concept:milk-spitting-out-of-the-head",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "db27ce3a8ad56bc10d7eed7c",
+          "quote": "Milk residues dry very quickly and block the frothing head, which leads to a poor foam or to milk spitting out of the head."
+        }
+      ]
+    },
+    {
+      "id": "e37",
+      "source": "component:water-filter",
+      "relation": "produces",
+      "target": "product:coffee",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "297953408260d7dba965b5e0",
+          "quote": "The optional water filter reduces limescale and improves the taste of the coffee."
+        }
+      ]
+    },
+    {
+      "id": "e38",
+      "source": "concept:water-tank-empty",
+      "relation": "causes",
+      "target": "concept:e02",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "1c551276def2e1575e0ea74f",
+          "quote": "E02 - Water tank empty."
+        }
+      ]
+    },
+    {
+      "id": "e39",
+      "source": "concept:drip-tray-missing",
+      "relation": "causes",
+      "target": "concept:e03",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "1c551276def2e1575e0ea74f",
+          "quote": "E03 - Drip tray missing."
+        }
+      ]
+    },
+    {
+      "id": "e40",
+      "source": "concept:water-tank-seal-leaking",
+      "relation": "causes",
+      "target": "concept:e04",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "1c551276def2e1575e0ea74f",
+          "quote": "E04 - Water tank seal leaking."
+        }
+      ]
+    },
+    {
+      "id": "e41",
+      "source": "concept:grounds-container-full",
+      "relation": "causes",
+      "target": "concept:e05",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "1c551276def2e1575e0ea74f",
+          "quote": "E05 - Grounds container full."
+        }
+      ]
+    },
+    {
+      "id": "e42",
+      "source": "component:float",
+      "relation": "located_in",
+      "target": "component:drip-tray",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "34ba017019cf01ab2de4fedc",
+          "quote": "The float of the drip tray"
+        }
+      ]
+    },
+    {
+      "id": "e43",
+      "source": "component:float",
+      "relation": "causes",
+      "target": "component:coffee-residue",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "34ba017019cf01ab2de4fedc",
+          "quote": "The float of the drip tray is stuck in the up position by coffee residue."
+        }
+      ]
+    },
+    {
+      "id": "e44",
+      "source": "component:brewing-unit",
+      "relation": "located_in",
+      "target": "product:machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "2cc43efc6c50df262998acae",
+          "quote": "The brewing unit is not in the machine"
+        }
+      ]
+    },
+    {
+      "id": "e45",
+      "source": "product:ground-coffee",
+      "relation": "causes",
+      "target": "component:brewing-unit",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "15f67cf24af7be3dbc95b899",
+          "quote": "Too much ground coffee was used, so the unit cannot compress the coffee."
+        }
+      ]
+    },
+    {
+      "id": "e46",
+      "source": "product:pre-ground-coffee",
+      "relation": "causes",
+      "target": "component:chute",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "15f67cf24af7be3dbc95b899",
+          "quote": "Pre-ground coffee is stuck in the chute, often because the coffee is too fine or humid."
+        }
+      ]
+    },
+    {
+      "id": "e47",
+      "source": "component:e15",
+      "relation": "causes",
+      "target": "component:thermoblock",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "5c21ac0a721d843a5c6e6796",
+          "quote": "E15 - Heater temperature too low. Cause: The thermoblock does not reach its working temperature in the expected time."
+        }
+      ]
+    },
+    {
+      "id": "e48",
+      "source": "component:e17",
+      "relation": "uses",
+      "target": "concept:descaling-programme",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "5c21ac0a721d843a5c6e6796",
+          "quote": "What to do: Run the descaling programme."
+        }
+      ]
+    },
+    {
+      "id": "e49",
+      "source": "component:temperature-sensor",
+      "relation": "part_of",
+      "target": "component:heater",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "22b7aa87a41277cf5547a08d",
+          "quote": "The temperature sensor of the heater"
+        }
+      ]
+    },
+    {
+      "id": "e50",
+      "source": "concept:e19-steam-temperature-not-reached",
+      "relation": "causes",
+      "target": "concept:limescale",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "22b7aa87a41277cf5547a08d",
+          "quote": "Steam temperature not reached. Cause: The steam circuit does not reach its temperature, often because of limescale."
+        }
+      ]
+    },
+    {
+      "id": "e51",
+      "source": "concept:e21-pump-not-priming",
+      "relation": "causes",
+      "target": "concept:air-bubble",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "22b7aa87a41277cf5547a08d",
+          "quote": "Pump not priming. Cause: The pump runs but does not draw water, usually because of an air bubble in the circuit."
+        }
+      ]
+    },
+    {
+      "id": "e52",
+      "source": "concept:e22-pump-overload",
+      "relation": "causes",
+      "target": "component:pump",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "2bfe73b143961aa31d9d8d0c",
+          "quote": "E22 - Pump overload. Cause: The pump works against too much pressure"
+        }
+      ]
+    },
+    {
+      "id": "e53",
+      "source": "concept:limescale",
+      "relation": "located_in",
+      "target": "component:pipes",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "5e57c851ec0c77330b578b4d",
+          "quote": "limescale in the pipes"
+        }
+      ]
+    },
+    {
+      "id": "e54",
+      "source": "concept:e32",
+      "relation": "causes",
+      "target": "concept:hot-water-valve-fault",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "727cf8f795003bf11e426593",
+          "quote": "E32 - Hot water valve fault."
+        }
+      ]
+    },
+    {
+      "id": "e55",
+      "source": "concept:e33",
+      "relation": "causes",
+      "target": "concept:steam-pressure-too-low",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "727cf8f795003bf11e426593",
+          "quote": "E33 - Steam pressure too low."
+        }
+      ]
+    },
+    {
+      "id": "e56",
+      "source": "concept:e34",
+      "relation": "causes",
+      "target": "concept:milk-system-not-connected",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "727cf8f795003bf11e426593",
+          "quote": "E34 - Milk system not connected."
+        }
+      ]
+    },
+    {
+      "id": "e57",
+      "source": "concept:e35",
+      "relation": "causes",
+      "target": "concept:milk-not-detected",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "727cf8f795003bf11e426593",
+          "quote": "E35 - Milk not detected."
+        }
+      ]
+    },
+    {
+      "id": "e58",
+      "source": "component:dried-milk",
+      "relation": "causes",
+      "target": "component:frothing-head",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f0cf6b9ab6ec90f41aba8093",
+          "quote": "Dried milk blocks the frothing head"
+        }
+      ]
+    },
+    {
+      "id": "e59",
+      "source": "component:bean-hopper",
+      "relation": "requires",
+      "target": "product:coffee-beans",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "4a8a4b57d0c175c8e62c7aef",
+          "quote": "Fill the bean hopper with coffee beans."
+        }
+      ]
+    },
+    {
+      "id": "e60",
+      "source": "component:bean-hopper-lid",
+      "relation": "requires",
+      "target": "component:grinder",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "2f7423413b6247418f0a8b75",
+          "quote": "Make sure the bean hopper lid is closed properly, then try again."
+        }
+      ]
+    },
+    {
+      "id": "e61",
+      "source": "component:grinder",
+      "relation": "requires",
+      "target": "component:aroma-preserving-lid",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "2f7423413b6247418f0a8b75",
+          "quote": "The grinder only starts when the lid is closed."
+        }
+      ]
+    },
+    {
+      "id": "e62",
+      "source": "component:internal-clock",
+      "relation": "causes",
+      "target": "concept:e53",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f3934f747dd73386266c80c7",
+          "quote": "E53 - Clock reset. Cause: The internal clock was reset after a power cut."
+        }
+      ]
+    },
+    {
+      "id": "e63",
+      "source": "concept:display-language",
+      "relation": "causes",
+      "target": "concept:e54",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f3934f747dd73386266c80c7",
+          "quote": "E54 - Language not set. Cause: The display language was lost after a software update."
+        }
+      ]
+    },
+    {
+      "id": "e64",
+      "source": "concept:software-update",
+      "relation": "causes",
+      "target": "concept:e55",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f3934f747dd73386266c80c7",
+          "quote": "E55 - Software update failed. Cause: The last software update was interrupted."
+        }
+      ]
+    },
+    {
+      "id": "e65",
+      "source": "concept:user-settings",
+      "relation": "causes",
+      "target": "concept:e56",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f3934f747dd73386266c80c7",
+          "quote": "E56 - Settings reset. Cause: The user settings were reset to their factory valu"
+        }
+      ]
+    },
+    {
+      "id": "e66",
+      "source": "concept:e56",
+      "relation": "causes",
+      "target": "concept:settings-reset",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "E56 - Settings reset."
+        }
+      ]
+    },
+    {
+      "id": "e67",
+      "source": "concept:e57",
+      "relation": "causes",
+      "target": "concept:main-board-fault",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "E57 - Main board fault."
+        }
+      ]
+    },
+    {
+      "id": "e68",
+      "source": "concept:main-board-fault",
+      "relation": "causes",
+      "target": "component:main-electronic-board",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "Main board fault. Cause: The main electronic board detected an internal fault."
+        }
+      ]
+    },
+    {
+      "id": "e69",
+      "source": "concept:e58",
+      "relation": "causes",
+      "target": "concept:memory-full",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "E58 - Memory full."
+        }
+      ]
+    },
+    {
+      "id": "e70",
+      "source": "concept:e59",
+      "relation": "causes",
+      "target": "concept:display-too-dark",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "E59 - Display too dark."
+        }
+      ]
+    },
+    {
+      "id": "e71",
+      "source": "concept:e60",
+      "relation": "causes",
+      "target": "concept:counter-reset-needed",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "62228771907366222019a3a1",
+          "quote": "E60 - Counter reset needed."
+        }
+      ]
+    },
+    {
+      "id": "e72",
+      "source": "organization:customer-service",
+      "relation": "uses",
+      "target": "component:maintenance-counters",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "94c74a7cda2be0aae265768f",
+          "quote": "Contact customer service to reset the maintenance counters."
+        }
+      ]
+    },
+    {
+      "id": "e73",
+      "source": "concept:descaling-programme",
+      "relation": "requires",
+      "target": "product:machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "94c74a7cda2be0aae265768f",
+          "quote": "Run the descaling programme as soon as possible."
+        }
+      ]
+    },
+    {
+      "id": "e74",
+      "source": "concept:cleaning-programme",
+      "relation": "requires",
+      "target": "product:cleaning-tablet",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "94c74a7cda2be0aae265768f",
+          "quote": "Run the cleaning programme with a cleaning tablet."
+        }
+      ]
+    },
+    {
+      "id": "e75",
+      "source": "product:cleaning-tablet",
+      "relation": "located_in",
+      "target": "component:brewing-unit",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f95d08e3dbe09cf8c79384a9",
+          "quote": "The cleaning programme did not detect the cleaning tablet in the brewing unit"
+        }
+      ]
+    },
+    {
+      "id": "e76",
+      "source": "product:cleaning-tablet",
+      "relation": "located_in",
+      "target": "component:pre-ground-coffee-chute",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f95d08e3dbe09cf8c79384a9",
+          "quote": "Drop one cleaning tablet into the pre-ground coffee chute"
+        }
+      ]
+    },
+    {
+      "id": "e77",
+      "source": "concept:e72",
+      "relation": "causes",
+      "target": "event:power-cut-during-preparation",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "E72 - Power cut during preparation."
+        }
+      ]
+    },
+    {
+      "id": "e78",
+      "source": "concept:e73",
+      "relation": "causes",
+      "target": "concept:standby-fault",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "E73 - Standby fault."
+        }
+      ]
+    },
+    {
+      "id": "e79",
+      "source": "concept:e74",
+      "relation": "causes",
+      "target": "concept:drip-tray-full",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "E74 - Drip tray full."
+        }
+      ]
+    },
+    {
+      "id": "e80",
+      "source": "concept:e75",
+      "relation": "causes",
+      "target": "concept:coffee-outlets-blocked",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "E75 - Coffee outlets blocked."
+        }
+      ]
+    },
+    {
+      "id": "e81",
+      "source": "concept:e76",
+      "relation": "causes",
+      "target": "concept:cup-sensor-fault",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "E76 - Cup sensor fault."
+        }
+      ]
+    },
+    {
+      "id": "e82",
+      "source": "component:cup-sensor",
+      "relation": "located_in",
+      "target": "component:coffee-outlets",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "13b72c0c0cca47dcfb559105",
+          "quote": "The cup sensor under the coffee outlets"
+        },
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "f1b74d5a5d7ed664d352b908",
+          "quote": "The cup sensor under the coffee outlets"
+        }
+      ]
+    },
+    {
+      "id": "e83",
+      "source": "component:wi-fi-module",
+      "relation": "uses",
+      "target": "component:main-board",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "3764e248d028b0dc3371c98f",
+          "quote": "The Wi-Fi module does not respond to the main board."
+        }
+      ]
+    },
+    {
+      "id": "e84",
+      "source": "component:software",
+      "relation": "part_of",
+      "target": "product:machine",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "software of the machine"
+        }
+      ]
+    },
+    {
+      "id": "e85",
+      "source": "concept:e85",
+      "relation": "causes",
+      "target": "event:scheduled-switch-on-failed",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "E85 - Scheduled switch-on failed."
+        }
+      ]
+    },
+    {
+      "id": "e86",
+      "source": "concept:e86",
+      "relation": "causes",
+      "target": "concept:child-lock-active",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "E86 - Child lock active."
+        }
+      ]
+    },
+    {
+      "id": "e87",
+      "source": "component:menu-button",
+      "relation": "part_of",
+      "target": "component:control-panel",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "menu button for five seconds to unlock the control panel"
+        }
+      ]
+    },
+    {
+      "id": "e88",
+      "source": "concept:e87",
+      "relation": "causes",
+      "target": "concept:energy-saving-mode-active",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "E87 - Energy saving mode active."
+        }
+      ]
+    },
+    {
+      "id": "e89",
+      "source": "concept:energy-saving-mode",
+      "relation": "causes",
+      "target": "component:heater",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "energy saving mode lowered the temperature of the heater"
+        }
+      ]
+    },
+    {
+      "id": "e90",
+      "source": "concept:e88",
+      "relation": "causes",
+      "target": "concept:service-interval-reached",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "E88 - Service interval reached."
+        }
+      ]
+    },
+    {
+      "id": "e91",
+      "source": "product:machine",
+      "relation": "produces",
+      "target": "product:coffees",
+      "evidence": [
+        {
+          "document_id": "vellora-duo-espresso-machine.txt",
+          "chunk_id": "c8c27a713544c7cdbeb3597c",
+          "quote": "machine has made 15,000 coffees"
+        }
+      ]
+    }
+  ],
+  "merges": [
+    {
+      "node": "component:brewing-unit",
+      "merged_names": [
+        "Brewing unit",
+        "brewing unit"
+      ],
+      "method": "same normalised name"
+    },
+    {
+      "node": "component:steam-wand",
+      "merged_names": [
+        "The steam wand",
+        "steam wand"
+      ],
+      "method": "same normalised name"
+    },
+    {
+      "node": "component:water-tank",
+      "merged_names": [
+        "Water tank",
+        "water tank"
+      ],
+      "method": "same normalised name"
+    },
+    {
+      "node": "product:espresso-machine",
+      "merged_names": [
+        "Vellora Duo",
+        "espresso machine"
+      ],
+      "method": "alias given by the LLM"
+    },
+    {
+      "node": "product:pre-ground-coffee",
+      "merged_names": [
+        "Pre-ground coffee",
+        "pre-ground coffee"
+      ],
+      "method": "same normalised name"
+    }
+  ],
+  "possible_missed_merges": [
+    {
+      "name": "descaling programme",
+      "types": [
+        "Concept",
+        "Event"
+      ]
+    },
+    {
+      "name": "espresso",
+      "types": [
+        "Component",
+        "Product"
+      ]
+    },
+    {
+      "name": "lungo",
+      "types": [
+        "Component",
+        "Product"
+      ]
+    },
+    {
+      "name": "menu",
+      "types": [
+        "Component",
+        "Concept"
+      ]
+    },
+    {
+      "name": "refrigerator",
+      "types": [
+        "Component",
+        "Product"
+      ]
+    }
+  ],
+  "schema": {
+    "name": "generic",
+    "entity_types": [
+      "Person",
+      "Organization",
+      "Product",
+      "Component",
+      "Concept",
+      "Place",
+      "Event"
+    ],
+    "relations": {
+      "part_of": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first is a part or a member of the second"
+      },
+      "uses": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first uses or depends on the second"
+      },
+      "requires": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first needs the second (a condition, a role, a step)"
+      },
+      "causes": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first causes or leads to the second"
+      },
+      "produces": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first produces, provides or creates the second"
+      },
+      "located_in": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Component",
+          "Organization",
+          "Place",
+          "Product"
+        ],
+        "meaning": "the first is in the second"
+      },
+      "member_of": {
+        "source": [
+          "Person"
+        ],
+        "target": [
+          "Organization"
+        ],
+        "meaning": "the person belongs to or works for the organization"
+      },
+      "owned_by": {
+        "source": [
+          "Component",
+          "Concept",
+          "Event",
+          "Organization",
+          "Person",
+          "Place",
+          "Product"
+        ],
+        "target": [
+          "Organization",
+          "Person"
+        ],
+        "meaning": "the first is owned or run by the second"
+      },
+      "knows": {
+        "source": [
+          "Person"
+        ],
+        "target": [
+          "Person"
+        ],
+        "meaning": "the two people know each other"
+      },
+      "family_of": {
+        "source": [
+          "Person"
+        ],
+        "target": [
+          "Person"
+        ],
+        "meaning": "the two people are related by family"
+      },
+      "involved_in": {
+        "source": [
+          "Organization",
+          "Person"
+        ],
+        "target": [
+          "Event"
+        ],
+        "meaning": "the person or organization takes part in the event"
+      }
+    }
+  },
+  "metadata": {
+    "corpus": "vellora",
+    "documents": [
+      "vellora-duo-espresso-machine.txt"
+    ],
+    "built_at": "2026-11-17T05:03:08+00:00",
+    "model": "gemini-3.5-flash-lite",
+    "prompt_version": "v2",
+    "chunk_size": 800,
+    "overlap_percent": 10,
+    "chunks": 43,
+    "counts": {
+      "nodes": 205,
+      "edges": 91,
+      "merges": 5,
+      "possible_missed_merges": 5
+    },
+    "cost": {
+      "llm_calls_this_run": 41,
+      "chunks_from_cache": 2,
+      "retries": 0,
+      "prompt_tokens_this_run": 34849,
+      "completion_tokens_this_run": 14479,
+      "cost_usd_this_run": 0.009277,
+      "seconds": 303.1,
+      "total_from_cache": {
+        "calls": 43,
+        "prompt_tokens": 36531,
+        "completion_tokens": 14834,
+        "llm_seconds": 68.9
+      }
+    },
+    "failed_chunks": [],
+    "skipped_by_scanner": [],
+    "rejected": {
+      "relation uses an unknown entity": 1,
+      "relation fails schema": 1,
+      "quote not found in chunk": 2
+    },
+    "trace_id": "09cd2bf1d043"
+  },
+  "rejected_examples": [
+    {
+      "chunk_id": "a9ec98a7cfb1e86fae13320f",
+      "reason": "relation uses an unknown entity",
+      "item": {
+        "source": "heater",
+        "relation": "causes",
+        "target": "limescale",
+        "quote": "Limescale builds up in the heater and the pipes over time"
+      }
+    },
+    {
+      "chunk_id": "13b72c0c0cca47dcfb559105",
+      "reason": "relation fails schema",
+      "item": {
+        "source": "float indicator",
+        "type": "part_of",
+        "target": "drip tray",
+        "quote": "The float indicator of the drip tray"
+      }
+    },
+    {
+      "chunk_id": "c8c27a713544c7cdbeb3597c",
+      "reason": "quote not found in chunk",
+      "item": {
+        "source": "buttons",
+        "relation": "part_of",
+        "target": "machine",
+        "quote": "machine... buttons"
+      }
+    },
+    {
+      "chunk_id": "c8c27a713544c7cdbeb3597c",
+      "reason": "quote not found in chunk",
+      "item": {
+        "source": "heater",
+        "relation": "part_of",
+        "target": "machine",
+        "quote": "machine... heater"
+      }
+    }
+  ]
+}
