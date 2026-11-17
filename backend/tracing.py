@@ -51,6 +51,7 @@ def _now_iso(ts: float) -> str:
 def _secrets() -> list[str]:
     values = [os.getenv("GOOGLE_API_KEY", "")]
     values += os.getenv("GOOGLE_API_KEYS", "").split(",")
+    values += os.getenv("LLM_API_KEY", "").split(",")
     return [v.strip() for v in values if v and len(v.strip()) >= 8]
 
 

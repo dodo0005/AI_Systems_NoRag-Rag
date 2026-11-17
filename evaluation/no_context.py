@@ -9,9 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from openai import OpenAI, RateLimitError
-
-from backend.rag import GEMINI_MODEL, GOOGLE_API_KEY
+from backend import llm
 
 ROOT = Path(__file__).resolve().parents[1]
 EVALUATION_DIR = ROOT / "evaluation"
@@ -22,7 +20,6 @@ QUESTION_SETS = {
 }
 
 MAX_RETRIES = 5
-INITIAL_RETRY_DELAY = 15
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -31,14 +28,6 @@ def read_jsonl(path: Path) -> list[dict]:
 
 
 def run_no_context(corpus: str, input_path: Path) -> Path:
-    if not GOOGLE_API_KEY:
-        raise RuntimeError("GOOGLE_API_KEY is not configured. Check your .env file.")
-
-    client = OpenAI(
-        api_key=GOOGLE_API_KEY,
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-    )
-
     questions = read_jsonl(input_path)
     output_path = EVALUATION_DIR / f"no_context_{corpus}.jsonl"
 
@@ -67,47 +56,27 @@ def run_no_context(corpus: str, input_path: Path) -> Path:
 
             question = item["question"]
 
-            for attempt in range(MAX_RETRIES):
-                try:
-                    response = client.chat.completions.create(
-                        model=GEMINI_MODEL,
-                        messages=[
-                            {
-                                "role": "system",
-                                "content": (
-                                    "Answer the user's question using your "
-                                    "general knowledge only. You have not "
-                                    "been given any documents or retrieved "
-                                    "context. Do not claim that you consulted "
-                                    "a knowledge base. If you do not know, "
-                                    "say so."
-                                ),
-                            },
-                            {"role": "user", "content": question},
-                        ],
-                    )
-
-                    answer = response.choices[0].message.content or ""
-                    break
-
-                except RateLimitError:
-                    if attempt == MAX_RETRIES - 1:
-                        raise
-
-                    delay = INITIAL_RETRY_DELAY * (2**attempt)
-
-                    print(
-                        f"[{corpus}] Rate limit for {item['id']}. "
-                        f"Waiting {delay}s before retry "
-                        f"{attempt + 2}/{MAX_RETRIES}..."
-                    )
-
-                    time.sleep(delay)
+            # backend/llm.py backs off and retries on rate limits.
+            reply = llm.chat(
+                question,
+                system=(
+                    "Answer the user's question using your "
+                    "general knowledge only. You have not "
+                    "been given any documents or retrieved "
+                    "context. Do not claim that you consulted "
+                    "a knowledge base. If you do not know, "
+                    "say so."
+                ),
+                json_mode=False,
+                temperature=None,
+                max_attempts=MAX_RETRIES,
+            )
+            answer = reply.content
 
             result = {
                 **item,
                 "no_context_answer": answer,
-                "no_context_model": GEMINI_MODEL,
+                "no_context_model": reply.model,
                 "no_context_correct": None,
             }
 
