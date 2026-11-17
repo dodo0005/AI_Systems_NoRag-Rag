@@ -1,6 +1,6 @@
 # NoRAG-RAG — AI Systems Integration & Operations
 
-A multi-corpus Retrieval-Augmented Generation (RAG) application using FastAPI, React, ChromaDB, Sentence Transformers and Google Gemini.
+A multi-corpus Retrieval-Augmented Generation (RAG) application using FastAPI, React, ChromaDB, Sentence Transformers and any OpenAI-compatible LLM (Google Gemini by default).
 
 ## Features
 
@@ -53,7 +53,7 @@ norag-rag/
 
 - Python 3.10 or later.
 - Node.js and npm.
-- A Google AI Studio API key.
+- An API key for an OpenAI-compatible LLM (for example a Google AI Studio key).
 
 ## Installation
 
@@ -86,7 +86,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 python -m pip install -r requirements.txt
 ```
 
-### 4. Configure the API key
+### 4. Configure the LLM
 
 Copy the example environment file:
 
@@ -94,11 +94,15 @@ Copy the example environment file:
 Copy-Item .env.example .env
 ```
 
-Open `.env` and configure:
+Open `.env` (or create `.env.local`, which wins over `.env`) and configure:
 
 ```text
-GOOGLE_API_KEY=your_google_api_key
+LLM_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+LLM_API_KEY=your_api_key
+LLM_MODEL=gemini-3.5-flash-lite
 ```
+
+`LLM_URL` can point to any OpenAI-compatible chat completions API. An old `.env` with only `GOOGLE_API_KEY` still works (Gemini is the fallback). Restart the backend after changing it.
 
 Use your own key. Never commit `.env` or expose the key in evaluation files or screenshots.
 
@@ -269,12 +273,51 @@ The evaluation directory contains:
 | `answers_v2_kestrel_hybrid.jsonl` | Generated Kestrel RAG answers |
 | `grading_v2.csv` | Human assessment of generated RAG answers |
 
+## V4: observability, guardrails, graphs for any document
+
+### Tabs
+
+- **Ask documents:** every answer has a **View trace** link. **Conversation mode** keeps the previous questions and answers; a follow-up question is first rewritten into a standalone question (one extra LLM call), and the UI shows what was searched for.
+- **Concept graph:** build the concept graph of the selected documents (or of the whole corpus) of any corpus, including uploaded documents, then explore it: search entities, filter by type, click through neighbours, read the quote behind each relation, and ask about an entity. Kestrel keeps its V3 schema; other documents use a general schema. Once built, the graph can be switched on as a retriever.
+- **Traces:** one trace per question, upload, re-index and graph build, with its spans (guard, rewrite, each retriever, fusion, generation, validation), timings, tokens, cost and configuration fingerprint.
+- **Metrics:** computed from the traces: outcomes (answered, abstained, invalid, error, blocked), p50/p95 per request and per step, tokens and cost per question, per indexed document and per day, and a warning when the running configuration was not evaluated.
+
+### Guardrails
+
+- **Injection scanner** (`backend/scanner.py`): rules with a name and a severity. An uploaded document with a high-severity finding is not indexed; it is moved to `quarantine/<corpus>/` with a JSON report. At question time, retrieved chunks with a finding are withheld from the prompt, and a question that tries to change the instructions is refused (outcome `blocked`). Flagged chunks are also skipped by graph extraction.
+- **Personal data redaction** (`backend/redact.py`): emails, phone numbers, IBANs, card numbers and IP addresses are replaced in traces. Emails, phones, IBANs and card numbers are also replaced in what is sent to the LLM (`REDACT_LLM_INPUT`). Role mailboxes such as `billing@` are kept.
+- **Graph budget:** a graph build that needs more than `GRAPH_MAX_NEW_CHUNKS` new LLM calls is refused before any call.
+
+### Graph from the command line
+
+```powershell
+python -m backend.graph_build --corpus vellora --document vellora-duo-espresso-machine.txt
+```
+
+### Tests
+
+The tests use a fake LLM and a fake embedding model: no key, no network, no cost.
+
+```powershell
+python -m pytest -q tests
+```
+
+### Final evaluation re-run
+
+```powershell
+python .\evaluation\evaluate.py --release v4 --config dense dense+bm25 dense+bm25+graph
+python .\evaluation\compare_releases.py
+```
+
+The first command writes `evaluation/results_v4_*.jsonl` and `evaluation/summary_v4.csv` (with the configuration fingerprint); the second puts the overall rows of V2, V3 and V4 side by side in `evaluation/comparison_v4.csv`. The graph configurations run on every corpus that has a graph.
+
 ## Important notes
 
 - The `.env` file must remain private and must not be committed.
 - The ChromaDB collections are persistent and corpus-specific.
 - Rebuilding an index can take time because embeddings are computed locally.
-- Evaluation answer generation uses Gemini and is subject to API rate limits.
+- Evaluation answer generation uses the configured LLM and is subject to API rate limits.
+- `traces/` and `quarantine/` are local and ignored by git. Traces older than `TRACE_RETENTION_DAYS` are deleted.
 - HitRate measures retrieval of expected evidence; it does not by itself measure answer correctness.
 - The original standalone `ask_norag_google.py` and `ask_rag_google.py` scripts are retained as earlier project experiments. The multi-corpus web application is the main V2 application.
 
