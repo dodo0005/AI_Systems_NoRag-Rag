@@ -1,14 +1,25 @@
 
 import { useEffect, useState } from "react";
 import "./App.css";
-
-const API = "/api";
+import { API, formatUsd, traceIdIn } from "./api";
+import GraphExplorer from "./GraphExplorer";
+import MetricsView from "./MetricsView";
+import TraceView from "./TraceView";
 
 // Retrievers the user can switch on or off. RRF fuses the ones that are on.
+// The graph exists for a corpus once it has been built (Graph tab).
 const RETRIEVERS = [
   { id: "dense", label: "Dense (embeddings)" },
   { id: "bm25", label: "BM25 (keywords)" },
-  { id: "graph", label: "Concept graph", corpora: ["kestrel"] },
+  { id: "graph", label: "Concept graph", needsGraph: true },
+];
+
+const TABS = [
+  { id: "ask", label: "Ask documents" },
+  { id: "words", label: "Words" },
+  { id: "graph", label: "Concept graph" },
+  { id: "traces", label: "Traces" },
+  { id: "metrics", label: "Metrics" },
 ];
 
 export default function App() {
@@ -33,6 +44,33 @@ export default function App() {
   const [wordLoading, setWordLoading] = useState(false);
   const [wordError, setWordError] = useState("");
   const [wordSearch, setWordSearch] = useState("");
+  const [appConfig, setAppConfig] = useState(null);
+  const [traceId, setTraceId] = useState(null);
+  const [errorTraceId, setErrorTraceId] = useState(null);
+  const [conversation, setConversation] = useState(false);
+  const [turns, setTurns] = useState([]);
+
+  async function loadConfig() {
+    try {
+      setAppConfig(await request("/config"));
+    } catch {
+      setAppConfig(null);
+    }
+  }
+
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  function openTrace(id) {
+    setTraceId(id);
+    setActiveTab("traces");
+  }
+
+  function showError(message) {
+    setError(message);
+    setErrorTraceId(traceIdIn(message));
+  }
 
   useEffect(() => {
   if (activeTab === "words" && wordMode === "corpus") {
@@ -138,8 +176,10 @@ function analyzeQuestionWords(event) {
     setResult(null);
     setDocuments([]);
     setError("");
+    setErrorTraceId(null);
     setNotice("");
     setFile(null);
+    setTurns([]);
 
     loadDocuments();
   }, [corpus]);
@@ -164,7 +204,7 @@ function analyzeQuestionWords(event) {
       const form = new FormData();
       form.append("file", file);
 
-      await request(
+      const data = await request(
         `/documents?${corpusQuery({
           chunk_size: chunkSize,
           overlap_percent: overlap,
@@ -172,7 +212,12 @@ function analyzeQuestionWords(event) {
         { method: "POST", body: form }
       );
 
-      setNotice(`Uploaded and indexed ${file.name} in ${corpus}.`);
+      setNotice(
+        `Uploaded and indexed ${file.name} in ${corpus} (${data.chunk_count} chunks).` +
+          (data.warnings?.length
+            ? ` Scanner warnings (not blocking): ${data.warnings.join("; ")}`
+            : " Build its concept graph from the Concept graph tab."),
+      );
       setFile(null);
       event.target.reset();
       await loadDocuments();
@@ -261,6 +306,7 @@ function analyzeQuestionWords(event) {
   async function askQuestion(event) {
     event.preventDefault();
     setError("");
+    setErrorTraceId(null);
     setNotice("");
     setResult(null);
 
@@ -291,20 +337,35 @@ function analyzeQuestionWords(event) {
           top_k: Number(topK),
           corpus,
           retrievers: activeRetrievers,
+          history: conversation ? turns : [],
         }),
       });
 
       setResult(data);
+      if (conversation && data.status !== "blocked") {
+        setTurns((previous) => [
+          ...previous,
+          { question: question.trim(), answer: data.answer },
+        ]);
+        setQuestion("");
+      }
     } catch (err) {
-      setError(err.message);
+      showError(err.message);
     } finally {
       setLoading(false);
     }
   }
 
-  // A retriever with a "corpora" list exists only for those corpora.
+  // The graph retriever exists only for corpora whose graph has been built.
   function isAvailable(retriever) {
-    return !retriever.corpora || retriever.corpora.includes(corpus);
+    return (
+      !retriever.needsGraph || Boolean(appConfig?.corpora?.[corpus]?.has_graph)
+    );
+  }
+
+  function askAbout(name) {
+    setQuestion(`What do the documents say about ${name}?`);
+    setActiveTab("ask");
   }
 
   const activeRetrievers = retrievers.filter((id) =>
@@ -336,7 +397,26 @@ function analyzeQuestionWords(event) {
         </div>
       </header>
 
-      {error && <div className="alert error">{error}</div>}
+      {error && (
+        <div className="alert error">
+          {error}{" "}
+          {errorTraceId && (
+            <button
+              className="link-button"
+              type="button"
+              onClick={() => openTrace(errorTraceId)}
+            >
+              View trace
+            </button>
+          )}
+        </div>
+      )}
+      {appConfig && !appConfig.llm_configured && (
+        <div className="alert error">
+          No LLM key configured: set LLM_URL, LLM_API_KEY and LLM_MODEL in .env or
+          .env.local, then restart the backend.
+        </div>
+      )}
       {notice && <div className="alert success">{notice}</div>}
 
       <div className="workspace">
@@ -498,21 +578,16 @@ function analyzeQuestionWords(event) {
         <section className="main-column">
   <div className="panel tab-panel">
     <div className="tab-buttons">
-      <button
-        className={`tab-button ${activeTab === "ask" ? "selected" : ""}`}
-        onClick={() => setActiveTab("ask")}
-        type="button"
-      >
-        Ask documents
-      </button>
-
-      <button
-        className={`tab-button ${activeTab === "words" ? "selected" : ""}`}
-        onClick={() => setActiveTab("words")}
-        type="button"
-      >
-        Words
-      </button>
+      {TABS.map((tab) => (
+        <button
+          key={tab.id}
+          className={`tab-button ${activeTab === tab.id ? "selected" : ""}`}
+          onClick={() => setActiveTab(tab.id)}
+          type="button"
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
   </div>
 
@@ -536,8 +611,48 @@ function analyzeQuestionWords(event) {
         </div>
 
         <form onSubmit={askQuestion}>
+          <div className="conversation-bar">
+            <label className="retriever-toggle">
+              <input
+                type="checkbox"
+                checked={conversation}
+                onChange={() => {
+                  setConversation(!conversation);
+                  setTurns([]);
+                }}
+              />
+              Conversation mode
+              <small className="retriever-note">
+                (follow-up questions are rewritten using the previous answers)
+              </small>
+            </label>
+            {conversation && turns.length > 0 && (
+              <button
+                className="text-button"
+                type="button"
+                onClick={() => {
+                  setTurns([]);
+                  setResult(null);
+                }}
+              >
+                New conversation
+              </button>
+            )}
+          </div>
+
+          {conversation && turns.length > 0 && (
+            <ol className="conversation">
+              {turns.map((turn, index) => (
+                <li key={index}>
+                  <p className="turn-question">{turn.question}</p>
+                  <p className="turn-answer">{turn.answer}</p>
+                </li>
+              ))}
+            </ol>
+          )}
+
           <label className="field-label" htmlFor="question">
-            Your question
+            {conversation && turns.length > 0 ? "Follow-up question" : "Your question"}
           </label>
 
           <textarea
@@ -562,9 +677,9 @@ function analyzeQuestionWords(event) {
                   onChange={() => toggleRetriever(retriever.id)}
                 />
                 {retriever.label}
-                {retriever.corpora && (
+                {!isAvailable(retriever) && (
                   <small className="retriever-note">
-                    ({retriever.corpora.join(", ")} only)
+                    (build the {corpus} graph first)
                   </small>
                 )}
               </label>
@@ -608,11 +723,27 @@ function analyzeQuestionWords(event) {
             >
               {result.status === "answered"
                 ? "Answered"
-                : "Insufficient evidence"}
+                : result.status === "blocked"
+                  ? "Blocked"
+                  : "Insufficient evidence"}
             </span>
           </div>
 
+          {result.rewritten_question && (
+            <p className="answer-meta">
+              Searched for: <em>{result.rewritten_question}</em>
+            </p>
+          )}
+
           <p className="answer-text">{result.answer}</p>
+
+          {result.warnings?.length > 0 && (
+            <ul className="guard-warnings">
+              {result.warnings.map((warning, index) => (
+                <li key={index}>{warning}</li>
+              ))}
+            </ul>
+          )}
 
           <p className="answer-meta">
             Retrievers: {result.retrievers?.join(" + ") || "—"} ·{" "}
@@ -624,7 +755,20 @@ function analyzeQuestionWords(event) {
             {Math.round(
               Object.values(result.latency_ms || {}).reduce((a, b) => a + b, 0),
             )}{" "}
-            ms
+            ms · {formatUsd(result.cost_usd)}
+            {result.trace_id && (
+              <>
+                {" "}
+                ·{" "}
+                <button
+                  className="link-button"
+                  type="button"
+                  onClick={() => openTrace(result.trace_id)}
+                >
+                  View trace
+                </button>
+              </>
+            )}
           </p>
 
           {result.graph_path && (
@@ -900,6 +1044,21 @@ function analyzeQuestionWords(event) {
       )}
     </>
   )}
+
+  {activeTab === "graph" && (
+    <GraphExplorer
+      corpus={corpus}
+      selected={selected}
+      onAsk={askAbout}
+      onGraphChange={loadConfig}
+    />
+  )}
+
+  {activeTab === "traces" && (
+    <TraceView traceId={traceId} onSelect={setTraceId} />
+  )}
+
+  {activeTab === "metrics" && <MetricsView />}
 
   <footer className="footer">
     Norag RAG · Evidence-based answers from your documents
